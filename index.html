@@ -12,12 +12,9 @@
   --charcoal:#4a4949;--charcoal-dark:#333232;
   --gray-50:#F9F8F6;--gray-100:#F1EFE8;--gray-200:#E0DED6;
   --text:#1C1B18;--text-soft:#5F5E5A;--text-muted:#9A9890;
-  --border:#E0DED6;--white:#FFFFFF;
-  --radius:10px;--radius-lg:14px;
+  --border:#E0DED6;--white:#FFFFFF;--radius:10px;--radius-lg:14px;
 }
 body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text);min-height:100vh;line-height:1.6}
-
-/* HEADER */
 .site-header{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;z-index:100}
 .header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -29,27 +26,18 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .tool-pill{font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;transition:all 0.15s;white-space:nowrap}
 .tool-pill:hover{border-color:var(--red);color:var(--red)}
 .tool-pill.active{background:var(--red);color:white;border-color:var(--red)}
-
-/* LAYOUT */
 .main{max-width:960px;margin:0 auto;padding:2.5rem 2rem 4rem}
 .page-title{font-family:"DM Serif Display",serif;font-size:28px;margin-bottom:4px}
 .page-subtitle{font-size:14px;color:var(--text-soft);margin-bottom:2rem}
-.tool-section{display:none}
-.tool-section.active{display:block}
-
-/* CARDS */
+.tool-section{display:none}.tool-section.active{display:block}
 .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:1.25rem}
 .card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:1.25rem}
-
-/* REP BAR */
 .rep-bar{display:flex;align-items:center;gap:12px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.5rem;margin-bottom:1.25rem}
 .rep-bar label{font-size:13px;font-weight:500;color:var(--text-soft);white-space:nowrap}
 .rep-bar select{font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;color:var(--text);background:var(--gray-50);border:1px solid var(--border);border-radius:var(--radius);padding:8px 32px 8px 12px;outline:none;cursor:pointer;flex:1;max-width:280px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239A9890' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;-webkit-appearance:none}
 .rep-bar select:focus{border-color:var(--red)}
 .rep-status{font-size:12px;color:var(--text-muted);margin-left:auto}
 .rep-status.active{color:#3B6D11;font-weight:500}
-
-/* FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field.full{grid-column:1/-1}
@@ -59,8 +47,6 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red);background:var(--white)}
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239A9890' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
 .field textarea{resize:vertical;min-height:64px;line-height:1.5}
-
-/* SEQUENCE */
 .sequence-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1.5rem}
 .seq-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border:1px solid var(--border);border-radius:var(--radius);background:var(--gray-50);cursor:pointer;transition:all .15s;text-align:center}
 .seq-btn:hover{border-color:var(--red);background:var(--red-light)}
@@ -68,18 +54,13 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .seq-num{font-size:18px;font-weight:600;color:var(--red);font-family:"DM Serif Display",serif;line-height:1}
 .seq-type{font-size:10px;font-weight:500;color:var(--text-soft);line-height:1.3}
 .seq-btn.active .seq-type{color:var(--red-dark)}
-
-/* BUTTONS */
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
 .btn-primary{font-family:"DM Sans",sans-serif;font-size:14px;font-weight:600;color:white;background:var(--red);border:none;border-radius:var(--radius);padding:12px;cursor:pointer;transition:background .15s,transform .1s}
-.btn-primary:hover{background:var(--red-dark)}
-.btn-primary:active{transform:scale(.99)}
+.btn-primary:hover{background:var(--red-dark)}.btn-primary:active{transform:scale(.99)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .btn-secondary{font-family:"DM Sans",sans-serif;font-size:14px;font-weight:600;color:white;background:var(--charcoal);border:none;border-radius:var(--radius);padding:12px;cursor:pointer;transition:background .15s}
 .btn-secondary:hover{background:var(--charcoal-dark)}
 .btn-secondary:disabled{opacity:.45;cursor:not-allowed}
-
-/* OUTPUT */
 .output-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-top:1.25rem;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .output-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:var(--gray-50);border-bottom:1px solid var(--border)}
@@ -97,27 +78,21 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .loader{display:flex;align-items:center;gap:10px;padding:18px 16px;font-size:13px;color:var(--text-muted)}
 .dots{display:flex;gap:4px}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1.2s ease-in-out infinite}
-.dot:nth-child(2){animation-delay:.2s}
-.dot:nth-child(3){animation-delay:.4s}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
 .error-msg{padding:16px;font-size:13px;color:var(--red)}
-
-/* FULL SEQUENCE */
 .seq-section{margin-top:2rem}
 .seq-section-title{font-family:"DM Serif Display",serif;font-size:20px;margin-bottom:1rem;color:var(--text);display:flex;align-items:center;gap:10px}
 .seq-section-title .badge{font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;background:var(--red-light);color:var(--red);padding:3px 10px;border-radius:20px}
 .seq-progress{background:var(--gray-100);border-radius:var(--radius);height:6px;margin-bottom:1.5rem;overflow:hidden}
 .seq-progress-bar{height:100%;background:var(--red);border-radius:var(--radius);transition:width .4s ease;width:0%}
 .seq-progress-label{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:1.25rem}
-
-/* ACCORDION (email sequence) */
 .accordion{display:flex;flex-direction:column;gap:8px}
 .acc-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
 .acc-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .12s;user-select:none}
 .acc-header:hover{background:var(--gray-50)}
 .acc-num{width:28px;height:28px;background:var(--red-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"DM Serif Display",serif;font-size:15px;color:var(--red);font-weight:600;flex-shrink:0}
-.acc-label{flex:1}
-.acc-title{font-size:14px;font-weight:500;color:var(--text)}
+.acc-label{flex:1}.acc-title{font-size:14px;font-weight:500;color:var(--text)}
 .acc-subtitle{font-size:12px;color:var(--text-muted)}
 .acc-status{font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
 .acc-status.pending{background:var(--gray-100);color:var(--text-muted)}
@@ -136,18 +111,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .acc-content{padding:16px;font-size:13px;line-height:1.85;white-space:pre-wrap;color:var(--text)}
 .acc-content.hw{font-family:"DM Serif Display",serif;background:#FFFDF5;border-top:3px solid #E8D5A0;color:#2C2410;line-height:2.1;font-size:14px;padding:20px 24px}
 .print-row{display:flex;justify-content:flex-end;margin-top:12px;gap:8px}
-.print-btn{font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;color:var(--text-soft);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;transition:all .15s}
-.print-btn:hover{border-color:var(--text-soft);color:var(--text)}
-
-/* TOAST */
+.print-btn{font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;color:var(--text-soft);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer}
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#2C2C2A;color:white;font-size:13px;padding:10px 16px;border-radius:8px;z-index:300;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;max-width:320px}
-.toast.show{opacity:1;transform:none}
-.toast.success{background:#27500A}
-.toast.error{background:var(--red-dark)}
-
-/* ============================================================
-   OBJECTION HANDLER STYLES
-   ============================================================ */
+.toast.show{opacity:1;transform:none}.toast.success{background:#27500A}.toast.error{background:var(--red-dark)}
 .obj-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
 .obj-context-pill{font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;transition:all .15s}
 .obj-context-pill:hover{border-color:var(--charcoal);color:var(--charcoal)}
@@ -158,22 +124,20 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .obj-search{font-family:"DM Sans",sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;width:100%;background:var(--white);color:var(--text);margin-bottom:1rem}
 .obj-search:focus{border-color:var(--red)}
 .obj-list{display:flex;flex-direction:column;gap:8px}
-.obj-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .15s}
-.obj-item:hover{border-color:var(--gray-400,#9A9890)}
+.obj-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
 .obj-item-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.obj-item-header:hover{background:var(--gray-50)}
 .obj-cat-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .obj-cat-badge.pre-pitch{background:#E6F1FB;color:#185FA5}
 .obj-cat-badge.dismissive{background:#FAEEDA;color:#854F0B}
 .obj-cat-badge.situational{background:#EAF3DE;color:#3B6D11}
 .obj-cat-badge.existing{background:var(--red-light);color:var(--red)}
-.obj-cat-badge.email{background:#F1EFE8;color:#5F5E5A}
+.obj-cat-badge.email-reply{background:#F1EFE8;color:#5F5E5A}
 .obj-text{flex:1;font-size:14px;font-weight:500;color:var(--text)}
 .obj-chevron{color:var(--text-muted);font-size:12px;transition:transform .2s;flex-shrink:0}
 .obj-item.open .obj-chevron{transform:rotate(180deg)}
-.obj-body{display:none;border-top:1px solid var(--border);padding:0}
+.obj-body{display:none;border-top:1px solid var(--border)}
 .obj-item.open .obj-body{display:block}
-
-/* Miyagi steps */
 .miyagi-step{padding:16px;border-bottom:1px solid var(--border)}
 .miyagi-step:last-child{border-bottom:none}
 .step-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -181,76 +145,50 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
 .step-agree .step-label{background:#EAF3DE;color:#27500A}
 .step-incentivize .step-label{background:#FFF8E7;color:#8B6000}
 .step-testdrive .step-label{background:#E6F1FB;color:#185FA5}
-.step-email .step-label{background:#F1EFE8;color:#444441}
-.step-strategy .step-label{background:#F1EFE8;color:#444441}
-.step-text{font-size:14px;color:var(--text);line-height:1.7;font-style:italic;padding:10px 14px;background:var(--gray-50);border-radius:8px;border-left:3px solid var(--border);margin-bottom:8px}
+.step-email .step-label,.step-strategy .step-label{background:#F1EFE8;color:#444441}
+.step-text{font-size:14px;color:var(--text);line-height:1.7;padding:10px 14px;background:var(--gray-50);border-radius:8px;border-left:3px solid var(--border);margin-bottom:8px}
 .step-agree .step-text{border-left-color:#639922}
 .step-incentivize .step-text{border-left-color:#EF9F27}
 .step-testdrive .step-text{border-left-color:#378ADD}
-.step-email .step-text{border-left-color:var(--charcoal)}
-.step-strategy .step-text{border-left-color:var(--charcoal)}
+.step-email .step-text,.step-strategy .step-text{border-left-color:var(--charcoal)}
 .why-toggle{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted);cursor:pointer;border:1px solid var(--border);background:var(--white);border-radius:6px;padding:3px 9px;font-family:"DM Sans",sans-serif;transition:all .15s}
 .why-toggle:hover{border-color:var(--red);color:var(--red)}
 .why-panel{display:none;margin-top:8px;padding:10px 14px;background:#FFF8E7;border-radius:8px;border-left:3px solid #EF9F27;font-size:13px;color:#5F5E5A;line-height:1.65}
 .why-panel.open{display:block}
 .why-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#8B6000;margin-bottom:5px}
-
-.obj-copy-row{padding:12px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.obj-copy-row{padding:12px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;justify-content:flex-end}
 .obj-copy-btn{font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;transition:all .15s}
 .obj-copy-btn:hover{border-color:var(--red);color:var(--red)}
 .obj-copy-btn.copied{background:#EAF3DE;border-color:#3B6D11;color:#3B6D11}
-
 .no-results{text-align:center;padding:3rem;color:var(--text-muted);font-size:14px}
-
-/* CATEGORY EXPLAINER */
 .cat-explainer{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:none}
 .cat-explainer.visible{display:block}
-.cat-explainer-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.cat-explainer-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
 .cat-explainer-text{font-size:13px;color:var(--text-soft);line-height:1.65}
-
 @media(max-width:640px){
-  .form-grid{grid-template-columns:1fr}
-  .field.full{grid-column:1}
-  .sequence-grid{grid-template-columns:repeat(4,1fr)}
-  .btn-row{grid-template-columns:1fr}
-  .main{padding:1.5rem 1rem 3rem}
-  .tool-pills{gap:4px}
-  .tool-pill{font-size:11px;padding:4px 10px}
-}
-@media print{
-  .site-header,.rep-bar,.card,.btn-row,.seq-btn,.sequence-grid{display:none!important}
-  .acc-body,.obj-body{display:block!important}
-  .acc-copy,.print-row,.acc-status,.why-toggle,.obj-copy-row{display:none!important}
+  .form-grid{grid-template-columns:1fr}.field.full{grid-column:1}
+  .sequence-grid{grid-template-columns:repeat(4,1fr)}.btn-row{grid-template-columns:1fr}
+  .main{padding:1.5rem 1rem 3rem}.tool-pills{gap:4px}.tool-pill{font-size:11px;padding:4px 10px}
 }
 </style>
 </head>
 <body>
-
 <header class="site-header">
   <div class="header-inner">
     <a class="logo" href="#">
       <img src="data:image/png;base64,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" alt="Hometown Urgent Care"/>
-      <div class="logo-text">
-        <span class="line1">Hometown Urgent Care</span>
-        <span class="line2">&amp; Occupational Health</span>
-      </div>
+      <div class="logo-text"><span class="line1">Hometown Urgent Care</span><span class="line2">&amp; Occupational Health</span></div>
     </a>
     <div class="tool-pills">
-      <button class="tool-pill active" onclick="switchTool('email',this)">Outreach Emails</button>
-      <button class="tool-pill" onclick="switchTool('objections',this)">Objection Handler</button>
+      <button class="tool-pill active" id="pill-email" onclick="switchTool('email')">Outreach Emails</button>
+      <button class="tool-pill" id="pill-objections" onclick="switchTool('objections')">Objection Handler</button>
     </div>
   </div>
 </header>
-
 <main class="main">
-
-<!-- ============================================================
-     TOOL 1: EMAIL GENERATOR
-     ============================================================ -->
 <div id="tool-email" class="tool-section active">
   <h1 class="page-title">Outreach Email Generator</h1>
   <p class="page-subtitle">Build customized, role-specific prospecting emails — cold to close, in 7 touches.</p>
-
   <div class="rep-bar">
     <label for="repSelect">Rep:</label>
     <select id="repSelect" onchange="onRepChange()">
@@ -263,10 +201,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
     </select>
     <span class="rep-status" id="repStatus">Select your name to begin</span>
   </div>
-
   <div class="card">
     <div class="card-title">Select your outreach touch</div>
-    <div class="sequence-grid" id="seqGrid">
+    <div class="sequence-grid">
       <button class="seq-btn active" data-step="1" onclick="selectStep(1)"><span class="seq-num">1</span><span class="seq-type">Cold Intro</span></button>
       <button class="seq-btn" data-step="2" onclick="selectStep(2)"><span class="seq-num">2</span><span class="seq-type">Bump / Missed</span></button>
       <button class="seq-btn" data-step="3" onclick="selectStep(3)"><span class="seq-num">3</span><span class="seq-type">New Angle</span></button>
@@ -276,43 +213,31 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
       <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">Prospect details</div>
     <div class="form-grid">
       <div class="field">
         <label>Industry</label>
         <select id="industry">
-          <option value="">Select an industry…</option>
-          <option>Agriculture</option>
-          <option>Construction</option>
-          <option>Education</option>
-          <option>Emergency Services</option>
-          <option>Energy &amp; Utilities</option>
-          <option>Government &amp; Public Sector</option>
-          <option>Healthcare</option>
-          <option>High-Risk Industries</option>
-          <option>Manufacturing</option>
-          <option>Other</option>
-          <option>Professional Services</option>
-          <option>Service &amp; Retail</option>
-          <option>Technology</option>
-          <option>Transportation &amp; Logistics</option>
+          <option value="">Select an industry...</option>
+          <option>Agriculture</option><option>Construction</option><option>Education</option>
+          <option>Emergency Services</option><option>Energy &amp; Utilities</option>
+          <option>Government &amp; Public Sector</option><option>Healthcare</option>
+          <option>High-Risk Industries</option><option>Manufacturing</option><option>Other</option>
+          <option>Professional Services</option><option>Service &amp; Retail</option>
+          <option>Technology</option><option>Transportation &amp; Logistics</option>
         </select>
       </div>
       <div class="field">
         <label>Prospect role</label>
         <select id="role">
-          <option value="">Select a role…</option>
+          <option value="">Select a role...</option>
           <option>Gatekeeper / Admin / Office Manager</option>
           <option>HR Manager or HR Director</option>
-          <option>Safety Manager</option>
-          <option>Safety Director</option>
-          <option>CEO</option>
-          <option>COO</option>
+          <option>Safety Manager</option><option>Safety Director</option>
+          <option>CEO</option><option>COO</option>
           <option>Benefits Manager or Benefits Director</option>
-          <option>Risk Manager</option>
-          <option>Operations Manager</option>
+          <option>Risk Manager</option><option>Operations Manager</option>
         </select>
       </div>
       <div class="field">
@@ -320,36 +245,28 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
         <input type="text" id="company" placeholder="e.g. Acme Logistics"/>
       </div>
       <div class="field full">
-        <label>Additional relevant context based on your research of this prospect:<br><span class="opt">(pain points, referral source, prior contact, recent news, known safety issues…)</span></label>
-        <textarea id="context" placeholder="e.g. High injury rate in warehouse, referred by John at XYZ, recently switched providers… Leave blank to use industry best practices."></textarea>
+        <label>Additional relevant context based on your research of this prospect:<br><span class="opt">(pain points, referral source, prior contact, recent news, known safety issues...)</span></label>
+        <textarea id="context" placeholder="e.g. High injury rate in warehouse, referred by John at XYZ... Leave blank to use industry best practices."></textarea>
       </div>
     </div>
   </div>
-
   <div class="btn-row">
     <button class="btn-primary" id="genSingleBtn" onclick="generateSingle()">Generate touch #<span id="btnStep">1</span> — Cold Intro</button>
-    <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()">Generate full 7-touch sequence ↓</button>
+    <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()">Generate full 7-touch sequence</button>
   </div>
-
   <div class="output-card" id="outputCard" style="display:none">
     <div class="output-header">
-      <div class="output-meta">
-        <span class="output-badge" id="outputBadge">Touch 1</span>
-        <span class="output-desc" id="outputDesc">Cold Intro Email</span>
-      </div>
+      <div class="output-meta"><span class="output-badge" id="outputBadge">Touch 1</span><span class="output-desc" id="outputDesc">Cold Intro Email</span></div>
       <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
     </div>
-    <div class="subject-row" id="subjectRow" style="display:none">
-      <strong>Subject:</strong><span id="subjectText"></span>
-    </div>
+    <div class="subject-row" id="subjectRow" style="display:none"><strong>Subject:</strong><span id="subjectText"></span></div>
     <div class="output-body" id="outputBody"></div>
     <div class="hw-hint" id="hwHint" style="display:none">Tip: Write this on a branded notecard or postcard with a pen. Handwritten mail gets opened.</div>
   </div>
-
   <div class="seq-section" id="seqSection" style="display:none">
-    <div class="seq-section-title">Full 7-Touch Sequence <span class="badge" id="seqProgressBadge">Generating…</span></div>
+    <div class="seq-section-title">Full 7-Touch Sequence <span class="badge" id="seqProgressBadge">Generating...</span></div>
     <div class="seq-progress"><div class="seq-progress-bar" id="seqProgressBar"></div></div>
-    <div class="seq-progress-label" id="seqProgressLabel">Starting…</div>
+    <div class="seq-progress-label" id="seqProgressLabel">Starting...</div>
     <div class="accordion" id="accordion"></div>
     <div class="print-row" id="printRow" style="display:none">
       <button class="print-btn" onclick="copyAllEmails()">Copy all to clipboard</button>
@@ -357,743 +274,306 @@ body{font-family:"DM Sans",sans-serif;background:var(--gray-50);color:var(--text
     </div>
   </div>
 </div>
-
-<!-- ============================================================
-     TOOL 2: OBJECTION HANDLER
-     ============================================================ -->
 <div id="tool-objections" class="tool-section">
   <h1 class="page-title">Objection Handler</h1>
-  <p class="page-subtitle">The Mr. Miyagi Method — adapted for occupational health and safety sales. Agree. Incentivize. Sell the test drive.</p>
-
-  <!-- Context switcher -->
+  <p class="page-subtitle">The Mr. Miyagi Method adapted for occupational health and safety sales. Agree. Incentivize. Sell the test drive.</p>
   <div class="obj-filter-row">
-    <button class="obj-context-pill active" onclick="setContext('conversation',this)">In a Conversation</button>
-    <button class="obj-context-pill" onclick="setContext('email',this)">Email Reply</button>
+    <button class="obj-context-pill active" id="ctx-conversation" onclick="setContext('conversation')">In a Conversation</button>
+    <button class="obj-context-pill" id="ctx-email" onclick="setContext('email')">Email Reply</button>
   </div>
-
-  <!-- Category explainer -->
   <div class="cat-explainer" id="catExplainer">
     <div class="cat-explainer-title" id="catExplainerTitle"></div>
     <div class="cat-explainer-text" id="catExplainerText"></div>
   </div>
-
-  <!-- Category filter -->
   <div class="obj-filter-row" id="catFilterRow">
-    <button class="obj-cat-pill active" onclick="setCategory('all',this)">All</button>
+    <button class="obj-cat-pill active" data-cat="all" onclick="setCategory('all',this)">All</button>
     <button class="obj-cat-pill" data-cat="pre-pitch" onclick="setCategory('pre-pitch',this)">Pre-Pitch Dismissive</button>
     <button class="obj-cat-pill" data-cat="dismissive" onclick="setCategory('dismissive',this)">Dismissive</button>
     <button class="obj-cat-pill" data-cat="situational" onclick="setCategory('situational',this)">Situational</button>
     <button class="obj-cat-pill" data-cat="existing" onclick="setCategory('existing',this)">Existing Solution</button>
   </div>
-
-  <input type="text" class="obj-search" id="objSearch" placeholder="Search objections…" oninput="renderObjList()"/>
-
+  <input type="text" class="obj-search" id="objSearch" placeholder="Search objections..." oninput="renderObjList()"/>
   <div class="obj-list" id="objList"></div>
 </div>
-
 </main>
 <div class="toast" id="toast"></div>
-
 <script>
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycby5KEti-RDpAytjhEK3tRZJN6_u3cFPJ4URLPpKFiwON9Hf3MTfnxY40o4jT5kTQUEwPA/exec';
-let currentStep = 1;
-let objContext = 'conversation';
-let objCategory = 'all';
+var SHEETS_URL="https://script.google.com/macros/s/AKfycby5KEti-RDpAytjhEK3tRZJN6_u3cFPJ4URLPpKFiwON9Hf3MTfnxY40o4jT5kTQUEwPA/exec";
+var OBJECTIONS=[{"id": 1, "context": "conversation", "cat": "pre-pitch", "text": "Is this a cold call!?", "steps": [{"type": "agree", "label": "Agree", "say": "Yes \u2014 and it's going so, so badly right now.", "why": "You disarm them completely before they can react. In occ health, prospects are flooded with vendor calls. Admitting the awkwardness first signals you're a human, not a script."}, {"type": "incentivize", "label": "Incentivize", "say": "I get it \u2014 every clinic, carrier, and TPA rep in Ohio probably has your number. But I looked at your company specifically before calling. Just so no one from our team interrupts you again, could I tell you the one reason I called?", "why": "Specificity is a pattern interrupt. HR, Safety, and COO contacts get generic vendor calls all day. Saying you looked at their company specifically, and framing this as the LAST call, lowers defenses immediately."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "If it's still not worth 90 more seconds after that, just hang up. I won't take it personally.", "why": "You're not asking for a meeting. You're asking for 90 seconds. The hang-up offer signals confidence and gives them full control \u2014 which is exactly what gets them to stay on the line."}]}, {"id": 2, "context": "conversation", "cat": "pre-pitch", "text": "I'm in a meeting!", "steps": [{"type": "agree", "label": "Agree", "say": "Oh shoot! If you want, put me on speaker and I'll publicly apologize to the whole room.", "why": "Match the ridiculousness with humor. Stammering and apologizing makes you just another interruption. A joke creates a moment of connection that earns you the next sentence."}, {"type": "incentivize", "label": "Incentivize", "say": "But honestly, I'd hate to interrupt you twice. Would you rather I send a calendar hold for right after your meeting, or would you rather I tell you the one reason I called now so I don't bug you again?", "why": "Two options \u2014 not 'can I call back later?' which disappears. A calendar hold is better than nothing \u2014 even if they decline it, you have a reason to follow up."}]}, {"id": 3, "context": "conversation", "cat": "pre-pitch", "text": "Where did you get my number?", "steps": [{"type": "agree", "label": "Agree", "say": "From a contact database \u2014 sounds like I really made your day. I'd actually be happy to send you a screenshot of your entry if you want to see what's out there on you.", "why": "Radical transparency disarms instantly. Nobody expects a cold caller to offer to show them their own data file. It completely resets the tone of the call."}, {"type": "incentivize", "label": "Incentivize", "say": "Look, I don't love making these calls and I know you don't love getting them. But I looked at your company specifically before this one. Just so no one calls you again \u2014 could I tell you why I called, then you can hang up from there?", "why": "You're double-incentivizing: making this the last call AND signaling it was targeted, not a dial list. Both make them feel respected enough to give you 30 more seconds."}]}, {"id": 4, "context": "conversation", "cat": "pre-pitch", "text": "I thought you were someone else", "steps": [{"type": "agree", "label": "Agree", "say": "Ha \u2014 I can change my entire personality and call you back if that helps!", "why": "Lean into the awkwardness with humor. If you act awkward, you're a lingering annoyance. If you make them laugh, you've created a moment of connection that earns you the next sentence."}, {"type": "incentivize", "label": "Incentivize", "say": "Genuinely, I'd hate to interrupt the call you're waiting for. Could I tell you in 30 seconds why I called \u2014 and if that person calls back, hang up on me instantly, I mean it.", "why": "Explicitly giving them permission to hang up removes the fear of missing their real call. Without that permission, they won't give you 30 seconds. Removing that fear is what gets them to engage."}]}, {"id": 5, "context": "conversation", "cat": "pre-pitch", "text": "Prospect hangs up", "steps": [{"type": "strategy", "label": "Strategy", "say": "Do NOT call back immediately. Note the exact date, time, and last words they said. Call back one week later.", "why": "Calling back immediately confirms you're a telemarketer. Waiting a week and referencing the exact moment shows professionalism and that you remember them specifically \u2014 not as dial number 472."}, {"type": "testdrive", "label": "What to Say \u2014 1 Week Later", "say": "[Name] \u2014 we spoke on [day] around [time]. You couldn't talk and you hung up. I don't take it personally. But I called you for a specific reason and I prepped for this one. Could I get 60 seconds this time?", "why": "Citing the exact date, time, and circumstances recreates the moment they hung up on a real human. Most people feel a flash of guilt \u2014 and that guilt creates an opening. You signal persistence with purpose."}]}, {"id": 6, "context": "conversation", "cat": "dismissive", "text": "Not interested", "steps": [{"type": "agree", "label": "Agree", "say": "Fair enough \u2014 I guess if you needed a better occupational health setup you would've already reached out to us.", "why": "Agreeing hard pulls the rug out. They expected a pitch. Instead you validated their choice. This forces them to actually think about why they're not interested instead of just reacting."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so no one from Hometown calls you again \u2014 could you be straight with me? Is it that you've got a clinic you're happy with, injuries aren't a priority right now, or you just hate cold calls? Option 3 is completely valid.", "why": "Multiple choice makes them choose a real answer instead of hiding behind 'not interested.' Each answer tells you exactly where to go next with the Miyagi method."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "Once you have the real objection, run the Miyagi method on THAT specific objection.", "why": "There's no test drive yet \u2014 that's intentional. Whatever they answer in the incentivize step IS your real objection. Then run the full method on that."}]}, {"id": 7, "context": "conversation", "cat": "dismissive", "text": "Call me in 6 months", "steps": [{"type": "agree", "label": "Agree", "say": "Totally makes sense \u2014 if the timing were right, you would've reached out.", "why": "Agreeing prevents them from doubling down. If you push back, they defend the 6-month timeline harder. Agreement makes them relax enough to tell you the real reason."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I don't sound like a goon when I call back \u2014 is there something specific happening in 6 months, or is it more that things are just hectic right now?", "why": "Most '6 months' responses in occ health are avoidance, not a real timeline. But occasionally there IS a real reason \u2014 new safety director, contract renewal, budget cycle. This question surfaces which it is."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "I wouldn't push for a decision now either. But the companies that move fastest when timing opens up are usually the ones who've already done a quick look at what's out there. Would 15 minutes now be worth having a benchmark for when you're ready?", "why": "The test drive removes all pressure by framing this as information-gathering, not buying. In occ health, most employers have never seen what excellent clinic communication actually looks like \u2014 so they can't miss what they've never had."}]}, {"id": 8, "context": "conversation", "cat": "dismissive", "text": "Just send me some information", "steps": [{"type": "agree", "label": "Agree", "say": "Of course \u2014 I'd want to review something first too.", "why": "Agreeing validates their request without committing to a generic PDF. It buys you one more sentence."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I don't clutter your inbox \u2014 was there something specific you wanted to learn, or more just a general overview?", "why": "'Just a general overview' is the dead giveaway this is a brush-off. The multiple choice surfaces which it is \u2014 a real question or a polite rejection."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "Honestly, a PDF won't tell you anything relevant to your specific situation \u2014 and you'll know in 15 minutes whether this makes sense. Opposed to a quick call? If it's not a fit, I'll give you 15 back.", "why": "In occ health, the fit depends on geography, injury volume, industry risk profile, and current provider gaps. A brochure can't address any of that. Offering to give time back signals you respect their schedule."}]}, {"id": 9, "context": "conversation", "cat": "dismissive", "text": "That's not my responsibility / wrong person", "steps": [{"type": "agree", "label": "Agree", "say": "Totally my fault for reaching out to the wrong person. This usually sits with HR, Safety, or Operations \u2014 I must have gotten it wrong.", "why": "Mentioning the three most likely roles serves double duty: if they ARE the right person and were deflecting, they'll correct you. If they're genuinely not the right person, they'll confirm who is."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I don't bug the wrong person \u2014 is this more in your Safety Director's court or HR?", "why": "Naming specific titles makes it easy to answer and shows you understand how occ health decisions actually get made. Vague questions like 'who should I talk to?' get vague answers."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "Could I ask an unreasonable favor from a complete stranger? I was already planning to reach out to your team \u2014 would you mind if I mentioned we spoke when I do?", "why": "Once you mention you're reaching out to their colleague anyway, they're more likely to agree \u2014 because their colleague might ask about it. You've created accountability without pressure."}]}, {"id": 10, "context": "conversation", "cat": "situational", "text": "We don't have the budget for this", "steps": [{"type": "agree", "label": "Agree", "say": "I hear ya \u2014 right now it's hard enough to hold onto the budget you have, let alone add something new.", "why": "Budget objections in occ health are often real but not permanent. Agreement validates the pain without surrendering the conversation."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so no one calls you again on this \u2014 is it more that there's truly no budget this cycle, or that any new spend requires you to fight for it every step of the way?", "why": "This tells you whether it's a timing issue or a value issue. In occ health, the ROI case is very strong \u2014 claim duration reduction, overtime savings, and EMR impact are all quantifiable."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "You're probably not making any changes right now \u2014 I get it. But the employers who move fastest when budget does free up are the ones who already know what they'd be comparing. Worth a quick look just to have a benchmark?", "why": "Removing all purchase pressure is essential. In occ health, the financial case often doesn't become urgent until a bad claim happens. Getting in front of decision-makers before that moment means you're the known option when they're ready."}]}, {"id": 11, "context": "conversation", "cat": "situational", "text": "Too expensive / pricing is too high", "steps": [{"type": "agree", "label": "Agree", "say": "I hear you \u2014 we're not the cheapest option in Ohio.", "why": "Never defensively justify price on a cold call. Agreeing you're not the cheapest actually builds credibility \u2014 cheap clinics in occ health often cost more in poor documentation, delayed RTW, and claim escalation."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I understand \u2014 was it the service cost itself, or more that you didn't see enough return in what you were getting?", "why": "This distinction matters enormously. If it's sticker shock, the conversation is about value. If it's a value issue, nobody showed them how poor injury management shows up in claim costs, EMR increases, and overtime."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "Most employers who tell us that find out later the real cost was buried in claim duration and overtime \u2014 not in a line item. I'm not promising we're cheaper. But could I show you how similar companies run the math? Just so you have a benchmark.", "why": "Reframing the total cost of occ health is a powerful test drive. The goal isn't to change their mind on price today \u2014 it's to get them thinking about the math differently, which creates the opening for a real meeting."}]}, {"id": 12, "context": "conversation", "cat": "situational", "text": "We're too busy / no bandwidth right now", "steps": [{"type": "agree", "label": "Agree", "say": "Every HR manager and Safety director I talk to in Ohio says the same thing \u2014 it literally never slows down.", "why": "Acknowledging that 'busy' never goes away signals you understand their world. Normalizing it paradoxically makes them less defensive about it."}, {"type": "incentivize", "label": "Incentivize", "say": "Is this more of a crunch right now, or more that adding a new vendor relationship feels like a project in itself?", "why": "The two options surface very different real objections. A crunch is a timing issue. A new vendor feeling like a project is a switching cost objection. Knowing which determines your test drive."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "The companies that actually make progress on this are usually the ones already stretched thin \u2014 because that's exactly when a broken injury process is costing the most. Would a 15-minute call be worth it, even just to know what you're leaving on the table?", "why": "The busiest operations typically have the most to gain from streamlined injury management. Connecting their bandwidth problem to the cost of their current setup is the bridge from 'too busy' to 'worth 15 minutes.'"}]}, {"id": 13, "context": "conversation", "cat": "situational", "text": "We need to hire someone first / waiting on a new leader", "steps": [{"type": "agree", "label": "Agree", "say": "That makes complete sense \u2014 nobody wants to make a vendor decision that gets reversed when a new person walks in.", "why": "Validating the logic of waiting prevents defensiveness. It shows you understand internal politics \u2014 which is rare for a vendor and builds trust immediately."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I know the timeline \u2014 is the search already underway, or is this more of a situation where nobody owns this yet?", "why": "The answer tells you whether to schedule a follow-up or go around them. In occ health, decisions often stall when there's no clear owner \u2014 surfacing that ambiguity can actually be helpful to the prospect."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "I wouldn't push for a decision before they're in seat either. But the new person usually walks in wanting to know what's already been evaluated. Would it be worth a quick conversation so you have something to hand them when they arrive?", "why": "This turns your meeting into something they can use politically. You're not asking them to make a decision \u2014 you're giving them a gift for the new boss. That's a completely different ask."}]}, {"id": 14, "context": "conversation", "cat": "situational", "text": "We don't have many injuries / low injury volume", "steps": [{"type": "agree", "label": "Agree", "say": "That's actually a good sign \u2014 it usually means your safety program is working.", "why": "Praising their safety program earns immediate goodwill. Safety leaders are proud of their numbers and HR is proud when employees are protected. Starting there creates a peer dynamic."}, {"type": "incentivize", "label": "Incentivize", "say": "Out of curiosity \u2014 is that more because you're in a lower-risk industry, or because you've genuinely dialed in your safety protocols?", "why": "Both answers give you useful information and naturally lead to the conversation about what happens when injuries DO occur."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "The employers we work best with often don't have high injury volumes. It's really about what happens when an injury does occur \u2014 whether the process is tight enough that a single incident doesn't balloon into a major claim. Worth knowing what that looks like when it's running right?", "why": "Low injury volume is actually a great objection to receive. The pivot to 'what happens when one does occur' shifts the frame from frequency to severity, which is where the real risk lives."}]}, {"id": 15, "context": "conversation", "cat": "situational", "text": "Our workers comp carrier directs where we go", "steps": [{"type": "agree", "label": "Agree", "say": "A lot of employers believe that \u2014 it's actually one of the most common misconceptions in Ohio occupational health.", "why": "Gently labeling it a common misconception rather than saying 'you're wrong' positions you as an educator, not a salesperson. That dynamic shift is powerful."}, {"type": "incentivize", "label": "Incentivize", "say": "Is it that they require it contractually, or more because that's just how it's always been set up?", "why": "Most employers who think their carrier directs care have never actually checked. The distinction matters \u2014 contractual direction is different from habit."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "Ohio is actually an employer-directed care state for the first visit \u2014 which means you have more control over where employees are treated than you might think. Would it be worth 15 minutes just to understand exactly where your authority starts and stops? Most employers are surprised.", "why": "This is a specific, high-value piece of information most prospects genuinely don't know. Offering to educate them without purchase pressure is the perfect test drive for this objection."}]}, {"id": 16, "context": "conversation", "cat": "existing", "text": "We already have a clinic we use", "steps": [{"type": "agree", "label": "Agree", "say": "Of course \u2014 I'd have been surprised if you didn't.", "why": "Never start by challenging their current provider. Agreement signals you're not a threat to the relationship they have \u2014 which lowers their guard enough for an honest conversation."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I know if it's even worth a conversation \u2014 you must not be dealing with any documentation delays or communication gaps between the clinic and your HR team, right?", "why": "Documentation delays and communication gaps are the number one complaint about occupational health providers. The question assumes they're NOT having this problem \u2014 designed to make them correct you if they are."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "That's actually where most employers end up having a conversation with us \u2014 not because their clinic is bad, but because the communication and RTW coordination creates friction over time. Could I show you what it looks like when that's running well? Just so you have a benchmark.", "why": "The test drive is a benchmark comparison, not a switch pitch. Most employers have never seen what excellent employer communication from a clinic looks like \u2014 so they can't miss what they've never had. Showing them the benchmark creates the gap."}]}, {"id": 17, "context": "conversation", "cat": "existing", "text": "We use OhioHealth / Cleveland Clinic / a hospital system", "steps": [{"type": "agree", "label": "Agree", "say": "OhioHealth is a solid operation \u2014 honestly, if you're happy with how it's running, it rarely makes sense to switch.", "why": "Never badmouth a respected healthcare brand. Hospital systems have strong reputations and defending your current provider makes prospects feel attacked. Agreement keeps them open."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I know this isn't worth pursuing \u2014 that must mean you're getting same-day documentation and clear work restrictions back to your HR team consistently, right?", "why": "Hospital-based systems are built for patient care, not employer communication. Same-day documentation and clear work restrictions are exactly where hospital ERs frequently fall short. This trap question surfaces that gap without saying anything negative."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "That's actually the most common thing employers tell us they weren't getting from a hospital-based system \u2014 it's built for patient outcomes, not employer workflow. Most employers are genuinely surprised by the difference. Could I show you what employer-focused care looks like? You'll probably stay where you are \u2014 but at least you'd know.", "why": "Employer-focused clinics like Hometown UC communicate back to HR and Safety with documentation, restrictions, and RTW timelines \u2014 something most hospital ERs don't prioritize."}]}, {"id": 18, "context": "conversation", "cat": "existing", "text": "We already work with a provider \u2014 name unknown", "steps": [{"type": "agree", "label": "Agree", "say": "Makes sense \u2014 I should've assumed you had something in place.", "why": "Agreeing prevents defensiveness about their current vendor. You're not challenging their choice \u2014 you're just trying to understand the landscape."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I mark this as dead \u2014 must be OhioHealth, CareSource, or one of the other regional systems, right?", "why": "Multiple choice is critical here. Asking 'who are you using?' feels like an interrogation. Giving them options to react to is far less threatening and much more likely to get you the actual name \u2014 which you need for the right trap question."}, {"type": "testdrive", "label": "After You Get the Name", "say": "Once you have the competitor name, run the full Miyagi method specific to that provider \u2014 agree with their choice, ask a trap question about a known gap, then sell the test drive with a benchmark.", "why": "The competitor name is the key. Without it, you can't ask the right trap question. With it, you can speak specifically to what that provider typically struggles with in the occ health employer relationship."}]}, {"id": 19, "context": "conversation", "cat": "existing", "text": "We've been with them for years / loyal to current provider", "steps": [{"type": "agree", "label": "Agree", "say": "That kind of relationship is genuinely rare \u2014 it means they've earned your trust over time.", "why": "Loyalty is a real value in occ health. Switching means retraining supervisors, updating protocols, and managing communication gaps. Acknowledging that loyalty is earned, not arbitrary, shows you understand the weight of the relationship."}, {"type": "incentivize", "label": "Incentivize", "say": "Just out of curiosity \u2014 what's the one thing you'd want to protect most in that relationship if something ever changed?", "why": "This question surfaces what they actually value \u2014 which tells you exactly where your competitor is strong and where they might be vulnerable. Whatever they say they'd protect is your roadmap."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "That makes complete sense. If everything's tight \u2014 documentation, RTW communication, employer responsiveness \u2014 there's probably not a strong reason to change. But would it hurt to spend 15 minutes to find out how you compare? Most of the time, loyalty is well-earned. Occasionally, it's just familiarity.", "why": "The final line \u2014 loyalty vs. familiarity \u2014 plants a thought without pressure. You're introducing the possibility they might not know what they're missing. That curiosity is enough to earn the meeting."}]}, {"id": 20, "context": "conversation", "cat": "existing", "text": "We're under contract with our current provider", "steps": [{"type": "agree", "label": "Agree", "say": "Completely understand \u2014 a contract is a contract, and making a change mid-term creates more problems than it solves.", "why": "Acknowledging the contract constraint removes the fear that you're going to push for a rip-and-replace. Agreeing with this reality builds credibility."}, {"type": "incentivize", "label": "Incentivize", "say": "Just so I know the timeline \u2014 are you locked in for a while, or is this coming up for renewal in the next year or so?", "why": "The answer shapes your entire next step. Renewal within a year means a real opportunity on a known timeline. Locked in longer means plant a seed and stay in touch."}, {"type": "testdrive", "label": "Sell the Test Drive", "say": "You're definitely not making any moves while you're under contract \u2014 I get it. But the employers who switch most smoothly are the ones who've already done their homework. Would it be worth a short conversation now, so when the time comes you already know your options?", "why": "Pure future-pacing: zero pressure because you're explicitly acknowledging they won't act now. You're asking for an information conversation that pays off later. That's an easy yes."}]}, {"id": 21, "context": "email", "cat": "email-reply", "text": "Not interested (email reply)", "steps": [{"type": "email", "label": "Reply", "say": "Fair enough \u2014 appreciate the reply. Before I close this out, quick question: is it more that you've got a solid occ health setup already, or that this just isn't a priority right now? Either's fine \u2014 just helps me know whether to circle back down the road.", "why": "Most email rejections are reflexive. A brief, curious follow-up with a binary choice gives them an easy way to respond AND gives you useful information. It also keeps you from being marked as spam."}]}, {"id": 22, "context": "email", "cat": "email-reply", "text": "Please remove me from your list", "steps": [{"type": "email", "label": "Reply", "say": "Done \u2014 removed right now. Just so I close this out correctly: was it the topic, the timing, or just inbox overload? No wrong answer, and genuinely no hard feelings.", "why": "Honor the request immediately. But asking one honest question occasionally surfaces a real objection or a 'actually, not the right time.' It also leaves them with a positive impression of how you handled it."}]}, {"id": 23, "context": "email", "cat": "email-reply", "text": "We're all set / taken care of (email reply)", "steps": [{"type": "email", "label": "Reply", "say": "Good to hear \u2014 sounds like you've got this dialed in. Quick question before I close this out: when was the last time you actually reviewed your return-to-work timelines or documentation process with your current clinic? Most employers who feel all set haven't looked closely in 2-3 years. Worth knowing if that's you.", "why": "'We're all set' is almost always familiarity talking, not recent evaluation. The RTW timeline and documentation question is specific enough to land \u2014 it's something they can actually check. That specificity keeps the thread alive."}]}, {"id": 24, "context": "email", "cat": "email-reply", "text": "Send me more information (email brush-off)", "steps": [{"type": "email", "label": "Reply", "say": "Happy to \u2014 but a PDF won't tell you anything relevant to your specific operation. What were you actually hoping to learn? I can be a lot more useful if I know that.", "why": "Calling out the PDF as useless disarms the brush-off. The question 'what were you hoping to learn?' is hard to ignore \u2014 it's direct, respectful, and turns the ask back on them in a way that feels collaborative, not pushy."}]}, {"id": 25, "context": "email", "cat": "email-reply", "text": "We'll keep you in mind / reach out when we need you", "steps": [{"type": "email", "label": "Reply", "say": "Appreciate that. Just so I know when to resurface \u2014 is there a specific trigger that would make this more urgent for you? A contract renewal, a spike in claims, an OSHA audit? Knowing that helps me reach out at the right moment instead of randomly.", "why": "This converts a vague deferral into a trigger-based follow-up. In occ health, the triggers are real and knowable \u2014 contract renewals, claims trends, audits, safety leadership changes. Surfacing a trigger turns this into a qualified future conversation."}]}, {"id": 26, "context": "email", "cat": "email-reply", "text": "No response \u2014 ghosted after initial email", "steps": [{"type": "strategy", "label": "Bump Strategy", "say": "This is your Touch 2. Do NOT say 'just following up.' Lead with a new angle or a specific industry stat, reference the prior email in one sentence, and close with a single low-pressure question.", "why": "Generic follow-up emails have near-zero reply rates. The reframe to a new angle signals that you have something worth saying. Strong bump angles for occ health include OSHA recordable rate statistics for their industry, Ohio workers comp claim duration benchmarks, or a specific RTW scenario relevant to their role."}]}];
+var CAT_INFO={"pre-pitch": {"label": "Pre-Pitch Dismissive", "text": "These objections happen before you even get to your pitch. The prospect is reacting to the interruption, not your message. The goal is NOT to push through. Disarm with humor or transparency, then earn 30 more seconds."}, "dismissive": {"label": "Dismissive Objection", "text": "Dismissive objections are knee-jerk reactions. The prospect just wants the interruption to stop. You cannot fight emotion with logic. Disarm first, then get the real objection."}, "situational": {"label": "Situational Objection", "text": "Situational objections are about their circumstances \u2014 budget, timing, bandwidth, approvals. These are real barriers, but often temporary. Remove the pressure of buying completely. Just get them in the car."}, "existing": {"label": "Existing Solution Objection", "text": "The prospect already has a clinic, carrier, or internal process. Never attack their current solution \u2014 it makes them defensive. Agree with their choice and use a trap question to surface a gap they have not yet connected to their provider."}, "email-reply": {"label": "Email Reply Objection", "text": "Email objections require a different tone than live conversations \u2014 shorter, more human, zero pressure. The goal is just to keep the thread alive long enough to earn a real conversation."}};
+var currentStep=1,objContext="conversation",objCategory="all";
 
-// ============================================================
-// TOOL SWITCHER
-// ============================================================
-function switchTool(tool, btn) {
-  document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tool-pill').forEach(b => b.classList.remove('active'));
-  document.getElementById('tool-' + tool).classList.add('active');
-  btn.classList.add('active');
+function switchTool(t){
+  document.querySelectorAll(".tool-section").forEach(function(s){s.classList.remove("active");});
+  document.querySelectorAll(".tool-pill").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("tool-"+t).classList.add("active");
+  document.getElementById("pill-"+t).classList.add("active");
 }
 
-// ============================================================
-// EMAIL GENERATOR - all existing logic
-// ============================================================
-const stepMeta = {
-  1:{label:'Cold Intro',desc:'Cold Intro Email',isHW:false},
-  2:{label:'Bump / Missed',desc:'"You May Have Missed This" Email',isHW:false},
-  3:{label:'New Angle',desc:'New Problem Angle Email',isHW:false},
-  4:{label:'Value Add',desc:'Value-Add Email',isHW:false},
-  5:{label:'Handwritten',desc:'Postcard / Handwritten Letter',isHW:true},
-  6:{label:'Value Add #2',desc:'Second Value-Add Email',isHW:false},
-  7:{label:'Breakup',desc:'Breakup / Final Email',isHW:false},
+var stepMeta={
+  1:{label:"Cold Intro",desc:"Cold Intro Email",isHW:false},
+  2:{label:"Bump / Missed",desc:"You May Have Missed This Email",isHW:false},
+  3:{label:"New Angle",desc:"New Problem Angle Email",isHW:false},
+  4:{label:"Value Add",desc:"Value-Add Email",isHW:false},
+  5:{label:"Handwritten",desc:"Postcard / Handwritten Letter",isHW:true},
+  6:{label:"Value Add 2",desc:"Second Value-Add Email",isHW:false},
+  7:{label:"Breakup",desc:"Breakup / Final Email",isHW:false}
 };
-const roleIntel = {
-  'Gatekeeper / Admin / Office Manager':`Their job is to filter. Be brief, human, respectful. Three sentences max. Ask to connect with the right person.`,
-  'HR Manager or HR Director':`Cares about OSHA compliance, workers comp cost, onboarding physicals, FMLA overlap, injury documentation burden. Speak to reducing paperwork and liability.`,
-  'Safety Manager':`Lives in OSHA logs, post-accident testing, DART and TRIR rates. Needs the right provider on file BEFORE the accident. Speak operationally.`,
-  'Safety Director':`Strategic. Cares about program-level outcomes, regulatory risk, ROI on safety investments. Wants a partner not a vendor.`,
-  'CEO':`Bottom line. Workers comp is a cost they hate. Keep it extremely short. Peer conversation tone.`,
-  'COO':`Operational continuity. Fast RTW, minimal disruption. Speak to speed and seamlessness.`,
-  'Benefits Manager or Benefits Director':`Benefits, wellness, occupational health intersection. Pre-tax strategies, cost containment, Total Worker Health.`,
-  'Risk Manager':`EMR, claim frequency/severity, insurance premiums, litigation risk. Speak claim cost reduction and early intervention.`,
-  'Operations Manager':`Keeps production running. Fast treatment, testing, clearance. Practical and direct.`,
+var roleIntel={
+  "Gatekeeper / Admin / Office Manager":"Their job is to filter. Be brief, human, respectful. Three sentences max. Ask to connect with the right person.",
+  "HR Manager or HR Director":"Cares about OSHA compliance, workers comp cost, onboarding physicals, FMLA overlap, injury documentation burden. Speak to reducing paperwork and liability.",
+  "Safety Manager":"Lives in OSHA logs, post-accident testing, DART and TRIR rates. Needs the right provider on file BEFORE the accident. Speak operationally.",
+  "Safety Director":"Strategic. Cares about program-level outcomes, regulatory risk, ROI on safety investments. Wants a partner not a vendor.",
+  "CEO":"Bottom line. Workers comp is a cost they hate. Keep it extremely short. Peer conversation tone.",
+  "COO":"Operational continuity. Fast RTW, minimal disruption. Speak to speed and seamlessness.",
+  "Benefits Manager or Benefits Director":"Benefits, wellness, occupational health intersection. Pre-tax strategies, cost containment, Total Worker Health.",
+  "Risk Manager":"EMR, claim frequency/severity, insurance premiums, litigation risk. Speak claim cost reduction and early intervention.",
+  "Operations Manager":"Keeps production running. Fast treatment, testing, clearance. Practical and direct."
 };
-const stepInstructions = {
-  1:`COLD FIRST TOUCH. Never heard from rep. Open with industry/role pain point. No "I hope this email finds you well." No "My name is X." 3-4 sentences max. One CTA.`,
-  2:`BUMP. First email unanswered. Reference prior outreach briefly, new hook. 2-3 sentences. Light tone. One CTA.`,
-  3:`NEW ANGLE. Different pain point than touches 1-2. Question, stat, or scenario. 3-4 sentences. One CTA.`,
-  4:`VALUE ADD. Industry stat, compliance insight, OSHA update, or RTW tip. Lead with value, soft CTA.`,
-  5:`HANDWRITTEN POSTCARD template. Warm, brief, personal. 4-6 sentences. Start "Hi [First Name]," Template note at top: "— Write on branded notecard. Use pen. —"`,
-  6:`SECOND VALUE ADD. Scenario framing or direct cost concept. 3-4 sentences. Soft but direct CTA.`,
-  7:`BREAKUP. Warm, direct, self-aware. Leave door open. Optional dry humor. 2-3 sentences. Gracious close. No hard CTA.`,
+var stepInstructions={
+  1:"COLD FIRST TOUCH. Open with industry/role pain. No pleasantries. No name intro. 3-4 sentences max. One CTA.",
+  2:"BUMP. First email unanswered. Reference prior outreach briefly, add new hook. 2-3 sentences. One CTA.",
+  3:"NEW ANGLE. Different pain point than touches 1-2. Question, stat, or scenario. 3-4 sentences. One CTA.",
+  4:"VALUE ADD. Industry stat, compliance insight, OSHA update, or RTW tip. Lead with value, soft CTA.",
+  5:"HANDWRITTEN POSTCARD template. Warm, brief, personal. 4-6 sentences. Template note at top: Write on branded notecard. Use pen.",
+  6:"SECOND VALUE ADD. Scenario framing or direct cost concept. 3-4 sentences. Soft but direct CTA.",
+  7:"BREAKUP. Warm, direct, self-aware. Leave door open. 2-3 sentences. Gracious close. No hard CTA."
 };
-function buildSystemPrompt(role) {
-  return `You are an expert B2B sales copywriter for Hometown Urgent Care — 33 Ohio locations specializing in urgent care AND occupational health for employers.
-SERVICES: DOT physicals, drug testing (pre/random/post-accident/RTD, MRO-backed), workers comp injury care, RTW programs, pre-employment physicals, audiometry, PFT, fit-for-duty, respirator clearance, OSHA compliance.
-DIFFERENTIATORS: 33 Ohio locations, proactive employer partnership, faster RTW, shorter claim duration, better employer communication, one point of contact.
-ROLE — ${role}: ${roleIntel[role]||'Senior decision-maker. Direct and concise.'}
-CONTEXT RULE: If no context provided, use industry best practices — injury types, safety risks, impact on turnover, insurance costs, wellbeing, productivity.
-RULES: Never "I hope this finds you well". Never "My name is X and I work for Y". Lead with their world. 4 sentences max body. One CTA. Confident, direct, human. No buzzwords. Subject lines: specific, role-aware — never "Quick question" or "Following up".
-EMAIL FORMAT: SUBJECT: [line]\n\n[body]
-HANDWRITTEN: Template note first, then card text. No subject line.`;
+
+function buildSystemPrompt(role){
+  var ri=roleIntel[role]||"Senior decision-maker. Direct and concise.";
+  return "You are an expert B2B sales copywriter for Hometown Urgent Care, 33 Ohio locations specializing in urgent care AND occupational health for employers. SERVICES: DOT physicals, drug testing, workers comp injury care, RTW programs, pre-employment physicals, audiometry, PFT, fit-for-duty, respirator clearance, OSHA compliance. DIFFERENTIATORS: 33 Ohio locations, proactive employer partnership, faster RTW, better employer communication, one point of contact. ROLE: "+role+" — "+ri+" CONTEXT RULE: If no context provided, use industry best practices for injury types, safety risks, and their impact on turnover, insurance, wellbeing, and productivity. RULES: Never open with pleasantries. Lead with their world. 4 sentences max body. One CTA. Confident, direct, human. No buzzwords. EMAIL FORMAT: SUBJECT: [line]\n\n[body]. HANDWRITTEN: Template note first, then card text.";
 }
+
 function onRepChange(){
-  const rep=document.getElementById('repSelect').value;
-  const s=document.getElementById('repStatus');
-  if(rep){s.textContent='Ready to generate';s.className='rep-status active';}
-  else{s.textContent='Select your name to begin';s.className='rep-status';}
+  var rep=document.getElementById("repSelect").value;
+  var s=document.getElementById("repStatus");
+  if(rep){s.textContent="Ready to generate";s.className="rep-status active";}
+  else{s.textContent="Select your name to begin";s.className="rep-status";}
 }
+
 function selectStep(n){
   currentStep=n;
-  document.querySelectorAll('.seq-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector(`[data-step="${n}"]`).classList.add('active');
-  document.getElementById('btnStep').textContent=n;
-  document.getElementById('genSingleBtn').textContent=`Generate touch #${n} — ${stepMeta[n].label}`;
-  document.getElementById('outputCard').style.display='none';
+  document.querySelectorAll(".seq-btn").forEach(function(b){b.classList.remove("active");});
+  document.querySelector("[data-step='"+n+"']").classList.add("active");
+  document.getElementById("btnStep").textContent=n;
+  document.getElementById("genSingleBtn").textContent="Generate touch #"+n+" — "+stepMeta[n].label;
+  document.getElementById("outputCard").style.display="none";
 }
+
 function validateForm(){
-  const rep=document.getElementById('repSelect').value;
-  const industry=document.getElementById('industry').value;
-  const role=document.getElementById('role').value;
-  if(!rep){showToast('Please select your name first.','error');return false;}
-  if(!industry){showToast('Please select an industry.','error');return false;}
-  if(!role){showToast('Please select a prospect role.','error');return false;}
+  var rep=document.getElementById("repSelect").value;
+  var industry=document.getElementById("industry").value;
+  var role=document.getElementById("role").value;
+  if(!rep){showToast("Please select your name first.","error");return false;}
+  if(!industry){showToast("Please select an industry.","error");return false;}
+  if(!role){showToast("Please select a prospect role.","error");return false;}
   return true;
 }
+
 function getFormData(){
   return{
-    rep:document.getElementById('repSelect').value,
-    industry:document.getElementById('industry').value,
-    role:document.getElementById('role').value,
-    company:document.getElementById('company').value.trim(),
-    context:document.getElementById('context').value.trim(),
+    rep:document.getElementById("repSelect").value,
+    industry:document.getElementById("industry").value,
+    role:document.getElementById("role").value,
+    company:document.getElementById("company").value.trim(),
+    context:document.getElementById("context").value.trim()
   };
 }
+
 async function callClaude(step,fd){
-  const userPrompt=`Write touch #${step} for:\nIndustry: ${fd.industry}\nProspect role: ${fd.role}\n${fd.company?`Company: ${fd.company}`:''}\n${fd.context?`Context: ${fd.context}`:''}\n${fd.rep?`Rep: ${fd.rep}`:''}\n\nSTEP INSTRUCTIONS:\n${stepInstructions[step]}`;
-  const res=await fetch('/.netlify/functions/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:buildSystemPrompt(fd.role),messages:[{role:'user',content:userPrompt}]})});
-  const data=await res.json();
-  return(data.content?.[0]?.text||'').trim();
+  var parts=["Write touch #"+step+" for:","Industry: "+fd.industry,"Prospect role: "+fd.role];
+  if(fd.company)parts.push("Company: "+fd.company);
+  if(fd.context)parts.push("Context: "+fd.context);
+  if(fd.rep)parts.push("Rep: "+fd.rep);
+  parts.push("","STEP INSTRUCTIONS:",stepInstructions[step]);
+  var res=await fetch("/.netlify/functions/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:800,system:buildSystemPrompt(fd.role),messages:[{role:"user",content:parts.join("\n")}]})});
+  var data=await res.json();
+  return(data.content&&data.content[0]&&data.content[0].text||"").trim();
 }
+
 function logToSheets(fd,touchNumber,touchType,seqType){
   if(!SHEETS_URL)return;
-  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({timestamp:new Date().toLocaleString('en-US'),rep:fd.rep,touchNumber,touchType,industry:fd.industry,role:fd.role,company:fd.company||'—',context:fd.context||'—',sequenceType:seqType})}).catch(()=>{});
+  fetch(SHEETS_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify({timestamp:new Date().toLocaleString("en-US"),rep:fd.rep,touchNumber:touchNumber,touchType:touchType,industry:fd.industry,role:fd.role,company:fd.company||"—",context:fd.context||"—",sequenceType:seqType})}).catch(function(){});
 }
+
 async function generateSingle(){
   if(!validateForm())return;
-  const fd=getFormData();const step=currentStep;const meta=stepMeta[step];
-  const btn=document.getElementById('genSingleBtn');const card=document.getElementById('outputCard');
-  const body=document.getElementById('outputBody');const subjectRow=document.getElementById('subjectRow');const hwHint=document.getElementById('hwHint');
-  btn.disabled=true;card.style.display='block';body.className='output-body';subjectRow.style.display='none';hwHint.style.display='none';
-  document.getElementById('outputBadge').textContent=`Touch ${step}`;
-  document.getElementById('outputDesc').textContent=meta.desc;
-  body.innerHTML=loader(`Writing touch #${step}…`);
-  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  var fd=getFormData();var step=currentStep;var meta=stepMeta[step];
+  var btn=document.getElementById("genSingleBtn");var card=document.getElementById("outputCard");
+  var body=document.getElementById("outputBody");var subjectRow=document.getElementById("subjectRow");var hwHint=document.getElementById("hwHint");
+  btn.disabled=true;card.style.display="block";body.className="output-body";subjectRow.style.display="none";hwHint.style.display="none";
+  document.getElementById("outputBadge").textContent="Touch "+step;
+  document.getElementById("outputDesc").textContent=meta.desc;
+  body.innerHTML=loader("Writing touch #"+step+"...");
+  card.scrollIntoView({behavior:"smooth",block:"nearest"});
   try{
-    const text=await callClaude(step,fd);
-    if(meta.isHW){body.className='output-body hw';body.textContent=text;hwHint.style.display='block';}
+    var text=await callClaude(step,fd);
+    if(meta.isHW){body.className="output-body hw";body.textContent=text;hwHint.style.display="block";}
     else{
-      const sm=text.match(/^SUBJECT:\s*(.+)/m);
-      const eb=text.replace(/^SUBJECT:\s*.+\n+/m,'').trim();
-      if(sm){subjectRow.style.display='block';document.getElementById('subjectText').textContent=' '+sm[1];}
+      var sm=text.match(/^SUBJECT:\s*(.+)/m);
+      var eb=text.replace(/^SUBJECT:\s*.+
++/m,"").trim();
+      if(sm){subjectRow.style.display="block";document.getElementById("subjectText").textContent=" "+sm[1];}
       body.textContent=eb;
     }
-    document.getElementById('copyBtn').textContent='Copy';document.getElementById('copyBtn').className='copy-btn';
-    logToSheets(fd,step,meta.label,'Single touch');showToast('Email generated and logged.','success');
-  }catch(err){body.innerHTML=`<div class="error-msg">Error: ${err.message}. Please try again.</div>`;}
+    document.getElementById("copyBtn").textContent="Copy";document.getElementById("copyBtn").className="copy-btn";
+    logToSheets(fd,step,meta.label,"Single touch");showToast("Email generated and logged.","success");
+  }catch(err){body.innerHTML="<div class=\"error-msg\">Error: "+err.message+". Please try again.</div>";}
   btn.disabled=false;
 }
+
 async function generateFullSequence(){
   if(!validateForm())return;
-  const fd=getFormData();
-  const allBtn=document.getElementById('genAllBtn');const section=document.getElementById('seqSection');
-  const accordion=document.getElementById('accordion');const progressBar=document.getElementById('seqProgressBar');
-  const progressLabel=document.getElementById('seqProgressLabel');const badge=document.getElementById('seqProgressBadge');const printRow=document.getElementById('printRow');
-  allBtn.disabled=true;document.getElementById('genSingleBtn').disabled=true;
-  section.style.display='block';accordion.innerHTML='';printRow.style.display='none';
-  badge.textContent='Generating…';progressBar.style.width='0%';
-  section.scrollIntoView({behavior:'smooth',block:'start'});
-  for(let s=1;s<=7;s++)accordion.innerHTML+=buildAccordionItem(s);
-  let completed=0;
-  for(let s=1;s<=7;s++){
-    const statusEl=document.getElementById(`acc-status-${s}`);
-    statusEl.textContent='Generating…';statusEl.className='acc-status generating';
-    progressLabel.textContent=`Generating touch ${s} of 7 — ${stepMeta[s].label}…`;
+  var fd=getFormData();
+  var allBtn=document.getElementById("genAllBtn");var section=document.getElementById("seqSection");
+  var accordion=document.getElementById("accordion");var progressBar=document.getElementById("seqProgressBar");
+  var progressLabel=document.getElementById("seqProgressLabel");var badge=document.getElementById("seqProgressBadge");var printRow=document.getElementById("printRow");
+  allBtn.disabled=true;document.getElementById("genSingleBtn").disabled=true;
+  section.style.display="block";accordion.innerHTML="";printRow.style.display="none";
+  badge.textContent="Generating...";progressBar.style.width="0%";
+  section.scrollIntoView({behavior:"smooth",block:"start"});
+  for(var s=1;s<=7;s++)accordion.innerHTML+=buildAccordionItem(s);
+  var completed=0;
+  for(var s=1;s<=7;s++){
+    var statusEl=document.getElementById("acc-status-"+s);
+    statusEl.textContent="Generating...";statusEl.className="acc-status generating";
+    progressLabel.textContent="Generating touch "+s+" of 7 — "+stepMeta[s].label+"...";
     try{
-      const text=await callClaude(s,fd);
-      updateAccordionItem(s,text);statusEl.textContent='Ready';statusEl.className='acc-status done';
-      logToSheets(fd,s,stepMeta[s].label,'Full sequence');
+      var text=await callClaude(s,fd);
+      updateAccordionItem(s,text);statusEl.textContent="Ready";statusEl.className="acc-status done";
+      logToSheets(fd,s,stepMeta[s].label,"Full sequence");
     }catch(err){
-      statusEl.textContent='Error';statusEl.className='acc-status error';
-      document.getElementById(`acc-body-${s}`).innerHTML=`<div class="acc-content" style="color:var(--red)">Error. Try the single touch generator for this step.</div>`;
+      statusEl.textContent="Error";statusEl.className="acc-status error";
+      document.getElementById("acc-body-"+s).innerHTML="<div class=\"acc-content\" style=\"color:var(--red)\">Error. Try the single touch generator for this step.</div>";
     }
-    completed++;progressBar.style.width=Math.round((completed/7)*100)+'%';
+    completed++;progressBar.style.width=Math.round((completed/7)*100)+"%";
   }
-  progressLabel.textContent=`All 7 touches generated for ${fd.company||fd.role} in ${fd.industry}.`;
-  badge.textContent='Complete';badge.style.background='#EAF3DE';badge.style.color='#3B6D11';
-  printRow.style.display='flex';allBtn.disabled=false;document.getElementById('genSingleBtn').disabled=false;
-  showToast('Full sequence generated and logged!','success');
+  progressLabel.textContent="All 7 touches generated for "+(fd.company||fd.role)+" in "+fd.industry+".";
+  badge.textContent="Complete";badge.style.background="#EAF3DE";badge.style.color="#3B6D11";
+  printRow.style.display="flex";allBtn.disabled=false;document.getElementById("genSingleBtn").disabled=false;
+  showToast("Full sequence generated and logged!","success");
 }
+
 function buildAccordionItem(s){
-  const meta=stepMeta[s];
-  return `<div class="acc-item" id="acc-${s}"><div class="acc-header" onclick="toggleAcc(${s})"><div class="acc-num">${s}</div><div class="acc-label"><div class="acc-title">${meta.label}</div><div class="acc-subtitle">${meta.desc}</div></div><span class="acc-status pending" id="acc-status-${s}">Pending</span><button class="acc-copy" id="acc-copy-${s}" onclick="event.stopPropagation();copyAccItem(${s})" style="display:none">Copy</button><span class="acc-chevron">&#9660;</span></div><div class="acc-body" id="acc-body-${s}">${loader('Writing touch '+s+'…')}</div></div>`;
+  var meta=stepMeta[s];
+  return "<div class=\"acc-item\" id=\"acc-"+s+"\"><div class=\"acc-header\" onclick=\"toggleAcc("+s+")\"><div class=\"acc-num\">"+s+"</div><div class=\"acc-label\"><div class=\"acc-title\">"+meta.label+"</div><div class=\"acc-subtitle\">"+meta.desc+"</div></div><span class=\"acc-status pending\" id=\"acc-status-"+s+"\">Pending</span><button class=\"acc-copy\" id=\"acc-copy-"+s+"\" onclick=\"event.stopPropagation();copyAccItem("+s+")\" style=\"display:none\">Copy</button><span class=\"acc-chevron\">&#9660;</span></div><div class=\"acc-body\" id=\"acc-body-"+s+"\">"+loader("Writing touch "+s+"...")+"</div></div>";
 }
+
 function updateAccordionItem(s,text){
-  const meta=stepMeta[s];const bodyEl=document.getElementById(`acc-body-${s}`);const copyBtn=document.getElementById(`acc-copy-${s}`);
-  copyBtn.style.display='inline-block';
-  if(meta.isHW){bodyEl.innerHTML=`<div class="acc-content hw">${escHtml(text)}</div><div class="hw-hint" style="font-size:12px;color:var(--text-muted);padding:8px 16px 10px;border-top:1px dashed var(--border)">Write on a branded notecard with a pen.</div>`;}
+  var meta=stepMeta[s];var bodyEl=document.getElementById("acc-body-"+s);var copyBtn=document.getElementById("acc-copy-"+s);
+  copyBtn.style.display="inline-block";
+  if(meta.isHW){bodyEl.innerHTML="<div class=\"acc-content hw\">"+escHtml(text)+"</div>";}
   else{
-    const sm=text.match(/^SUBJECT:\s*(.+)/m);const eb=text.replace(/^SUBJECT:\s*.+\n+/m,'').trim();
-    const sh=sm?`<div class="acc-subject"><strong>Subject:</strong> ${escHtml(sm[1])}</div>`:'';
-    bodyEl.innerHTML=sh+`<div class="acc-content">${escHtml(eb)}</div>`;
+    var sm=text.match(/^SUBJECT:\s*(.+)/m);var eb=text.replace(/^SUBJECT:\s*.+
++/m,"").trim();
+    var sh=sm?"<div class=\"acc-subject\"><strong>Subject:</strong> "+escHtml(sm[1])+"</div>":"";
+    bodyEl.innerHTML=sh+"<div class=\"acc-content\">"+escHtml(eb)+"</div>";
   }
-  if(s===1)document.getElementById(`acc-${s}`).classList.add('open');
+  if(s===1)document.getElementById("acc-"+s).classList.add("open");
 }
-function toggleAcc(s){document.getElementById(`acc-${s}`).classList.toggle('open')}
+
+function toggleAcc(s){document.getElementById("acc-"+s).classList.toggle("open");}
 function copyAccItem(s){
-  const bodyEl=document.getElementById(`acc-body-${s}`);
-  const se=bodyEl.querySelector('.acc-subject');const ce=bodyEl.querySelector('.acc-content');
-  const st=se?'Subject: '+se.textContent.replace('Subject: ','').trim()+'\n\n':'';
-  navigator.clipboard.writeText(st+(ce?ce.textContent.trim():'')).then(()=>{
-    const btn=document.getElementById(`acc-copy-${s}`);btn.textContent='Copied!';btn.className='acc-copy copied';
-    setTimeout(()=>{btn.textContent='Copy';btn.className='acc-copy'},2000);
+  var bodyEl=document.getElementById("acc-body-"+s);
+  var se=bodyEl.querySelector(".acc-subject");var ce=bodyEl.querySelector(".acc-content");
+  var st=se?"Subject: "+se.textContent.replace("Subject: ","").trim()+"\n\n":"";
+  navigator.clipboard.writeText(st+(ce?ce.textContent.trim():"")).then(function(){
+    var btn=document.getElementById("acc-copy-"+s);btn.textContent="Copied!";btn.className="acc-copy copied";
+    setTimeout(function(){btn.textContent="Copy";btn.className="acc-copy";},2000);
   });
 }
 function copyAllEmails(){
-  const items=[];
-  for(let s=1;s<=7;s++){
-    const bodyEl=document.getElementById(`acc-body-${s}`);if(!bodyEl)continue;
-    const se=bodyEl.querySelector('.acc-subject');const ce=bodyEl.querySelector('.acc-content');if(!ce)continue;
-    const sub=se?'Subject: '+se.textContent.replace('Subject: ','').trim()+'\n':'';
-    items.push(`--- TOUCH ${s}: ${stepMeta[s].label.toUpperCase()} ---\n${sub}\n${ce.textContent.trim()}`);
+  var items=[];
+  for(var s=1;s<=7;s++){
+    var bodyEl=document.getElementById("acc-body-"+s);if(!bodyEl)continue;
+    var se=bodyEl.querySelector(".acc-subject");var ce=bodyEl.querySelector(".acc-content");if(!ce)continue;
+    var sub=se?"Subject: "+se.textContent.replace("Subject: ","").trim()+"\n":"";
+    items.push("--- TOUCH "+s+": "+stepMeta[s].label.toUpperCase()+" ---\n"+sub+"\n"+ce.textContent.trim());
   }
-  navigator.clipboard.writeText(items.join('\n\n')).then(()=>showToast('All 7 touches copied!','success'));
+  navigator.clipboard.writeText(items.join("\n\n")).then(function(){showToast("All 7 touches copied!","success");});
 }
 function copySingle(){
-  const se=document.getElementById('subjectRow');const st=se.style.display!=='none'?'Subject: '+document.getElementById('subjectText').textContent.trim()+'\n\n':'';
-  navigator.clipboard.writeText(st+document.getElementById('outputBody').textContent.trim()).then(()=>{
-    const btn=document.getElementById('copyBtn');btn.textContent='Copied!';btn.className='copy-btn copied';
-    setTimeout(()=>{btn.textContent='Copy';btn.className='copy-btn'},2000);
+  var se=document.getElementById("subjectRow");
+  var st=se.style.display!=="none"?"Subject: "+document.getElementById("subjectText").textContent.trim()+"\n\n":"";
+  navigator.clipboard.writeText(st+document.getElementById("outputBody").textContent.trim()).then(function(){
+    var btn=document.getElementById("copyBtn");btn.textContent="Copied!";btn.className="copy-btn copied";
+    setTimeout(function(){btn.textContent="Copy";btn.className="copy-btn";},2000);
   });
 }
 
-// ============================================================
-// OBJECTION HANDLER DATA
-// ============================================================
-const catInfo = {
-  'pre-pitch': {
-    label: 'Pre-Pitch Dismissive',
-    text: 'These objections happen before you even get to your pitch — the prospect is reacting to the interruption, not the message. The goal is NOT to push through. It's to disarm with humor or transparency, then earn 30 more seconds.'
-  },
-  'dismissive': {
-    label: 'Dismissive Objection',
-    text: 'Dismissive objections are knee-jerk reactions. The prospect isn't actually evaluating your offer — they just want the interruption to stop. You can't fight emotion with logic. Disarm first, then get the real objection.'
-  },
-  'situational': {
-    label: 'Situational Objection',
-    text: 'Situational objections are about their circumstances — budget, timing, bandwidth, approvals. These are real barriers, but they're often temporary. Remove the pressure of buying completely. Just get them in the car.'
-  },
-  'existing': {
-    label: 'Existing Solution Objection',
-    text: 'The prospect already has a clinic, carrier, or internal process. Never attack their current solution — it makes them defensive. Instead, agree with their choice and use a trap question to surface a gap they haven't connected to their provider.'
-  },
-  'email-reply': {
-    label: 'Email Reply Objection',
-    text: 'Email objections require a different tone than live conversations — shorter, more human, zero pressure. The goal is just to keep the thread alive long enough to earn a real conversation.'
+function setContext(ctx){
+  objContext=ctx;
+  document.querySelectorAll(".obj-context-pill").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("ctx-"+ctx).classList.add("active");
+  var pp=document.querySelector("[data-cat='pre-pitch']");
+  if(pp)pp.style.display=ctx==="email"?"none":"";
+  if(objCategory==="pre-pitch"&&ctx==="email"){
+    objCategory="all";
+    document.querySelectorAll(".obj-cat-pill").forEach(function(b){b.classList.remove("active");});
+    document.querySelector("[data-cat='all']").classList.add("active");
   }
-};
-
-const objections = [
-  // PRE-PITCH DISMISSIVE
-  {
-    id:1, context:'conversation', cat:'pre-pitch',
-    text:'Is this a cold call!?',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Yes — and it's going so, so badly right now.',
-       why:'You disarm them completely by calling out the elephant in the room before they can. In occ health, prospects are used to vendors making big claims. Being the first to admit the awkwardness signals that you're a human, not a script.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Look, I get it — every clinic, carrier, and TPA rep in Ohio probably has your number. But I specifically looked at your company before I called. Just so no one from our team interrupts you again, could I tell you the one specific reason I reached out to you?',
-       why:'Specificity is everything in occ health. HR, Safety, and COO contacts are flooded with generic vendor calls. Saying "I looked at your company specifically" is a pattern interrupt. "Just so no one calls again" lowers their defenses by making you sound like this is the LAST call, not the start of a relationship.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'If it's still not worth 90 more seconds after that, just hang up — I won't take it personally.',
-       why:'In occ health sales, the test drive is just getting them to hear one relevant thing about their situation. You're not asking for a meeting or a commitment. The hang-up offer signals confidence and makes them feel in control.'}
-    ]
-  },
-  {
-    id:2, context:'conversation', cat:'pre-pitch',
-    text:'I'm in a meeting!',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Oh shoot! If you want, I can hold while you put me on speaker and publicly apologize to the whole team.',
-       why:'Match the ridiculousness of the objection. If you stammer and apologize, you're just another interruption. Leaning into the humor creates a moment — and that moment keeps them on the line.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'But honestly, I'd hate to interrupt you twice. Would you rather I send a hold for right after your meeting, or would you rather I tell you the one reason I called now so I don't bug you again?',
-       why:'Give them two options — not "can I call back later?" which disappears into the void. The binary choice forces engagement. A calendar hold is better than zero — even if they decline it, you have a paper trail and a reason to follow up.'}
-    ]
-  },
-  {
-    id:3, context:'conversation', cat:'pre-pitch',
-    text:'Where did you get my number?',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'From a contact database — sounds like I really made your day here. I'd actually be happy to send you a screenshot of your entry if you want to see what's out there on you.',
-       why:'Reps often stammer or get defensive about contact databases. Radical transparency disarms instantly — nobody expects a cold caller to offer to show them their own data file. It resets the entire tone of the call.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Look, I don't love making these calls and I know you don't love getting them. But I actually looked at your company specifically before this one. Just so no one calls you again — could I tell you why I called you specifically, then you can hang up from there?',
-       why:'You're double-incentivizing: making this the last call from you AND signaling that this was a targeted call, not a dial list. Both make them feel respected enough to give you 30 more seconds.'}
-    ]
-  },
-  {
-    id:4, context:'conversation', cat:'pre-pitch',
-    text:'I thought you were someone else',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Ha — I can change my entire personality and call you back if that helps!',
-       why:'Lean into the awkwardness with humor. If you act awkward, you're a lingering annoyance. If you make them laugh, you've created a moment of connection that earns you the next sentence.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Genuinely, I'd hate to interrupt the call you're waiting for. Could I tell you in 30 seconds why I called you specifically — and if that person calls back, hang up on me instantly, I mean it.',
-       why:'The key is explicitly giving them permission to hang up if their real call comes. Without that, they won't give you 30 seconds because they're worried about missing the call. Removing that fear is what gets them to engage.'}
-    ]
-  },
-  {
-    id:5, context:'conversation', cat:'pre-pitch',
-    text:'*Prospect hangs up*',
-    steps:[
-      {type:'strategy',label:'Strategy',
-       say:'Do NOT call back immediately. Note the exact date, time, and the last words they said. Call back one week later.',
-       why:'Calling back immediately makes you look desperate and confirms their suspicion that you're a telemarketer. Waiting a week and referencing the exact moment they hung up shows professionalism, persistence, and that you remember them specifically — not as dial #472.'},
-      {type:'testdrive',label:'What to Say (1 Week Later)',
-       say:'[Name] — we spoke on [day] around [time]. You couldn't talk and, honestly, you hung up. I don't take it personally — I'd probably do the same. But I called you specifically for a reason and I prepped for this one. Could I get 60 seconds this time?',
-       why:'Citing the exact date, time, and circumstances recreates the moment they hung up on a real human being. Most people feel a flash of guilt — and that guilt creates an opening. You also signal professional persistence: you remember them because there was a specific reason to call.'}
-    ]
-  },
-  // DISMISSIVE
-  {
-    id:6, context:'conversation', cat:'dismissive',
-    text:'Not interested',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Fair enough — I guess if you needed a better occupational health setup you would've already reached out to us.',
-       why:'Agreeing hard pulls the rug out from under them. They expected a pitch. Instead, you're validating their choice. This forces them to actually think about why they're not interested instead of just reacting to the interruption.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so no one from Hometown calls you again — could you be straight with me? Is it that you've got a clinic you're happy with, injuries just aren't a priority right now, or you genuinely just hate cold calls? Option 3 is completely valid.',
-       why:'Multiple choice is powerful here because it makes them choose a real answer instead of hiding behind "not interested." For occ health, the three choices cover the actual landscape — happy with current provider, low injury volume, or pure interruption aversion. Each answer tells you exactly where to go next.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'(Once you have the real objection, run the Miyagi method on THAT objection.)',
-       why:'You'll notice there's no test drive yet — that's intentional. You don't have the real objection. Whatever they answer in the incentivize step IS your real objection. Then run the full method on that specific thing.'}
-    ]
-  },
-  {
-    id:7, context:'conversation', cat:'dismissive',
-    text:'Call me in 6 months',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Totally makes sense — if the timing were right, you would've reached out.',
-       why:'Agreeing prevents them from doubling down. If you push back, they defend the 6-month timeline harder. Agreeing signals that you're not going to fight them — which makes them relax enough to tell you the real reason.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I don't sound like a goon when I call back — is there something specific happening in 6 months, or is it more that things are just hectic right now?',
-       why:'Most "call me in 6 months" responses in occ health are avoidance, not a real timeline. But occasionally there IS a real reason — new safety director starting, contract renewal, budget cycle. If there's a real reason, you want to know. If there isn't, this question gently calls it out.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'I wouldn't push for a decision now either. But the companies that move fastest when timing does open up are usually the ones who've already done a quick look at what's out there. Would 15 minutes now be worth having a benchmark for when you're ready?',
-       why:'The test drive removes all pressure by framing this as information-gathering, not buying. In occ health, this works especially well because decision-makers often don't know what a better provider relationship would even look like — they've just always used whoever they use.'}
-    ]
-  },
-  {
-    id:8, context:'conversation', cat:'dismissive',
-    text:'Just send me some information',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Of course — I'd want to review something first too.',
-       why:'Agreeing validates their request without committing to just emailing a generic PDF. It buys you one more sentence.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I don't clutter your inbox — was there something specific you wanted to learn, or more just a general overview?',
-       why:'"Just a general overview" is the dead giveaway that this is a brush-off. When they say that, you know they're too polite to say no. The multiple choice surfaces which it is — a real question or a polite rejection.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'Honestly, a PDF isn't going to tell you anything relevant to your specific situation — and you'll know in 15 minutes whether this makes sense for your operation. Opposed to a quick call? If it's not a fit, I'll give you 15 back.',
-       why:'For occ health, this is especially true — the fit depends heavily on geography, injury volume, industry risk profile, and current provider gaps. A brochure can't address any of that. "I'll give you 15 back" is permission-based and signals you respect their time.'}
-    ]
-  },
-  {
-    id:9, context:'conversation', cat:'dismissive',
-    text:'That's not my responsibility / wrong person',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Totally my fault for reaching out to the wrong person. This kind of thing usually sits with HR, Safety, or Operations — I must have gotten it wrong.',
-       why:'Mentioning the three most likely roles (HR, Safety, Ops) serves double duty: if they ARE the right person and were deflecting, they'll correct you. If they're genuinely not the right person, they'll confirm who is.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I don't bug the wrong person — is this more in your Safety Director's court or HR?',
-       why:'Naming specific titles makes it easy to answer and shows you understand how occ health decisions actually get made in their type of organization. Vague questions like "who should I talk to?" get vague answers.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'Could I ask an unreasonable favor from a complete stranger? I was already planning to reach out to your team. Would you mind if I mentioned we spoke when I do?',
-       why:'The name drop is powerful. Once you mention you're reaching out to their colleague anyway, they're more likely to agree — because now their colleague might ask about it. You've created accountability without pressure.'}
-    ]
-  },
-  // SITUATIONAL
-  {
-    id:10, context:'conversation', cat:'situational',
-    text:'We don't have the budget for this',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'I hear ya — right now, it's hard enough to hold onto the budget you have, let alone add something new.',
-       why:'Budget objections in occ health are often real but not permanent. The agreement validates the pain without surrendering the conversation. It also signals that you're not going to push a hard sell.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so no one calls you again on this — is it more that there's truly no budget this cycle, or that any new spend requires you to fight for it every step of the way?',
-       why:'This tells you whether it's a timing issue (new budget opens up) or a value issue (you'd have to build a full ROI case). In occ health, the ROI case is actually very strong — claim duration reduction, overtime savings, and EMR impact are all quantifiable.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'You're probably not making any changes right now — I get it. But the employers who move fastest when budget does free up are the ones who already know what they'd be comparing. Worth a quick look just to have a benchmark?',
-       why:'Removing all purchase pressure is essential with budget objections. In occ health, the financial case often doesn't become urgent until a bad claim or audit happens. Getting in front of decision-makers before that moment means you're the known option when they're ready.'}
-    ]
-  },
-  {
-    id:11, context:'conversation', cat:'situational',
-    text:'Too expensive / your pricing is too high',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'I hear you — we're not the cheapest option in Ohio.',
-       why:'Never defensively justify price on a cold call. Agreeing you're not the cheapest actually builds credibility — cheap clinics in occ health often cost more in poor documentation, delayed RTW, and claim escalation. The implied message lands without you saying it.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I understand — was it the service cost itself, or more that you didn't see enough return in what you were getting?',
-       why:'This distinction matters enormously in occ health. If it's sticker shock, the conversation is about value. If it's a value issue, the real problem is that nobody showed them how poor injury management shows up in claim costs, EMR increases, and overtime. Either way, you have a path.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'Most employers who tell us that find out later the cost they were avoiding was buried in claim duration and overtime — not in a line item. I'm not promising we're cheaper. But could I show you how similar companies run the math? Just so you have a benchmark to compare.',
-       why:'Reframing the total cost of occ health — not just the clinic fee — is a powerful test drive in this space. The goal isn't to change their mind on price today. It's to get them thinking about the math differently, which creates the opening for a real meeting.'}
-    ]
-  },
-  {
-    id:12, context:'conversation', cat:'situational',
-    text:'We're too busy / no bandwidth right now',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Every HR manager and Safety director I talk to in Ohio says the same thing — it literally never slows down.',
-       why:'Acknowledging that "busy" never goes away signals you understand their world. You're not dismissing the objection — you're normalizing it, which paradoxically makes them less defensive about it.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Is this more of a 'we're in a crunch right now' situation, or more that adding a new vendor relationship feels like a project in itself?',
-       why:'The two options surface very different real objections. "Crunch right now" = timing issue. "New vendor feels like a project" = switching cost objection. Knowing which it is determines your test drive.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'The companies that actually make progress on this are usually the ones already stretched thin — because that's exactly when a broken injury process is costing the most. Would a 15-minute call be worth it, even just to know what you're leaving on the table?',
-       why:'This reframe is specific to occ health: the busiest operations typically have the most to gain from a streamlined injury management process. Connecting their bandwidth problem to the cost of their current setup is the bridge from "too busy" to "worth 15 minutes."'}
-    ]
-  },
-  {
-    id:13, context:'conversation', cat:'situational',
-    text:'We need to hire someone first / waiting on a decision',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'That makes complete sense — nobody wants to make a vendor decision that gets reversed when a new person walks in.',
-       why:'Validating the logic of waiting prevents defensiveness. It shows you understand internal politics — which is rare for a vendor and builds trust immediately.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I know the timeline — is the search already underway, or is this more of a 'we don't know who owns this yet' situation?',
-       why:'The answer tells you whether to schedule a follow-up (hire happens soon) or go around them (nobody owns it). In occ health, decisions often stall when there's no clear owner — surfacing that ambiguity can actually be helpful to the prospect.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'I wouldn't push for a decision before they're in seat either. But the new person — whether it's a new Safety Director or HR leader — usually walks in wanting to know what's already been evaluated. Would it be worth a quick conversation so you have something to hand them when they arrive?',
-       why:'This turns your meeting into something they can use politically. You're not asking them to make a decision — you're giving them a gift for the new boss. That's a completely different ask.'}
-    ]
-  },
-  {
-    id:14, context:'conversation', cat:'situational',
-    text:'We don't have many injuries / low injury volume',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'That's actually a good sign — it usually means your safety program is working.',
-       why:'Praising their safety program earns immediate goodwill. You're speaking their language — safety leaders are proud of their numbers and HR is proud when employees are protected. Starting there creates a peer dynamic instead of a vendor dynamic.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Out of curiosity — is that more because you're in a lower-risk industry, or because you've genuinely dialed in your safety protocols?',
-       why:'This question gets them talking about their safety investment and their exposure. Both answers give you useful information — and both naturally lead to the conversation about what happens when injuries DO occur.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'The employers we work best with often don't have high injury volumes. It's really about what happens when an injury does occur — and whether the process is tight enough that a single incident doesn't balloon into a major claim. Worth knowing what that looks like when it's running right?',
-       why:'Low injury volume is actually a great objection to receive — it means their current exposure is manageable. The pivot to "what happens when one does occur" shifts the frame from frequency to severity, which is where the real risk lives.'}
-    ]
-  },
-  {
-    id:15, context:'conversation', cat:'situational',
-    text:'Our workers' comp carrier directs where we go',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'A lot of employers believe that — it's actually one of the most common misconceptions in Ohio occupational health.',
-       why:'This is a genuine knowledge gap that serves as a soft referral objection. Gently labeling it a "common misconception" rather than "you're wrong" positions you as an educator, not a salesperson. That dynamic shift is powerful.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Are they directing you because they require it contractually, or more because that's just how it's always been set up?',
-       why:'Most employers who think their carrier directs care have never actually checked. The distinction matters — contractual direction is different from habit. Either way, Ohio is an employer-directed care state, which changes the picture entirely.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'Ohio is actually an employer-directed care state for the first visit — which means you have more control over where employees are treated than you might think. Would it be worth 15 minutes just to understand exactly where your authority starts and stops? Most employers are surprised.',
-       why:'This is a specific, high-value piece of information that most prospects genuinely don't know. Offering to educate them — without any purchase pressure — is the perfect test drive for this objection. You're giving them something valuable for free.'}
-    ]
-  },
-  // EXISTING SOLUTION
-  {
-    id:16, context:'conversation', cat:'existing',
-    text:'We already have a clinic we use',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Of course — I'd have been surprised if you didn't.',
-       why:'Never start by challenging their current provider. Agreement signals that you're not a threat to the relationship they have — which lowers their guard enough to have an honest conversation.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I know if it's even worth a conversation — you must not be dealing with any documentation delays or communication gaps between the clinic and your HR team, right?',
-       why:'This is the trap question specific to occ health. Documentation delays and communication gaps are the #1 complaint about occupational health providers. The question is phrased as an assumption that they're NOT having this problem — which is designed to make them correct you if they are.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'That's actually where most employers end up having a conversation with us — not because their clinic is bad, but because the communication and RTW coordination creates friction over time. Could I show you what it looks like when that's running well? Just so you have a benchmark.',
-       why:'The test drive here is a benchmark comparison, not a switch pitch. In occ health, most employers have never seen what excellent employer communication from a clinic actually looks like — so they can't miss what they've never had. Showing them the benchmark creates the gap.'}
-    ]
-  },
-  {
-    id:17, context:'conversation', cat:'existing',
-    text:'We use OhioHealth / Cleveland Clinic / a hospital system',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'OhioHealth is a solid operation — honestly, if you're happy with how it's running, it rarely makes sense to switch.',
-       why:'Never badmouth a respected healthcare brand. Hospital systems have strong reputations and defending your current provider makes prospects feel attacked. Agreement keeps them open.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I know this isn't worth pursuing — that must mean you're getting same-day documentation and clear work restrictions back to your HR team consistently, right?',
-       why:'Hospital-based systems are built for patient care, not employer communication. Same-day documentation and clear work restrictions are exactly where hospital ERs and clinics frequently fall short for employers. This trap question surfaces that gap without you having to say anything negative.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'That's actually the most common thing employers tell us they weren't getting from a hospital-based system — it's built for patient outcomes, not employer workflow. Most employers are genuinely surprised by the difference. Could I show you what employer-focused care actually looks like? You'll probably stay where you are — but at least you'd know.',
-       why:'The hospital system objection is one of the best to receive in occ health because the differentiation is so clear. Employer-focused clinics like Hometown UC communicate back to HR and Safety with documentation, restrictions, and return-to-work timelines — something most hospital ERs don't prioritize.'}
-    ]
-  },
-  {
-    id:18, context:'conversation', cat:'existing',
-    text:'We already work with a provider (name unknown)',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Makes sense — I should've assumed you had something in place.',
-       why:'Agreeing prevents defensiveness about their current vendor. You're not challenging their choice — you're just trying to understand the landscape.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I mark this as dead in our system — must be OhioHealth, CareSource, or one of the other regional systems, right?',
-       why:'Multiple choice is critical here. Asking "who are you using?" feels like an interrogation. Giving them options to react to is far less threatening and much more likely to get you the actual name — which you need to ask the right trap question.'},
-      {type:'testdrive',label:'After You Get the Name',
-       say:'(Once you have the competitor name, run the full Miyagi method specific to that provider — agree with their choice, ask a trap question about a known gap, then sell the test drive with a benchmark.)',
-       why:'The competitor name is the key. Without it, you can't ask the right trap question. With it, you can speak specifically to what that provider typically struggles with in the occ health employer relationship — documentation, RTW communication, or specific services they may not offer.'}
-    ]
-  },
-  {
-    id:19, context:'conversation', cat:'existing',
-    text:'We've been with them for years / we're loyal to our current provider',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'That kind of relationship is genuinely rare — it means they've earned your trust over time.',
-       why:'Loyalty is a real value in occ health — switching providers means retraining supervisors, updating protocols, and managing communication gaps during the transition. Acknowledging that loyalty is earned, not arbitrary, shows you understand the weight of the relationship.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just out of curiosity — what's the one thing you'd want to protect most in that relationship if something ever changed?',
-       why:'This question surfaces what they actually value — which tells you exactly where your competitor is strong and where they might be vulnerable. Whatever they say they'd protect is your roadmap.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'That makes complete sense. If everything's tight — documentation, RTW communication, employer responsiveness — there's probably not a strong reason to change. But would it hurt to spend 15 minutes to find out how you compare? Most of the time, loyalty is well-earned. Occasionally, it's just familiarity.',
-       why:'The final line — "loyalty vs. familiarity" — is specifically designed to plant a thought without pressure. You're not saying they should switch. You're introducing the possibility that they might not actually know what they're missing. That curiosity is enough to earn the meeting.'}
-    ]
-  },
-  {
-    id:20, context:'conversation', cat:'existing',
-    text:'We're stuck in a contract / under contract with current provider',
-    steps:[
-      {type:'agree',label:'Agree',
-       say:'Completely understand — a contract is a contract, and making a change mid-term creates more problems than it solves.',
-       why:'Acknowledging the contract constraint removes the fear that you're going to push for a rip-and-replace. In occ health, switching providers mid-contract is genuinely disruptive — supervisors have to be retrained, protocols updated, carrier notifications sent. Agreeing with this reality builds credibility.'},
-      {type:'incentivize',label:'Incentivize',
-       say:'Just so I know the timeline — are you locked in for a while, or is this coming up for renewal in the next year or so?',
-       why:'The answer shapes your entire next step. Renewal within a year means you have a real opportunity on a known timeline. Locked in longer means you plant a seed and stay in touch. Either way you need to know.'},
-      {type:'testdrive',label:'Sell the Test Drive',
-       say:'You're definitely not making any moves while you're under contract — I get it. But the employers who switch most smoothly are the ones who've already done their homework. Would it be worth a short conversation now, so when the time comes you already know your options?',
-       why:'The test drive is pure future-pacing: there's zero pressure because you're explicitly acknowledging they won't act now. You're just asking for an information conversation that pays off later. That's an easy yes — and it earns you a qualified prospect with a known timeline.'}
-    ]
-  },
-  // EMAIL REPLY OBJECTIONS
-  {
-    id:21, context:'email', cat:'email-reply',
-    text:'"Not interested" (email reply)',
-    steps:[
-      {type:'email',label:'Reply',
-       say:'Fair enough — appreciate the reply. Before I close this out, quick question: is it more that you've got a solid occ health setup already, or that this just isn't a priority right now? Either's fine — just helps me know whether to circle back down the road.',
-       why:'Most "not interested" email replies are reflexive. A brief, curious follow-up with a binary choice gives them an easy way to respond AND gives you useful information. It also keeps you from being marked as spam — because you responded like a human, not a system.'}
-    ]
-  },
-  {
-    id:22, context:'email', cat:'email-reply',
-    text:'"Please remove me from your list"',
-    steps:[
-      {type:'email',label:'Reply',
-       say:'Done — removed right now. Just so I close this out correctly: was it the topic, the timing, or just inbox overload? No wrong answer, and genuinely no hard feelings.',
-       why:'Honor the request immediately and completely — don't negotiate it. But asking one honest question before you close the file occasionally surfaces a real objection or a "actually, not the right time but maybe later." It also leaves them with a positive impression of how you handled it, which matters more than you think.'}
-    ]
-  },
-  {
-    id:23, context:'email', cat:'email-reply',
-    text:'"We're all set / taken care of" (email reply)',
-    steps:[
-      {type:'email',label:'Reply',
-       say:'Good to hear — sounds like you've got this dialed in. Quick question before I close this out: when was the last time you actually reviewed your return-to-work timelines or documentation process with your current clinic? Most employers who feel "all set" haven't looked closely in 2-3 years. Worth knowing if that's you.',
-       why:'This response plants a question without applying pressure. "We're all set" is almost always familiarity talking, not recent evaluation. The RTW timeline and documentation question is specific enough to land — it's not abstract, it's something they can actually check. That specificity keeps the thread alive.'}
-    ]
-  },
-  {
-    id:24, context:'email', cat:'email-reply',
-    text:'"Send me more information" (email brush-off)',
-    steps:[
-      {type:'email',label:'Reply',
-       say:'Happy to — but I'll be honest with you: a PDF isn't going to tell you anything relevant to your specific operation. What were you actually hoping to learn? I can be a lot more useful if I know that.',
-       why:'Calling out the PDF as useless disarms the brush-off and positions you as someone who wants to solve their actual problem. The question "what were you hoping to learn?" is hard to ignore — it's direct, respectful, and turns the ask back on them in a way that feels collaborative, not pushy.'}
-    ]
-  },
-  {
-    id:25, context:'email', cat:'email-reply',
-    text:'"We'll keep you in mind" / "Reach out when we need you"',
-    steps:[
-      {type:'email',label:'Reply',
-       say:'Appreciate that. Just so I know when to resurface — is there a specific trigger that would make this more urgent for you? A contract renewal, a spike in claims, an OSHA audit? Knowing that helps me reach out at the right moment instead of randomly.',
-       why:'This response converts a vague deferral into a specific trigger-based follow-up. In occ health, the triggers are real and knowable — contract renewals, claims trends, audits, safety leadership changes. Surfacing a trigger turns "we'll keep you in mind" into a qualified future conversation with context.'}
-    ]
-  },
-  {
-    id:26, context:'email', cat:'email-reply',
-    text:'No response (ghosted after initial email)',
-    steps:[
-      {type:'email',label:'Bump Strategy',
-       say:'This is your Touch #2 — "You may have missed this." Do NOT say "just following up." Instead, lead with a new angle or a specific industry stat, reference the prior email in one sentence, and close with a single low-pressure question.',
-       why:'Generic follow-up emails have near-zero reply rates. The reframe to a new angle signals that you have something worth saying — not that you're checking in because you haven't heard back. In occ health, strong bump angles include OSHA recordable rate statistics for their industry, Ohio workers' comp claim duration benchmarks, or a specific return-to-work scenario relevant to their role.'}
-    ]
-  }
-];
-
-// ============================================================
-// OBJECTION HANDLER LOGIC
-// ============================================================
-function setContext(ctx, btn) {
-  objContext = ctx;
-  document.querySelectorAll('.obj-context-pill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  // Hide pre-pitch category for email context
-  const prePitchBtn = document.querySelector('[data-cat="pre-pitch"]');
-  if (prePitchBtn) prePitchBtn.style.display = ctx === 'email' ? 'none' : '';
-  if (objCategory === 'pre-pitch' && ctx === 'email') {
-    objCategory = 'all';
-    document.querySelectorAll('.obj-cat-pill').forEach(b => b.classList.remove('active'));
-    document.querySelector('.obj-cat-pill').classList.add('active');
-  }
-  updateCatExplainer();
-  renderObjList();
+  updateCatExplainer();renderObjList();
 }
 
-function setCategory(cat, btn) {
-  objCategory = cat;
-  document.querySelectorAll('.obj-cat-pill').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  updateCatExplainer();
-  renderObjList();
+function setCategory(cat,btn){
+  objCategory=cat;
+  document.querySelectorAll(".obj-cat-pill").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  updateCatExplainer();renderObjList();
 }
 
-function updateCatExplainer() {
-  const el = document.getElementById('catExplainer');
-  const titleEl = document.getElementById('catExplainerTitle');
-  const textEl = document.getElementById('catExplainerText');
-  if (objCategory === 'all') { el.classList.remove('visible'); return; }
-  const catKey = objCategory === 'email-reply' || (objContext === 'email' && objCategory === 'all') ? 'email-reply' : objCategory;
-  const info = catInfo[catKey];
-  if (!info) { el.classList.remove('visible'); return; }
-  const badgeClass = catKey.replace('-','');
-  titleEl.innerHTML = `<span class="obj-cat-badge ${catKey}">${info.label}</span>`;
-  textEl.textContent = info.text;
-  el.classList.add('visible');
+function updateCatExplainer(){
+  var el=document.getElementById("catExplainer");
+  if(objCategory==="all"){el.classList.remove("visible");return;}
+  var info=CAT_INFO[objCategory];
+  if(!info){el.classList.remove("visible");return;}
+  document.getElementById("catExplainerTitle").innerHTML="<span class=\"obj-cat-badge "+objCategory+"\">"+info.label+"</span>";
+  document.getElementById("catExplainerText").textContent=info.text;
+  el.classList.add("visible");
 }
 
-function renderObjList() {
-  const list = document.getElementById('objList');
-  const search = document.getElementById('objSearch').value.toLowerCase();
-  let filtered = objections.filter(o => {
-    const contextMatch = objContext === 'conversation' ? o.context === 'conversation' : o.context === 'email';
-    const catMatch = objCategory === 'all' || o.cat === objCategory;
-    const searchMatch = !search || o.text.toLowerCase().includes(search) || o.steps.some(s => s.say.toLowerCase().includes(search));
-    return contextMatch && catMatch && searchMatch;
+function renderObjList(){
+  var list=document.getElementById("objList");
+  var search=(document.getElementById("objSearch").value||"").toLowerCase();
+  var filtered=OBJECTIONS.filter(function(o){
+    var cm=objContext==="conversation"?o.context==="conversation":o.context==="email";
+    var catm=objCategory==="all"||o.cat===objCategory;
+    var sm=!search||o.text.toLowerCase().indexOf(search)>=0||o.steps.some(function(s){return s.say.toLowerCase().indexOf(search)>=0;});
+    return cm&&catm&&sm;
   });
-
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="no-results">No objections match your filter. Try a different category or search term.</div>';
-    return;
-  }
-
-  list.innerHTML = filtered.map(o => {
-    const catLabel = catInfo[o.cat]?.label || o.cat;
-    const stepsHtml = o.steps.map((s, idx) => `
-      <div class="miyagi-step step-${s.type}">
-        <div class="step-header">
-          <span class="step-label">${s.label}</span>
-        </div>
-        <div class="step-text">"${escHtml(s.say)}"</div>
-        <button class="why-toggle" onclick="toggleWhy(this)">? Why this works</button>
-        <div class="why-panel">
-          <div class="why-title">The Rationale</div>
-          ${escHtml(s.why)}
-        </div>
-      </div>
-    `).join('');
-    return `
-      <div class="obj-item" id="obj-${o.id}">
-        <div class="obj-item-header" onclick="toggleObj(${o.id})">
-          <span class="obj-cat-badge ${o.cat}">${catLabel}</span>
-          <span class="obj-text">${escHtml(o.text)}</span>
-          <span class="obj-chevron">&#9660;</span>
-        </div>
-        <div class="obj-body">
-          ${stepsHtml}
-          <div class="obj-copy-row">
-            <button class="obj-copy-btn" onclick="copyObjScript(${o.id}, this)">Copy full script</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  if(filtered.length===0){list.innerHTML="<div class=\"no-results\">No objections match. Try a different category or search term.</div>";return;}
+  list.innerHTML=filtered.map(function(o){
+    var catLabel=(CAT_INFO[o.cat]||{}).label||o.cat;
+    var stepsHtml=o.steps.map(function(s){
+      return "<div class=\"miyagi-step step-"+s.type+"\"><div class=\"step-header\"><span class=\"step-label\">"+escHtml(s.label)+"</span></div><div class=\"step-text\">"+escHtml(s.say)+"</div><button class=\"why-toggle\" onclick=\"toggleWhy(this)\">? Why this works</button><div class=\"why-panel\"><div class=\"why-title\">The Rationale</div>"+escHtml(s.why)+"</div></div>";
+    }).join("");
+    return "<div class=\"obj-item\" id=\"obj-"+o.id+"\"><div class=\"obj-item-header\" onclick=\"toggleObj("+o.id+")\"><span class=\"obj-cat-badge "+o.cat+"\">"+escHtml(catLabel)+"</span><span class=\"obj-text\">"+escHtml(o.text)+"</span><span class=\"obj-chevron\">&#9660;</span></div><div class=\"obj-body\">"+stepsHtml+"<div class=\"obj-copy-row\"><button class=\"obj-copy-btn\" onclick=\"copyObjScript("+o.id+",this)\">Copy full script</button></div></div></div>";
+  }).join("");
 }
 
-function toggleObj(id) {
-  document.getElementById('obj-' + id).classList.toggle('open');
+function toggleObj(id){document.getElementById("obj-"+id).classList.toggle("open");}
+function toggleWhy(btn){
+  var panel=btn.nextElementSibling;
+  panel.classList.toggle("open");
+  btn.textContent=panel.classList.contains("open")?"Hide rationale":"? Why this works";
 }
-
-function toggleWhy(btn) {
-  const panel = btn.nextElementSibling;
-  panel.classList.toggle('open');
-  btn.textContent = panel.classList.contains('open') ? '▲ Hide rationale' : '? Why this works';
-}
-
-function copyObjScript(id, btn) {
-  const o = objections.find(x => x.id === id);
-  if (!o) return;
-  const text = o.steps.map(s => `[${s.label.toUpperCase()}]\n"${s.say}"`).join('\n\n');
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.className = 'obj-copy-btn copied';
-    setTimeout(() => { btn.textContent = 'Copy full script'; btn.className = 'obj-copy-btn'; }, 2000);
+function copyObjScript(id,btn){
+  var o=OBJECTIONS.find(function(x){return x.id===id;});
+  if(!o)return;
+  var text=o.steps.map(function(s){return "["+s.label.toUpperCase()+"]\n"+s.say;}).join("\n\n");
+  navigator.clipboard.writeText(text).then(function(){
+    btn.textContent="Copied!";btn.className="obj-copy-btn copied";
+    setTimeout(function(){btn.textContent="Copy full script";btn.className="obj-copy-btn";},2000);
   });
 }
-
-// ============================================================
-// SHARED UTILITIES
-// ============================================================
-function loader(msg) {
-  return `<div class="loader"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span>${msg}</span></div>`;
+function loader(msg){return "<div class=\"loader\"><div class=\"dots\"><div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div></div><span>"+msg+"</span></div>";}
+function escHtml(str){return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function showToast(msg,type){
+  var t=document.getElementById("toast");
+  t.textContent=msg;t.className="toast "+(type||"")+" show";
+  setTimeout(function(){t.className="toast";},3000);
 }
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast ${type||''} show`;
-  setTimeout(() => t.className = 'toast', 3000);
-}
-
-// Init objection list
 renderObjList();
 </script>
 </body>
