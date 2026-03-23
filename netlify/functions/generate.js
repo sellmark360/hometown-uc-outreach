@@ -9,14 +9,14 @@ exports.handler = async function(event, context) {
   if (!apiKey) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'API key not configured.' })
+      body: JSON.stringify({ error: 'ANTHROPIC_API_KEY environment variable is not set.' })
     };
   }
 
   try {
     const body = JSON.parse(event.body);
     const payload = JSON.stringify({
-      model: body.model || 'claude-sonnet-4-20250514',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: body.max_tokens || 800,
       system: body.system,
       messages: body.messages
@@ -48,6 +48,15 @@ exports.handler = async function(event, context) {
       req.write(payload);
       req.end();
     });
+
+    // Surface any API-level errors clearly
+    if (data.error) {
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ content: [{ text: 'API Error: ' + JSON.stringify(data.error) }] })
+      };
+    }
 
     return {
       statusCode: 200,
