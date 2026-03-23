@@ -8,7 +8,7 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --red: #A32D2D; --red-light: #FAECE7; --red-dark: #711B0C;
+    --red: #D01A38; --red-light: #FDEAED; --red-dark: #A01228;
     --gray-50: #F9F8F6; --gray-100: #F1EFE8; --gray-200: #E0DED6;
     --text: #1C1B18; --text-soft: #5F5E5A; --text-muted: #9A9890;
     --border: #E0DED6; --white: #FFFFFF;
@@ -72,7 +72,7 @@
   .sequence-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 1.5rem; }
   .seq-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--gray-50); cursor: pointer; transition: all 0.15s; text-align: center; }
   .seq-btn:hover { border-color: var(--red); background: var(--red-light); }
-  .seq-btn.active { border-color: var(--red); background: var(--red-light); box-shadow: 0 0 0 2px rgba(163,45,45,0.12); }
+  .seq-btn.active { border-color: var(--red); background: var(--red-light); box-shadow: 0 0 0 2px rgba(208,26,56,0.12); }
   .seq-num { font-size: 18px; font-weight: 600; color: var(--red); font-family: 'DM Serif Display', serif; line-height: 1; }
   .seq-type { font-size: 10px; font-weight: 500; color: var(--text-soft); line-height: 1.3; }
   .seq-btn.active .seq-type { color: var(--red-dark); }
@@ -83,7 +83,7 @@
   .btn-primary:hover { background: var(--red-dark); }
   .btn-primary:active { transform: scale(0.99); }
   .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-  .btn-secondary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--red); background: var(--red-light); border: 1px solid rgba(163,45,45,0.2); border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.15s; }
+  .btn-secondary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--red); background: var(--red-light); border: 1px solid rgba(208,26,56,0.2); border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.15s; }
   .btn-secondary:hover { background: #F5C4B3; }
   .btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
 
