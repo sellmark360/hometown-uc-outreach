@@ -204,7 +204,7 @@
         <span style="font-size:15px;font-weight:500;color:#D01A38">&amp; Occupational Health</span>
       </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center"><span class="header-tag">Occupational Health Outreach</span><a href="/objections.html" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid #E0DED6;background:#4a4949;color:white;text-decoration:none;white-space:nowrap;">Objection Handler &#8594;</a></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="header-tag">Occupational Health Outreach</span><button onclick="openSavedPanel()" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;white-space:nowrap;">Saved Emails</button><a href="/objections.html" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid #E0DED6;background:#4a4949;color:white;text-decoration:none;white-space:nowrap;">Objection Handler &#8594;</a></div>
   </div>
 </header>
 
@@ -315,6 +315,7 @@
         <span class="output-desc" id="outputDesc">Cold Intro Email</span>
       </div>
       <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
+      <button class="copy-btn" id="saveBtn" onclick="saveSingle()" style="background:#4a4949;color:white;border-color:#4a4949;">Save</button>
     </div>
     <div class="subject-row" id="subjectRow" style="display:none;">
       <strong>Subject:</strong><span id="subjectText"></span>
@@ -334,9 +335,31 @@
     <div class="accordion" id="accordion"></div>
     <div class="print-row" id="printRow" style="display:none;">
       <button class="print-btn" onclick="copyAllEmails()">Copy all to clipboard</button>
+      <button class="print-btn" onclick="saveAllEmails()" style="background:#4a4949;color:white;border:none;">Save all to library</button>
       <button class="print-btn" onclick="window.print()">Print sequence</button>
     </div>
   </div>
+
+  <!-- SAVED EMAILS PANEL -->
+  <div id="savedPanel" style="display:none;margin-top:2rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h2 style="font-family:DM Serif Display,serif;font-size:22px;">Saved Email Library</h2>
+      <button onclick="document.getElementById('savedPanel').style.display='none'" style="font-family:DM Sans,sans-serif;font-size:14px;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Close</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+      <input type="text" id="savedSearch" placeholder="Search by company, role, or industry…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;flex:1;background:var(--white);color:var(--text);" />
+      <select id="savedRepFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;background:var(--white);color:var(--text);cursor:pointer;">
+        <option value="">All reps</option>
+        <option>Jacob Wooten</option>
+        <option>Brandon Sterba</option>
+        <option>Scott Franklin</option>
+        <option>Jerry Scott</option>
+        <option>Theresa French</option>
+      </select>
+    </div>
+    <div id="savedList" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
 </main>
 
 <!-- SETUP MODAL -->
@@ -842,6 +865,168 @@ function showToast(msg, type) {
 document.getElementById('setupBanner').style.display = 'none';
 
 // Always scroll to top on load
+
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL =  + SUPABASE_URL + ;
+const SUPABASE_KEY =  + SUPABASE_KEY + ;
+
+async function sbInsert(record) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/saved_emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(record)
+  });
+  return res.ok;
+}
+
+async function sbFetch(rep, search) {
+  let url = SUPABASE_URL + '/rest/v1/saved_emails?order=created_at.desc&limit=100';
+  if (rep) url += '&rep=eq.' + encodeURIComponent(rep);
+  const res = await fetch(url, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  const data = await res.json();
+  if (!search) return data;
+  const q = search.toLowerCase();
+  return data.filter(r =>
+    (r.company||'').toLowerCase().includes(q) ||
+    (r.industry||'').toLowerCase().includes(q) ||
+    (r.role||'').toLowerCase().includes(q) ||
+    (r.subject||'').toLowerCase().includes(q)
+  );
+}
+
+async function sbDelete(id) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/saved_emails?id=eq.' + id, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  return res.ok;
+}
+
+// ============================================================
+// SAVE SINGLE EMAIL
+// ============================================================
+async function saveSingle() {
+  const fd = getFormData();
+  if (!fd.rep) { showToast('Please select your name first.', 'error'); return; }
+  const subjectEl = document.getElementById('subjectRow');
+  const subject = subjectEl.style.display !== 'none' ? document.getElementById('subjectText').textContent.trim() : '';
+  const body = document.getElementById('outputBody').textContent.trim();
+  if (!body) { showToast('Nothing to save yet.', 'error'); return; }
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+  const ok = await sbInsert({
+    rep: fd.rep,
+    touch_number: currentStep,
+    touch_type: stepMeta[currentStep].label,
+    industry: fd.industry,
+    role: fd.role,
+    company: fd.company || null,
+    subject: subject || null,
+    email_body: body,
+    context: fd.context || null
+  });
+  if (ok) {
+    btn.textContent = 'Saved!';
+    setTimeout(() => { btn.textContent = 'Save'; btn.disabled = false; }, 2000);
+    showToast('Email saved to library!', 'success');
+  } else {
+    btn.textContent = 'Save';
+    btn.disabled = false;
+    showToast('Save failed. Please try again.', 'error');
+  }
+}
+
+// ============================================================
+// SAVE ALL EMAILS FROM FULL SEQUENCE
+// ============================================================
+async function saveAllEmails() {
+  const fd = getFormData();
+  if (!fd.rep) { showToast('Please select your name first.', 'error'); return; }
+  let saved = 0;
+  for (let s = 1; s <= 7; s++) {
+    const bodyEl = document.getElementById('acc-body-' + s);
+    if (!bodyEl) continue;
+    const ce = bodyEl.querySelector('.acc-content');
+    if (!ce || !ce.textContent.trim()) continue;
+    const se = bodyEl.querySelector('.acc-subject');
+    const subject = se ? se.textContent.replace('Subject:', '').trim() : '';
+    await sbInsert({
+      rep: fd.rep, touch_number: s, touch_type: stepMeta[s].label,
+      industry: fd.industry, role: fd.role, company: fd.company || null,
+      subject: subject || null, email_body: ce.textContent.trim(), context: fd.context || null
+    });
+    saved++;
+  }
+  showToast(saved + ' emails saved to library!', 'success');
+}
+
+// ============================================================
+// SAVED EMAILS PANEL
+// ============================================================
+async function openSavedPanel() {
+  const panel = document.getElementById('savedPanel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  await renderSaved();
+}
+
+async function renderSaved() {
+  const list = document.getElementById('savedList');
+  const rep = document.getElementById('savedRepFilter').value;
+  const search = document.getElementById('savedSearch').value;
+  list.innerHTML = '<div style="padding:1rem;color:var(--text-muted);font-size:14px;">Loading…</div>';
+  const data = await sbFetch(rep, search);
+  if (!data || data.length === 0) {
+    list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:14px;">No saved emails yet. Generate and save some!</div>';
+    return;
+  }
+  list.innerHTML = data.map(r => {
+    const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const preview = (r.email_body || '').substring(0, 120) + '…';
+    return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">' +
+      '<div style="padding:12px 16px;background:var(--gray-50);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
+      '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--red-light);color:var(--red);">Touch ' + r.touch_number + ' — ' + escHtml(r.touch_type || '') + '</span>' +
+      '<span style="font-size:13px;color:var(--text-soft);">' + escHtml(r.rep) + ' &nbsp;·&nbsp; ' + escHtml(r.industry || '') + (r.company ? ' &nbsp;·&nbsp; ' + escHtml(r.company) : '') + '</span>' +
+      '<span style="font-size:12px;color:var(--text-muted);margin-left:auto;">' + date + '</span>' +
+      '</div>' +
+      (r.subject ? '<div style="padding:8px 16px;border-bottom:1px solid var(--border);font-size:13px;"><strong style="color:var(--text-muted);font-weight:500;margin-right:6px;">Subject:</strong>' + escHtml(r.subject) + '</div>' : '') +
+      '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(preview) + '</div>' +
+      '<div style="padding:10px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">' +
+      '<button onclick="copyFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Copy</button>' +
+      '<button onclick="deleteFromLibrary('' + r.id + '', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
+      '</div></div>';
+  }).join('');
+}
+
+function copyFromLibrary(btn, jsonStr) {
+  const data = JSON.parse(jsonStr);
+  const text = (data.subject ? 'Subject: ' + data.subject + '\n\n' : '') + (data.body || '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.color = '#3B6D11';
+    btn.style.borderColor = '#3B6D11';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+  });
+}
+
+async function deleteFromLibrary(id, btn) {
+  if (!confirm('Delete this saved email?')) return;
+  btn.textContent = 'Deleting…';
+  const ok = await sbDelete(id);
+  if (ok) { await renderSaved(); showToast('Deleted.', 'success'); }
+  else { btn.textContent = 'Delete'; showToast('Delete failed.', 'error'); }
+}
+
 window.addEventListener('load', function() { window.scrollTo(0, 0); });
 history.scrollRestoration = 'manual';
 </script>
