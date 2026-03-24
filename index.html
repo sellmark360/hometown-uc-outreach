@@ -347,6 +347,17 @@
         </select>
       </div>
       <div class="field">
+        <label>Tone of Voice <span class="opt">(optional)</span></label>
+        <select id="tone">
+          <option value="">Default (Direct & Professional)</option>
+          <option value="professional">🎯 Direct & Professional</option>
+          <option value="bluecollar">🔧 Blue Collar Direct</option>
+          <option value="data">📊 Data & ROI</option>
+          <option value="relationship">🤝 Relationship Builder</option>
+          <option value="casual">😄 Casual & Humorous</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Name of Prospect Company</label>
         <input type="text" id="company" placeholder="e.g. Acme Logistics" />
       </div>
@@ -524,6 +535,18 @@ const stepInstructions = {
   7: `BREAKUP / FINAL EMAIL. Last in the sequence. Be warm, direct, a little self-aware. Acknowledge you've reached out a few times — don't guilt them. Leave the door wide open for the future. Optional: a touch of dry humor or personality. Very short — 2-3 sentences. Then a gracious close. No hard CTA.`,
 };
 
+const toneIntel = {
+  'professional': `TONE: Direct & Professional. Write as a peer, not a vendor. Confident, clean, zero fluff. No corporate buzzwords. C-suite and senior HR/Benefits level. Every sentence earns its place. Think: McKinsey rep who actually works in the field.`,
+
+  'bluecollar': `TONE: Blue Collar Direct. Short sentences. Plain language. No corporate speak. Built for Safety Managers, Operations Managers, floor supervisors — people who are on their feet all day and read email on their phone. Get to the point in one sentence. Slightly rough around the edges — in a good way. Skip the fancy vocabulary. If it sounds like a vendor brochure, rewrite it.`,
+
+  'data': `TONE: Data & ROI. Lead with numbers, benchmarks, and cost impact wherever possible. Be precise and credible. Speak to the analytical buyer — Risk Manager, CFO, self-insured employer program. Use specifics: days, percentages, dollars. Avoid vague value claims. Every statement should feel backed by evidence. Think: actuary meets sales rep.`,
+
+  'relationship': `TONE: Relationship Builder. Warm, consultative, human. Feels like a colleague reaching out, not a vendor pitching. Not soft — still direct and confident — but the reader should feel like you\'re on their side. Works well with HR, Benefits Directors, and anyone who buys on trust as much as ROI. Avoid anything that sounds like a pitch. Sound like someone who\'s genuinely curious about their situation.`,
+
+  'casual': `TONE: Casual & Humorous. Self-aware, a little witty, unexpectedly human. The kind of email someone actually reads to the end. Not jokes — just a rep who clearly doesn\'t take themselves too seriously. A light touch of humor in the subject line or opening is encouraged. Still professional — never sarcastic or silly — just genuinely likable. Works well with Safety Managers, Operations people, and anyone who\'s heard every vendor pitch twice. Make them smile, then make your point.`
+};
+
 const productIntel = {
   'DOT Physicals': `DOT physicals are federally mandated under FMCSA for commercial drivers. The employer's fear is non-compliance — a driver operating without a valid medical certificate is a liability and a violation. Lead with speed, proximity (33 Ohio locations), and certified medical examiners. The CTA is always about convenience and compliance confidence. Never position this as optional.`,
 
@@ -542,7 +565,7 @@ const productIntel = {
 CRITICAL FRAMING: Do NOT sell services. Sell outcomes: lower claims, fewer lost days, lower insurance premiums, higher retention, and productivity gains. The buyer for TWC is C-suite (CEO/COO) or Benefits Director. They don\'t buy urgent care — they buy workforce performance. Lead with cost and risk reduction. The CTA should invite a strategic conversation, not a service demo. Use language like \'workforce health partner\' not \'clinic.\'`
 };
 
-function buildSystemPrompt(role, product) {
+function buildSystemPrompt(role, product, tone) {
   return `You are an expert B2B sales copywriter for Hometown Urgent Care — an urgent care network with 33 Ohio locations specializing in urgent care AND occupational health services for employers.
 
 SERVICES: DOT physicals, drug testing (pre-employment, random, post-accident, return-to-duty, MRO-backed), workers' comp injury care, return-to-work programs, pre-employment physicals, audiometry, pulmonary function testing, fit-for-duty evaluations, respirator clearance, OSHA compliance support.
@@ -560,6 +583,8 @@ CONTEXT RULE: If no additional prospect context is provided, use industry best p
 
 ${product ? `PRODUCT FOCUS — ${product}:\n${productIntel[product] || "Focus on the specific service value and how it reduces employer cost or risk."}` : ""}
 
+${tone ? toneIntel[tone] : toneIntel["professional"]}
+
 WRITING RULES (NON-NEGOTIABLE):
 - Never open with "I hope this email finds you well"
 - Never open "My name is X and I work for Y"
@@ -568,7 +593,7 @@ WRITING RULES (NON-NEGOTIABLE):
 - One CTA only — never two asks
 - Tone: confident, direct, human — never corporate or sycophantic
 - No buzzwords (synergy, solutions, seamless, etc.)
-- Subject lines: specific, intriguing, role-aware — never "Quick question" or "Following up"
+- Subject lines: MAX 5 WORDS. Use half-sentences, fragments, or open loops that create curiosity — never complete thoughts. Professional but punchy. Sometimes slightly kitschy. Never "Quick question" or "Following up". Examples of the RIGHT tone: "Your drivers are at risk", "Still chasing that drug test?", "One injury. Three weeks out.", "Losing days you can't afford", "RTW taking longer than it should"
 
 FOR EMAIL OUTPUT: Return exactly:
 SUBJECT: [subject line]
@@ -618,6 +643,7 @@ function getFormData() {
     industry: document.getElementById('industry').value.trim(),
     role: document.getElementById('role').value,
     product: document.getElementById('product').value,
+    tone: document.getElementById('tone').value,
     company: document.getElementById('company').value.trim(),
     context: document.getElementById('context').value.trim(),
   };
@@ -648,7 +674,7 @@ ${stepInstructions[step]}`;
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 800,
-      system: buildSystemPrompt(fd.role, fd.product),
+      system: buildSystemPrompt(fd.role, fd.product, fd.tone),
       messages: [{ role: 'user', content: userPrompt }]
     })
   });
