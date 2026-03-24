@@ -233,7 +233,23 @@
       <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-      <button onclick="openSavedPanel()" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid #D01A38;background:var(--white);color:#D01A38;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
+      <button onclick="toggleSavedPanel()" id="savedToggleBtn" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid #D01A38;background:var(--white);color:#D01A38;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
+    </div>
+
+    <!-- SAVED EMAILS INLINE COLLAPSIBLE -->
+    <div id="savedPanel" style="display:none;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem;">
+      <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+        <input type="text" id="savedSearch" placeholder="Search by company, role, or industry…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;flex:1;background:var(--white);color:var(--text);" />
+        <select id="savedRepFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;background:var(--white);color:var(--text);cursor:pointer;">
+          <option value="">All reps</option>
+          <option>Jacob Wooten</option>
+          <option>Brandon Sterba</option>
+          <option>Scott Franklin</option>
+          <option>Jerry Scott</option>
+          <option>Theresa French</option>
+        </select>
+      </div>
+      <div id="savedList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
@@ -344,12 +360,6 @@
     </div>
   </div>
 
-  <!-- SAVED EMAILS PANEL -->
-  <div id="savedPanel" style="display:none;margin-top:2rem;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-      <h2 style="font-family:DM Serif Display,serif;font-size:22px;">Saved Email Library</h2>
-      <button onclick="document.getElementById('savedPanel').style.display='none'" style="font-family:DM Sans,sans-serif;font-size:14px;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Close</button>
-    </div>
     <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
       <input type="text" id="savedSearch" placeholder="Search by company, role, or industry…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;flex:1;background:var(--white);color:var(--text);" />
       <select id="savedRepFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;background:var(--white);color:var(--text);cursor:pointer;">
@@ -1012,10 +1022,20 @@ async function saveAllEmails() {
 // ============================================================
 // SAVED EMAILS PANEL
 // ============================================================
+function toggleSavedPanel() {
+  const panel = document.getElementById('savedPanel');
+  const btn = document.getElementById('savedToggleBtn');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? 'Saved Emails ✴' : 'Close Library ×';
+  btn.style.background = isOpen ? 'var(--white)' : '#FDEAED';
+  if (!isOpen) renderSaved();
+}
+
 async function openSavedPanel() {
   const panel = document.getElementById('savedPanel');
   panel.style.display = 'block';
-  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('savedToggleBtn').textContent = 'Close Library ×';
   await renderSaved();
 }
 
@@ -1063,6 +1083,7 @@ async function renderSaved() {
       (r.subject ? '<div style="padding:8px 16px;border-bottom:1px solid var(--border);font-size:13px;"><strong style="color:var(--text-muted);font-weight:500;margin-right:6px;">Subject:</strong>' + escHtml(r.subject) + '</div>' : '') +
       '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(preview) + '</div>' +
       '<div style="padding:10px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">' +
+      '<button onclick="upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;">Got a reply! 👑</button>' +
       '<button onclick="copyFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Copy</button>' +
       '<button onclick="deleteFromLibrary(\'' + r.id + '\', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
       '</div></div>';
