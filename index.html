@@ -334,6 +334,19 @@
         </select>
       </div>
       <div class="field">
+        <label>Product <span class="opt">(optional)</span></label>
+        <select id="product">
+          <option value="">Select a product…</option>
+          <option>DOT Physicals</option>
+          <option>DOT Drug Tests</option>
+          <option>NonDOT Physicals</option>
+          <option>NonDOT Drug Tests</option>
+          <option>Pre-Emp. Physical</option>
+          <option>T8 Physical</option>
+          <option>TWC</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Name of Prospect Company</label>
         <input type="text" id="company" placeholder="e.g. Acme Logistics" />
       </div>
@@ -584,6 +597,7 @@ function getFormData() {
     rep: document.getElementById('repSelect').value,
     industry: document.getElementById('industry').value.trim(),
     role: document.getElementById('role').value,
+    product: document.getElementById('product').value,
     company: document.getElementById('company').value.trim(),
     context: document.getElementById('context').value.trim(),
   };
@@ -600,6 +614,7 @@ async function callClaude(step, fd) {
   const userPrompt = `Write touch #${step} for:
 Industry: ${fd.industry}
 Prospect role: ${fd.role}
+${fd.product ? `Product focus: ${fd.product}` : ''}
 ${fd.company ? `Company: ${fd.company}` : ''}
 ${fd.context ? `Context: ${fd.context}` : ''}
 ${signOff ? `Rep sign-off info: ${signOff}` : ''}
@@ -659,6 +674,7 @@ function logToSheets(fd, touchNumber, touchType, sequenceType) {
       touch_type: touchType,
       industry: fd.industry,
       role: fd.role,
+      product: fd.product || null,
       company: fd.company || null,
       context: fd.context || null,
       sequence_type: sequenceType
@@ -1086,14 +1102,19 @@ function replyBadge(count) {
 }
 
 async function upvoteEmail(id, currentCount, btn) {
-  btn.textContent = 'Saving…';
+  const newCount = currentCount + 1;
+  // Show immediate feedback
+  const circle = btn.querySelector('span');
+  if (circle) { circle.textContent = newCount; }
+  else { const s = document.createElement('span'); s.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#27500A;color:white;font-size:10px;font-weight:700;'; s.textContent = newCount; btn.insertBefore(s, btn.firstChild); }
   btn.disabled = true;
   const ok = await sbUpvote(id, currentCount);
   if (ok) {
-    showToast('Reply recorded! ' + (currentCount + 1 >= 10 ? '🏆 WINNER!' : currentCount + 1 >= 5 ? '🔥 Hottie!' : '⭐ Good traction!'), 'success');
+    const label = newCount >= 10 ? '🏆 WINNER!' : newCount >= 5 ? '🔥 Hottie!' : newCount >= 2 ? '⭐ Good traction!' : '✅ Got one!';
+    showToast('Reply #' + newCount + ' recorded! ' + label, 'success');
     await renderSaved();
   } else {
-    btn.textContent = 'Got a reply! ✅';
+    if (circle) circle.textContent = currentCount;
     btn.disabled = false;
     showToast('Update failed. Try again.', 'error');
   }
@@ -1137,7 +1158,7 @@ async function renderSaved() {
       '<div class="saved-email-body" style="display:none;">' +
       '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(r.email_body||'') + '</div>' +
       '<div style="padding:10px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">' +
-      '<button onclick="upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;">Got a reply! ✅</button>' +
+      '<button onclick="upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">' + ((r.reply_count||0) > 0 ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#27500A;color:white;font-size:10px;font-weight:700;">' + (r.reply_count||0) + '</span>' : '') + 'Got a reply! ✅</button>' +
       '<button onclick="copyFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Copy</button>' +
       '<button onclick="deleteFromLibrary(\'' + r.id + '\', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
       '</div></div>' +
