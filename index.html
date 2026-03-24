@@ -284,8 +284,8 @@
         <button onclick="clearSavedFilters()" style="font-family:DM Sans,sans-serif;font-size:12px;padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;white-space:nowrap;margin-left:auto;">Clear</button>
       </div>
       <!-- RATING LEGEND -->
-      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;background:var(--gray-50);border-radius:var(--radius);margin-bottom:10px;font-size:13px;color:var(--text-soft);">
-        <span>✅ Got a reply</span>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;background:var(--gray-50);border-radius:var(--radius);margin-bottom:10px;font-size:13px;color:var(--text-soft);justify-content:center;">
+        <span>✅ 1 reply</span>
         <span>⭐ 1-4 replies &mdash; Getting traction</span>
         <span>🔥 5-9 replies &mdash; Hot performer</span>
         <span>🏆 WINNER (10+) &mdash; Hall of fame</span>
@@ -1041,6 +1041,16 @@ async function saveAllEmails() {
 // ============================================================
 // SAVED EMAILS PANEL
 // ============================================================
+function toggleSavedCard(headerEl) {
+  const card = headerEl.closest('[style*="background:var(--white)"]') || headerEl.parentElement;
+  const body = card.querySelector('.saved-email-body');
+  const chevron = headerEl.querySelector('span:last-child');
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (chevron) chevron.textContent = isOpen ? '▼' : '▲';
+}
+
 function clearSavedFilters() {
   document.getElementById('savedSearch').value = '';
   document.getElementById('savedRatingFilter').value = '';
@@ -1069,9 +1079,10 @@ async function openSavedPanel() {
 
 function replyBadge(count) {
   if (!count || count < 1) return '';
-  if (count >= 10) return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — WINNER!">&#128142;</span>';
+  if (count >= 10) return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — WINNER!">&#127942;</span>';
   if (count >= 5)  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Hottie!">&#128293;</span>';
-  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' repl' + (count===1?'y':'ies') + ' — Good traction!">&#11088;</span>';
+  if (count >= 2)  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Good traction!">&#11088;</span>';
+  return '<span style="font-size:16px;margin-left:4px;" title="1 reply — Got one!">&#9989;</span>';
 }
 
 async function upvoteEmail(id, currentCount, btn) {
@@ -1115,19 +1126,22 @@ async function renderSaved() {
     const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const preview = (r.email_body || '').substring(0, 120) + '…';
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">' +
-      '<div style="padding:12px 16px;background:var(--gray-50);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
+      '<div style="padding:12px 16px;background:var(--gray-50);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;" onclick="toggleSavedCard(this)">' +
       '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--red-light);color:var(--red);">Touch ' + r.touch_number + ' — ' + escHtml(r.touch_type || '') + '</span>' +
       replyBadge(r.reply_count) +
       '<span style="font-size:13px;color:var(--text-soft);">' + escHtml(r.rep) + ' &nbsp;·&nbsp; ' + escHtml(r.industry || '') + (r.company ? ' &nbsp;·&nbsp; ' + escHtml(r.company) : '') + '</span>' +
       '<span style="font-size:12px;color:var(--text-muted);margin-left:auto;">' + date + '</span>' +
+      '<span style="font-size:11px;color:var(--text-muted);padding-left:8px;">&#9660;</span>' +
       '</div>' +
       (r.subject ? '<div style="padding:8px 16px;border-bottom:1px solid var(--border);font-size:13px;"><strong style="color:var(--text-muted);font-weight:500;margin-right:6px;">Subject:</strong>' + escHtml(r.subject) + '</div>' : '') +
-      '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(preview) + '</div>' +
+      '<div class="saved-email-body" style="display:none;">' +
+      '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(r.email_body||'') + '</div>' +
       '<div style="padding:10px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">' +
       '<button onclick="upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;">Got a reply! ✅</button>' +
       '<button onclick="copyFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Copy</button>' +
       '<button onclick="deleteFromLibrary(\'' + r.id + '\', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
-      '</div></div>';
+      '</div></div>' +
+      '</div>';
   }).join('');
 }
 
