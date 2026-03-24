@@ -219,24 +219,6 @@
   <h1 class="page-title">Outreach Email Generator</h1>
   <p class="page-subtitle">Build customized, role-specific prospecting emails — cold to close, in 7 touches.</p>
 
-  <!-- REP SELECTOR -->
-  <div class="rep-bar">
-    <label for="repSelect">Rep:</label>
-    <select id="repSelect" onchange="onRepChange()">
-      <option value="">— Select your name —</option>
-      <!-- ============================================================
-           THERESA: ADD OR EDIT REP NAMES BELOW
-           Format: <option value="Rep Name">Rep Name</option>
-           ============================================================ -->
-      <option value="Jacob Wooten">Jacob Wooten</option>
-      <option value="Brandon Sterba">Brandon Sterba</option>
-      <option value="Scott Franklin">Scott Franklin</option>
-      <option value="Jerry Scott">Jerry Scott</option>
-      <option value="Theresa French">Theresa French</option>
-    </select>
-    <span class="rep-status" id="repStatus">Select your name to begin</span>
-  </div>
-
   <!-- SEQUENCE SELECTOR -->
   <div class="card">
     <div class="card-title">Select your outreach touch</div>
@@ -299,6 +281,24 @@
         <textarea id="context" placeholder="e.g. High injury rate in warehouse, referred by John at XYZ, recently switched providers…  Leave blank to use industry best practices."></textarea>
       </div>
     </div>
+  </div>
+
+  <!-- REP SELECTOR -->
+  <div class="rep-bar">
+    <label for="repSelect">Rep:</label>
+    <select id="repSelect" onchange="onRepChange()">
+      <option value="">— Select your name —</option>
+      <!-- ============================================================
+           THERESA: ADD OR EDIT REP NAMES BELOW
+           Format: <option value="Rep Name">Rep Name</option>
+           ============================================================ -->
+      <option value="Jacob Wooten">Jacob Wooten</option>
+      <option value="Brandon Sterba">Brandon Sterba</option>
+      <option value="Scott Franklin">Scott Franklin</option>
+      <option value="Jerry Scott">Jerry Scott</option>
+      <option value="Theresa French">Theresa French</option>
+    </select>
+    <span class="rep-status" id="repStatus">Select your name to begin</span>
   </div>
 
   <!-- BUTTONS -->
