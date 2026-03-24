@@ -204,11 +204,11 @@
         <span style="font-size:15px;font-weight:500;color:#D01A38">&amp; Occupational Health</span>
       </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="header-tag">Occupational Health Outreach</span><button onclick="openSavedPanel()" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;white-space:nowrap;">Saved Emails</button><a href="/objections.html" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid #E0DED6;background:#4a4949;color:white;text-decoration:none;white-space:nowrap;">Objection Handler &#8594;</a></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="header-tag">Occupational Health Outreach</span><a href="/objections.html" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid #E0DED6;background:#4a4949;color:white;text-decoration:none;white-space:nowrap;">Objection Handler &#8594;</a></div>
   </div>
 </header>
 
-<div class="setup-banner" id="setupBanner">
+<div class="setup-banner" id="setupBanner" style="display:none;">
   <div class="setup-inner">
     <div class="setup-text"><strong>Setup required:</strong> Connect Google Sheets to enable activity tracking &amp; rep logging.</div>
     <button class="setup-link" onclick="openSetup()">Setup guide &rarr;</button>
@@ -230,6 +230,9 @@
       <button class="seq-btn" data-step="5" onclick="selectStep(5)"><span class="seq-num">5</span><span class="seq-type">Handwritten</span></button>
       <button class="seq-btn" data-step="6" onclick="selectStep(6)"><span class="seq-num">6</span><span class="seq-type">Value Add #2</span></button>
       <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+      <button onclick="openSavedPanel()" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
     </div>
   </div>
 
@@ -583,23 +586,44 @@ ${stepInstructions[step]}`;
 // LOG TO GOOGLE SHEETS
 // ============================================================
 function logToSheets(fd, touchNumber, touchType, sequenceType) {
-  if (!SHEETS_URL) return;
-  const payload = {
-    timestamp: new Date().toLocaleString('en-US'),
-    rep: fd.rep,
-    touchNumber: touchNumber,
-    touchType: touchType,
-    industry: fd.industry,
-    role: fd.role,
-    company: fd.company || '—',
-    context: fd.context || '—',
-    sequenceType: sequenceType
-  };
-  fetch(SHEETS_URL, {
+  // Log to Google Sheets (keeping as backup during transition)
+  if (SHEETS_URL) {
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        timestamp: new Date().toLocaleString('en-US'),
+        rep: fd.rep,
+        touchNumber: touchNumber,
+        touchType: touchType,
+        industry: fd.industry,
+        role: fd.role,
+        company: fd.company || '—',
+        context: fd.context || '—',
+        sequenceType: sequenceType
+      })
+    }).catch(() => {});
+  }
+  // Log to Supabase activity_log
+  fetch(SUPABASE_URL + '/rest/v1/activity_log', {
     method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      rep: fd.rep,
+      touch_number: touchNumber,
+      touch_type: touchType,
+      industry: fd.industry,
+      role: fd.role,
+      company: fd.company || null,
+      context: fd.context || null,
+      sequence_type: sequenceType
+    })
   }).catch(() => {});
 }
 
@@ -829,7 +853,7 @@ function saveSheetUrl() {
   localStorage.setItem('huc_sheets_url', url);
   SHEETS_URL = url;
   document.getElementById('urlSaved').style.display = 'block';
-  document.getElementById('setupBanner').style.display = 'none';
+  document.getElementById('setupBanner').style.display = 'none'; // permanently hidden
   showToast('Google Sheets logging activated!', 'success');
   setTimeout(() => closeSetup(), 1500);
 }
@@ -862,7 +886,7 @@ function showToast(msg, type) {
 }
 
 // Hide setup banner if already configured
-document.getElementById('setupBanner').style.display = 'none';
+document.getElementById('setupBanner').style.display = 'none'; // permanently hidden
 
 // Always scroll to top on load
 
@@ -886,8 +910,22 @@ async function sbInsert(record) {
   return res.ok;
 }
 
+async function sbUpvote(id, currentCount) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/saved_emails?id=eq.' + id, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ reply_count: currentCount + 1 })
+  });
+  return res.ok;
+}
+
 async function sbFetch(rep, search) {
-  let url = SUPABASE_URL + '/rest/v1/saved_emails?order=created_at.desc&limit=100';
+  let url = SUPABASE_URL + '/rest/v1/saved_emails?order=reply_count.desc,created_at.desc&limit=100';
   if (rep) url += '&rep=eq.' + encodeURIComponent(rep);
   const res = await fetch(url, {
     headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
@@ -980,6 +1018,27 @@ async function openSavedPanel() {
   await renderSaved();
 }
 
+function replyBadge(count) {
+  if (!count || count < 1) return '';
+  if (count >= 10) return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Hall of Fame!">&#128142;</span>';
+  if (count >= 5)  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Hot performer!">&#128293;</span>';
+  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' repl' + (count===1?'y':'ies') + ' — Getting traction!">&#11088;</span>';
+}
+
+async function upvoteEmail(id, currentCount, btn) {
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+  const ok = await sbUpvote(id, currentCount);
+  if (ok) {
+    showToast('Reply recorded! ' + (currentCount + 1 >= 10 ? '💎' : currentCount + 1 >= 5 ? '🔥' : '⭐'), 'success');
+    await renderSaved();
+  } else {
+    btn.textContent = 'Got a reply! 👑';
+    btn.disabled = false;
+    showToast('Update failed. Try again.', 'error');
+  }
+}
+
 async function renderSaved() {
   const list = document.getElementById('savedList');
   const rep = document.getElementById('savedRepFilter').value;
@@ -996,6 +1055,7 @@ async function renderSaved() {
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">' +
       '<div style="padding:12px 16px;background:var(--gray-50);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;">' +
       '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--red-light);color:var(--red);">Touch ' + r.touch_number + ' — ' + escHtml(r.touch_type || '') + '</span>' +
+      replyBadge(r.reply_count) +
       '<span style="font-size:13px;color:var(--text-soft);">' + escHtml(r.rep) + ' &nbsp;·&nbsp; ' + escHtml(r.industry || '') + (r.company ? ' &nbsp;·&nbsp; ' + escHtml(r.company) : '') + '</span>' +
       '<span style="font-size:12px;color:var(--text-muted);margin-left:auto;">' + date + '</span>' +
       '</div>' +
