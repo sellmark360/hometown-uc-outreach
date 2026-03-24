@@ -840,6 +840,10 @@ function showToast(msg, type) {
 
 // Hide setup banner if already configured
 document.getElementById('setupBanner').style.display = 'none';
+
+// Always scroll to top on load
+window.addEventListener('load', function() { window.scrollTo(0, 0); });
+history.scrollRestoration = 'manual';
 </script>
 </body>
 </html>
