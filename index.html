@@ -14,27 +14,27 @@
     --border: #E0DED6; --white: #FFFFFF;
     --radius: 10px; --radius-lg: 14px;
   }
-  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--text); min-height: 100vh; line-height: 1.6; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--text); min-height: 100vh; line-height: 1.6; font-size: 16px; }
 
   /* HEADER */
   .site-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; position: sticky; top: 0; z-index: 100; }
-  .header-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 96px; }
+  .header-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 96px; }
   .logo { display: flex; align-items: center; gap: 10px; }
 
   .header-tag { font-size: 12px; background: #6B6A6A; color: white; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
 
   /* SETUP BANNER */
   .setup-banner { background: #FFF8E7; border-bottom: 1px solid #E8D5A0; padding: 10px 2rem; }
-  .setup-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .setup-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .setup-text { font-size: 13px; color: #6B4F00; }
   .setup-text strong { font-weight: 600; }
   .setup-link { font-size: 12px; font-weight: 500; color: #6B4F00; background: #F0D97A; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; }
   .setup-link:hover { background: #E8C83A; }
 
   /* LAYOUT */
-  .main { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+  .main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
   .page-title { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 4px; }
-  .page-subtitle { font-size: 14px; color: var(--text-soft); margin-bottom: 2rem; }
+  .page-subtitle { font-size: 16px; color: var(--text-soft); margin-bottom: 2rem; }
 
   /* CARDS */
   .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.25rem; }
@@ -43,7 +43,7 @@
   /* REP SELECTOR */
   .rep-bar { display: flex; align-items: center; gap: 12px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.5rem; margin-bottom: 1.25rem; }
   .rep-bar label { font-size: 13px; font-weight: 500; color: var(--text-soft); white-space: nowrap; }
-  .rep-bar select { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--text); background: var(--gray-50); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 32px 8px 12px; outline: none; cursor: pointer; flex: 1; max-width: 280px;
+  .rep-bar select { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500; color: var(--text); background: var(--gray-50); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 32px 8px 12px; outline: none; cursor: pointer; flex: 1; max-width: 280px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239A9890' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 12px center; -webkit-appearance: none; }
   .rep-bar select:focus { border-color: var(--red); }
@@ -57,7 +57,7 @@
   .field label { font-size: 12px; font-weight: 500; color: var(--text-soft); }
   .field label .opt { font-weight: 400; color: var(--text-muted); font-size: 11px; }
   .field input, .field select, .field textarea {
-    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--text);
     background: var(--gray-50); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 9px 12px; width: 100%; transition: border-color 0.15s, background 0.15s; outline: none; -webkit-appearance: none;
   }
@@ -76,12 +76,12 @@
   .seq-btn.active .seq-type { color: white; }
 
   /* BUTTONS */
-  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
-  .btn-primary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: white; background: var(--red); border: none; border-radius: var(--radius); padding: 12px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; white-space: nowrap; }
+  .btn-primary { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: white; background: var(--red); border: none; border-radius: var(--radius); padding: 12px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
   .btn-primary:hover { background: var(--red-dark); }
   .btn-primary:active { transform: scale(0.99); }
   .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-  .btn-secondary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: white; background: #4a4949; border: none; border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.15s; }
+  .btn-secondary { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: white; background: #4a4949; border: none; border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.15s; }
   .btn-secondary:hover { background: #333232; }
   .btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
 
@@ -97,7 +97,7 @@
   .copy-btn.copied { background: #EAF3DE; border-color: #3B6D11; color: #3B6D11; }
   .subject-row { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
   .subject-row strong { color: var(--text-muted); font-weight: 500; margin-right: 6px; }
-  .output-body { padding: 20px 16px; font-size: 14px; line-height: 1.85; color: var(--text); white-space: pre-wrap; min-height: 80px; }
+  .output-body { padding: 20px 16px; font-size: 16px; line-height: 1.85; color: var(--text); white-space: pre-wrap; min-height: 80px; }
   .output-body.hw { font-family: 'DM Serif Display', serif; font-size: 15px; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; padding: 24px 28px; }
   .hw-hint { font-size: 12px; color: var(--text-muted); padding: 8px 16px 12px; border-top: 1px dashed var(--border); }
 
@@ -125,7 +125,7 @@
   .acc-header:hover { background: var(--gray-50); }
   .acc-num { width: 28px; height: 28px; background: var(--red-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--red); font-weight: 600; flex-shrink: 0; }
   .acc-label { flex: 1; }
-  .acc-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .acc-title { font-size: 16px; font-weight: 500; color: var(--text); }
   .acc-subtitle { font-size: 12px; color: var(--text-muted); }
   .acc-status { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
   .acc-status.pending { background: var(--gray-100); color: var(--text-muted); }
@@ -142,7 +142,7 @@
   .acc-subject { padding: 9px 16px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-soft); background: var(--gray-50); }
   .acc-subject strong { font-weight: 500; color: var(--text-muted); margin-right: 5px; }
   .acc-content { padding: 16px; font-size: 13px; line-height: 1.85; white-space: pre-wrap; color: var(--text); }
-  .acc-content.hw { font-family: 'DM Serif Display', serif; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; font-size: 14px; padding: 20px 24px; }
+  .acc-content.hw { font-family: 'DM Serif Display', serif; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; font-size: 16px; padding: 20px 24px; }
 
   /* PRINT ALL */
   .print-row { display: flex; justify-content: flex-end; margin-top: 12px; gap: 8px; }
@@ -159,7 +159,7 @@
   .modal-close:hover { color: var(--text); }
   .modal-body { padding: 1.5rem; }
   .step-block { margin-bottom: 1.5rem; }
-  .step-block h3 { font-size: 14px; font-weight: 600; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .step-block h3 { font-size: 16px; font-weight: 600; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
   .step-num-sm { width: 22px; height: 22px; background: var(--red); border-radius: 50%; color: white; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
   .step-block p { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 8px; }
   .code-block { background: var(--gray-50); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-family: monospace; font-size: 12px; color: var(--text); white-space: pre-wrap; word-break: break-all; margin: 8px 0; position: relative; }
@@ -320,17 +320,20 @@
       </div>
       <div class="field">
         <label>Prospect role</label>
-        <select id="role">
+        <select id="role" style="position:relative;">
           <option value="">Select a role…</option>
-          <option>Gatekeeper / Admin / Office Manager</option>
-          <option>HR Manager or HR Director</option>
-          <option>Safety Manager</option>
-          <option>Safety Director</option>
+          <option>Benefits Mgr/Dir.</option>
           <option>CEO</option>
           <option>COO</option>
-          <option>Benefits Manager or Benefits Director</option>
+          <option>Gatekeeper</option>
+          <option>HR Manager</option>
+          <option>Office Manager</option>
+          <option>Operations Mgr.</option>
           <option>Risk Manager</option>
-          <option>Operations Manager</option>
+          <option>Safety Director</option>
+          <option>Safety Manager</option>
+          <option>Sr. HR Director</option>
+          <option>Transport Supervisor</option>
         </select>
       </div>
       <div class="field">
@@ -1181,9 +1184,9 @@ async function renderSaved() {
   if (touchFilter) data = data.filter(r => String(r.touch_number) === touchFilter);
   if (roleFilter) data = data.filter(r => r.role === roleFilter);
   if (industryFilter) data = data.filter(r => r.industry === industryFilter);
-  if (ratingFilter === '1') data = data.filter(r => (r.reply_count||0) >= 1);
-  else if (ratingFilter === 'star') data = data.filter(r => (r.reply_count||0) >= 1 && (r.reply_count||0) < 5);
-  else if (ratingFilter === 'fire') data = data.filter(r => (r.reply_count||0) >= 5 && (r.reply_count||0) < 10);
+  if (ratingFilter === '1') data = data.filter(r => (r.reply_count||0) === 1);
+  else if (ratingFilter === 'star') data = data.filter(r => (r.reply_count||0) >= 2 && (r.reply_count||0) <= 4);
+  else if (ratingFilter === 'fire') data = data.filter(r => (r.reply_count||0) >= 5 && (r.reply_count||0) <= 9);
   else if (ratingFilter === 'trophy') data = data.filter(r => (r.reply_count||0) >= 10);
   if (data.length === 0) {
     list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:14px;">No saved emails match your filters.</div>';
