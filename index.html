@@ -238,16 +238,57 @@
 
     <!-- SAVED EMAILS INLINE COLLAPSIBLE -->
     <div id="savedPanel" style="display:none;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem;">
-      <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-        <input type="text" id="savedSearch" placeholder="Search by company, role, or industry…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;flex:1;background:var(--white);color:var(--text);" />
-        <select id="savedRepFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;background:var(--white);color:var(--text);cursor:pointer;">
-          <option value="">All reps</option>
-          <option>Jacob Wooten</option>
-          <option>Brandon Sterba</option>
-          <option>Scott Franklin</option>
-          <option>Jerry Scott</option>
-          <option>Theresa French</option>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;justify-content:space-between;">
+        <input type="text" id="savedSearch" placeholder="Keyword…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;width:160px;background:var(--white);color:var(--text);" />
+        <select id="savedRatingFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">⭐ Rating</option>
+          <option value="1">✅ Got a reply</option>
+          <option value="star">⭐ Good</option>
+          <option value="fire">🔥 Hottie</option>
+          <option value="trophy">🏆 WINNER</option>
         </select>
+        <select id="savedTouchFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">✉ Touch</option>
+          <option value="1">1 — Cold Intro</option>
+          <option value="2">2 — Bump</option>
+          <option value="3">3 — New Angle</option>
+          <option value="4">4 — Value Add</option>
+          <option value="5">5 — Handwritten</option>
+          <option value="6">6 — Value Add #2</option>
+          <option value="7">7 — Breakup</option>
+        </select>
+        <select id="savedRoleFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;max-width:160px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">👤 Role</option>
+          <option>Benefits Mgr/Dir.</option>
+          <option>CEO</option>
+          <option>COO</option>
+          <option>Gatekeeper</option>
+          <option>HR Manager</option>
+          <option>Office Manager</option>
+          <option>Operations Mgr.</option>
+          <option>Risk Manager</option>
+          <option>Sr. HR Director</option>
+          <option>Safety Director</option>
+          <option>Safety Manager</option>
+          <option>Transport Supervisor</option>
+        </select>
+        <select id="savedIndustryFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">🏭 Industry</option>
+          <option>Agriculture</option><option>Construction</option><option>Education</option>
+          <option>Emergency Services</option><option>Energy &amp; Utilities</option>
+          <option>Government &amp; Public Sector</option><option>Healthcare</option>
+          <option>High-Risk Industries</option><option>Manufacturing</option><option>Other</option>
+          <option>Professional Services</option><option>Service &amp; Retail</option>
+          <option>Technology</option><option>Transportation &amp; Logistics</option>
+        </select>
+        <button onclick="clearSavedFilters()" style="font-family:DM Sans,sans-serif;font-size:12px;padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;white-space:nowrap;margin-left:auto;">Clear</button>
+      </div>
+      <!-- RATING LEGEND -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;background:var(--gray-50);border-radius:var(--radius);margin-bottom:10px;font-size:13px;color:var(--text-soft);">
+        <span>✅ Got a reply</span>
+        <span>⭐ 1-4 replies &mdash; Getting traction</span>
+        <span>🔥 5-9 replies &mdash; Hot performer</span>
+        <span>🏆 WINNER (10+) &mdash; Hall of fame</span>
       </div>
       <div id="savedList" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
@@ -360,19 +401,6 @@
     </div>
   </div>
 
-    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-      <input type="text" id="savedSearch" placeholder="Search by company, role, or industry…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;flex:1;background:var(--white);color:var(--text);" />
-      <select id="savedRepFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:14px;padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius);outline:none;background:var(--white);color:var(--text);cursor:pointer;">
-        <option value="">All reps</option>
-        <option>Jacob Wooten</option>
-        <option>Brandon Sterba</option>
-        <option>Scott Franklin</option>
-        <option>Jerry Scott</option>
-        <option>Theresa French</option>
-      </select>
-    </div>
-    <div id="savedList" style="display:flex;flex-direction:column;gap:8px;"></div>
-  </div>
 
 </main>
 
@@ -936,20 +964,11 @@ async function sbUpvote(id, currentCount) {
 }
 
 async function sbFetch(rep, search) {
-  let url = SUPABASE_URL + '/rest/v1/saved_emails?order=reply_count.desc,created_at.desc&limit=100';
-  if (rep) url += '&rep=eq.' + encodeURIComponent(rep);
+  let url = SUPABASE_URL + '/rest/v1/saved_emails?order=reply_count.desc,created_at.desc&limit=200';
   const res = await fetch(url, {
     headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
   });
-  const data = await res.json();
-  if (!search) return data;
-  const q = search.toLowerCase();
-  return data.filter(r =>
-    (r.company||'').toLowerCase().includes(q) ||
-    (r.industry||'').toLowerCase().includes(q) ||
-    (r.role||'').toLowerCase().includes(q) ||
-    (r.subject||'').toLowerCase().includes(q)
-  );
+  return await res.json();
 }
 
 async function sbDelete(id) {
@@ -1022,6 +1041,15 @@ async function saveAllEmails() {
 // ============================================================
 // SAVED EMAILS PANEL
 // ============================================================
+function clearSavedFilters() {
+  document.getElementById('savedSearch').value = '';
+  document.getElementById('savedRatingFilter').value = '';
+  document.getElementById('savedTouchFilter').value = '';
+  document.getElementById('savedRoleFilter').value = '';
+  document.getElementById('savedIndustryFilter').value = '';
+  renderSaved();
+}
+
 function toggleSavedPanel() {
   const panel = document.getElementById('savedPanel');
   const btn = document.getElementById('savedToggleBtn');
@@ -1041,9 +1069,9 @@ async function openSavedPanel() {
 
 function replyBadge(count) {
   if (!count || count < 1) return '';
-  if (count >= 10) return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Hall of Fame!">&#128142;</span>';
-  if (count >= 5)  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Hot performer!">&#128293;</span>';
-  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' repl' + (count===1?'y':'ies') + ' — Getting traction!">&#11088;</span>';
+  if (count >= 10) return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — WINNER!">&#128142;</span>';
+  if (count >= 5)  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' replies — Hottie!">&#128293;</span>';
+  return '<span style="font-size:16px;margin-left:4px;" title="' + count + ' repl' + (count===1?'y':'ies') + ' — Good traction!">&#11088;</span>';
 }
 
 async function upvoteEmail(id, currentCount, btn) {
@@ -1051,10 +1079,10 @@ async function upvoteEmail(id, currentCount, btn) {
   btn.disabled = true;
   const ok = await sbUpvote(id, currentCount);
   if (ok) {
-    showToast('Reply recorded! ' + (currentCount + 1 >= 10 ? '💎' : currentCount + 1 >= 5 ? '🔥' : '⭐'), 'success');
+    showToast('Reply recorded! ' + (currentCount + 1 >= 10 ? '🏆 WINNER!' : currentCount + 1 >= 5 ? '🔥 Hottie!' : '⭐ Good traction!'), 'success');
     await renderSaved();
   } else {
-    btn.textContent = 'Got a reply! 👑';
+    btn.textContent = 'Got a reply! ✅';
     btn.disabled = false;
     showToast('Update failed. Try again.', 'error');
   }
@@ -1062,12 +1090,25 @@ async function upvoteEmail(id, currentCount, btn) {
 
 async function renderSaved() {
   const list = document.getElementById('savedList');
-  const rep = document.getElementById('savedRepFilter').value;
-  const search = document.getElementById('savedSearch').value;
+  const search = (document.getElementById('savedSearch').value || '').toLowerCase();
+  const ratingFilter = document.getElementById('savedRatingFilter').value;
+  const touchFilter = document.getElementById('savedTouchFilter').value;
+  const roleFilter = document.getElementById('savedRoleFilter').value;
+  const industryFilter = document.getElementById('savedIndustryFilter').value;
   list.innerHTML = '<div style="padding:1rem;color:var(--text-muted);font-size:14px;">Loading…</div>';
-  const data = await sbFetch(rep, search);
-  if (!data || data.length === 0) {
-    list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:14px;">No saved emails yet. Generate and save some!</div>';
+  let data = await sbFetch('', '');
+  if (!data) data = [];
+  // Client-side filters
+  if (search) data = data.filter(r => (r.company||'').toLowerCase().includes(search) || (r.industry||'').toLowerCase().includes(search) || (r.role||'').toLowerCase().includes(search) || (r.subject||'').toLowerCase().includes(search) || (r.email_body||'').toLowerCase().includes(search));
+  if (touchFilter) data = data.filter(r => String(r.touch_number) === touchFilter);
+  if (roleFilter) data = data.filter(r => r.role === roleFilter);
+  if (industryFilter) data = data.filter(r => r.industry === industryFilter);
+  if (ratingFilter === '1') data = data.filter(r => (r.reply_count||0) >= 1);
+  else if (ratingFilter === 'star') data = data.filter(r => (r.reply_count||0) >= 1 && (r.reply_count||0) < 5);
+  else if (ratingFilter === 'fire') data = data.filter(r => (r.reply_count||0) >= 5 && (r.reply_count||0) < 10);
+  else if (ratingFilter === 'trophy') data = data.filter(r => (r.reply_count||0) >= 10);
+  if (data.length === 0) {
+    list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:14px;">No saved emails match your filters.</div>';
     return;
   }
   list.innerHTML = data.map(r => {
@@ -1083,7 +1124,7 @@ async function renderSaved() {
       (r.subject ? '<div style="padding:8px 16px;border-bottom:1px solid var(--border);font-size:13px;"><strong style="color:var(--text-muted);font-weight:500;margin-right:6px;">Subject:</strong>' + escHtml(r.subject) + '</div>' : '') +
       '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(preview) + '</div>' +
       '<div style="padding:10px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">' +
-      '<button onclick="upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;">Got a reply! 👑</button>' +
+      '<button onclick="upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;">Got a reply! ✅</button>' +
       '<button onclick="copyFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Copy</button>' +
       '<button onclick="deleteFromLibrary(\'' + r.id + '\', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
       '</div></div>';
