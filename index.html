@@ -524,7 +524,25 @@ const stepInstructions = {
   7: `BREAKUP / FINAL EMAIL. Last in the sequence. Be warm, direct, a little self-aware. Acknowledge you've reached out a few times — don't guilt them. Leave the door wide open for the future. Optional: a touch of dry humor or personality. Very short — 2-3 sentences. Then a gracious close. No hard CTA.`,
 };
 
-function buildSystemPrompt(role) {
+const productIntel = {
+  'DOT Physicals': `DOT physicals are federally mandated under FMCSA for commercial drivers. The employer's fear is non-compliance — a driver operating without a valid medical certificate is a liability and a violation. Lead with speed, proximity (33 Ohio locations), and certified medical examiners. The CTA is always about convenience and compliance confidence. Never position this as optional.`,
+
+  'DOT Drug Tests': `DOT drug testing is legally required for safety-sensitive employees under DOT/FMCSA, FTA, FAA, and other modal agencies. Employers need a reliable MRO-backed program. The pain is chain-of-custody breakdowns, delayed results, and non-compliant vendors. Lead with compliance confidence, MRO backing, and fast turnaround. Safety Directors and Fleet Managers own this.`,
+
+  'NonDOT Physicals': `Non-DOT physicals are employer-discretion exams used for pre-employment clearance, annual health screening, or fit-for-duty determinations. HR and Operations own these. The pain is inconsistent documentation, slow turnaround, and unclear work restrictions. Lead with standardized protocols, fast results, and clear restriction communication back to HR.`,
+
+  'NonDOT Drug Tests': `Non-DOT drug testing is employer policy-driven. HR leads this. The pain is inconsistency — employees going to different locations, different collection standards, gaps in the chain of custody. Lead with consistent protocols, same-day collection at 33 Ohio locations, and reliable results that hold up in a disputed claim.`,
+
+  'Pre-Emp. Physical': `Pre-employment physicals are a hiring bottleneck. Every day a new hire waits for clearance is a day they might accept another offer. Operations and HR feel this. Lead with turnaround time and convenience — same-day appointments, no scheduling delays, clear fit-for-duty output. The CTA is about getting workers on the floor faster.`,
+
+  'T8 Physical': `A T-8 is an Ohio BWC workers' compensation exam used to document an injured worker's medical status, work restrictions, ability to return to work, maximum medical improvement, and need for continued treatment. It is ordered by employers, MCOs, claims adjusters, case managers, or attorneys. The buyer cares about clinical accuracy, proper documentation, and turnaround speed — because a well-documented T-8 accelerates return-to-work and reduces claim duration. Lead with BWC expertise, documentation quality, and Ohio-specific experience. This is NOT a general occ health pitch — it is a claims resolution conversation.`,
+
+  'TWC': `Total Workers\' Care (TWC) is a service delivery model — not a single product. When selling TWC, you are positioning Hometown UC as a strategic workforce health partner, not a transactional clinic. TWC bundles workers\' comp, injury care, physicals, drug screens, OSHA exams, return-to-work programs, case management, and wellness into one integrated employer relationship. The philosophy behind it is Total Worker Health® (a NIOSH framework), but TWC is the operational delivery model.
+
+CRITICAL FRAMING: Do NOT sell services. Sell outcomes: lower claims, fewer lost days, lower insurance premiums, higher retention, and productivity gains. The buyer for TWC is C-suite (CEO/COO) or Benefits Director. They don\'t buy urgent care — they buy workforce performance. Lead with cost and risk reduction. The CTA should invite a strategic conversation, not a service demo. Use language like \'workforce health partner\' not \'clinic.\'`
+};
+
+function buildSystemPrompt(role, product) {
   return `You are an expert B2B sales copywriter for Hometown Urgent Care — an urgent care network with 33 Ohio locations specializing in urgent care AND occupational health services for employers.
 
 SERVICES: DOT physicals, drug testing (pre-employment, random, post-accident, return-to-duty, MRO-backed), workers' comp injury care, return-to-work programs, pre-employment physicals, audiometry, pulmonary function testing, fit-for-duty evaluations, respirator clearance, OSHA compliance support.
@@ -539,6 +557,8 @@ ROLE INTELLIGENCE — ${role}:
 ${roleIntel[role] || 'Senior decision-maker. Be direct and concise. Lead with outcomes.'}
 
 CONTEXT RULE: If no additional prospect context is provided, use industry best practices for that specific industry to personalize the email — common work injury types, safety risks, and their impact on turnover, health and insurance costs, employee wellbeing, and productivity. Make the email feel researched even without explicit context.
+
+${product ? `PRODUCT FOCUS — ${product}:\n${productIntel[product] || "Focus on the specific service value and how it reduces employer cost or risk."}` : ""}
 
 WRITING RULES (NON-NEGOTIABLE):
 - Never open with "I hope this email finds you well"
@@ -628,7 +648,7 @@ ${stepInstructions[step]}`;
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 800,
-      system: buildSystemPrompt(fd.role),
+      system: buildSystemPrompt(fd.role, fd.product),
       messages: [{ role: 'user', content: userPrompt }]
     })
   });
