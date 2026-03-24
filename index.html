@@ -894,8 +894,8 @@ document.getElementById('setupBanner').style.display = 'none'; // permanently hi
 // ============================================================
 // SUPABASE CONFIG
 // ============================================================
-const SUPABASE_URL =  + SUPABASE_URL + ;
-const SUPABASE_KEY =  + SUPABASE_KEY + ;
+const SUPABASE_URL = 'https://cbhwmxcusytxswqaowkr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNiaHdteGN1c3l0eHN3cWFvd2tyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODE1OTksImV4cCI6MjA4OTk1NzU5OX0.rfUTqQ-b8P1n4Q0GJr0RQV7IuUrCusA3AQr2VMQ4vK0';
 
 async function sbInsert(record) {
   const res = await fetch(SUPABASE_URL + '/rest/v1/saved_emails', {
@@ -1064,7 +1064,7 @@ async function renderSaved() {
       '<div style="padding:14px 16px;font-size:14px;line-height:1.75;color:var(--text-soft);">' + escHtml(preview) + '</div>' +
       '<div style="padding:10px 16px;background:var(--gray-50);border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">' +
       '<button onclick="copyFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-soft);cursor:pointer;">Copy</button>' +
-      '<button onclick="deleteFromLibrary('' + r.id + '', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
+      '<button onclick="deleteFromLibrary(\'' + r.id + '\', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--red);cursor:pointer;">Delete</button>' +
       '</div></div>';
   }).join('');
 }
