@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hometown UC — Outreach Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red: #D01A38; --red-light: #FDEAED; --red-dark: #A01228;
+    --gray-50: #F9F8F6; --gray-100: #F1EFE8; --gray-200: #E0DED6;
+    --text: #1C1B18; --text-soft: #5F5E5A; --text-muted: #9A9890;
+    --border: #E0DED6; --white: #FFFFFF;
+    --radius: 10px; --radius-lg: 14px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+  /* HEADER */
+  .site-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 96px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+
+  .header-tag { font-size: 12px; background: #6B6A6A; color: white; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+
+  /* SETUP BANNER */
+  .setup-banner { background: #FFF8E7; border-bottom: 1px solid #E8D5A0; padding: 10px 2rem; }
+  .setup-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .setup-text { font-size: 13px; color: #6B4F00; }
+  .setup-text strong { font-weight: 600; }
+  .setup-link { font-size: 12px; font-weight: 500; color: #6B4F00; background: #F0D97A; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; text-decoration: none; }
+  .setup-link:hover { background: #E8C83A; }
+
+  /* LAYOUT */
+  .main { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+  .page-title { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 4px; }
+  .page-subtitle { font-size: 14px; color: var(--text-soft); margin-bottom: 2rem; }
+
+  /* CARDS */
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.25rem; }
+  .card-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+  /* REP SELECTOR */
+  .rep-bar { display: flex; align-items: center; gap: 12px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.5rem; margin-bottom: 1.25rem; }
+  .rep-bar label { font-size: 13px; font-weight: 500; color: var(--text-soft); white-space: nowrap; }
+  .rep-bar select { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--text); background: var(--gray-50); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 32px 8px 12px; outline: none; cursor: pointer; flex: 1; max-width: 280px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239A9890' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; -webkit-appearance: none; }
+  .rep-bar select:focus { border-color: var(--red); }
+  .rep-status { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+  .rep-status.active { color: #3B6D11; font-weight: 500; }
+
+  /* FORM GRID */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--text-soft); }
+  .field label .opt { font-weight: 400; color: var(--text-muted); font-size: 11px; }
+  .field input, .field select, .field textarea {
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--gray-50); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 9px 12px; width: 100%; transition: border-color 0.15s, background 0.15s; outline: none; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--red); background: var(--white); }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239A9890' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+  .field textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+
+  /* SEQUENCE SELECTOR */
+  .sequence-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+  .seq-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--gray-50); cursor: pointer; transition: all 0.15s; text-align: center; }
+  .seq-btn:hover { border-color: #6B6A6A; background: #EFEFEF; }
+  .seq-btn.active { border-color: #4a4949; background: #E8E8E8; box-shadow: 0 0 0 2px rgba(74,73,73,0.15); }
+  .seq-num { font-size: 18px; font-weight: 600; color: #4a4949; font-family: 'DM Serif Display', serif; line-height: 1; }
+  .seq-type { font-size: 10px; font-weight: 500; color: var(--text-soft); line-height: 1.3; }
+  .seq-btn.active .seq-type { color: #333232; }
+
+  /* BUTTONS */
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .btn-primary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: white; background: var(--red); border: none; border-radius: var(--radius); padding: 12px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+  .btn-primary:hover { background: var(--red-dark); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .btn-secondary { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: white; background: #4a4949; border: none; border-radius: var(--radius); padding: 12px; cursor: pointer; transition: all 0.15s; }
+  .btn-secondary:hover { background: #333232; }
+  .btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* SINGLE OUTPUT */
+  .output-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-top: 1.25rem; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+  .output-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; background: var(--gray-50); border-bottom: 1px solid var(--border); }
+  .output-meta { display: flex; align-items: center; gap: 10px; }
+  .output-badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; background: var(--red-light); color: var(--red); }
+  .output-desc { font-size: 13px; color: var(--text-soft); }
+  .copy-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-soft); cursor: pointer; transition: all 0.15s; }
+  .copy-btn:hover { border-color: var(--red); color: var(--red); }
+  .copy-btn.copied { background: #EAF3DE; border-color: #3B6D11; color: #3B6D11; }
+  .subject-row { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .subject-row strong { color: var(--text-muted); font-weight: 500; margin-right: 6px; }
+  .output-body { padding: 20px 16px; font-size: 14px; line-height: 1.85; color: var(--text); white-space: pre-wrap; min-height: 80px; }
+  .output-body.hw { font-family: 'DM Serif Display', serif; font-size: 15px; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; padding: 24px 28px; }
+  .hw-hint { font-size: 12px; color: var(--text-muted); padding: 8px 16px 12px; border-top: 1px dashed var(--border); }
+
+  /* LOADER */
+  .loader { display: flex; align-items: center; gap: 10px; padding: 18px 16px; font-size: 13px; color: var(--text-muted); }
+  .dots { display: flex; gap: 4px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1.2s ease-in-out infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+  .error-msg { padding: 16px; font-size: 13px; color: var(--red); }
+
+  /* FULL SEQUENCE */
+  .seq-section { margin-top: 2rem; }
+  .seq-section-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 1rem; color: var(--text); display: flex; align-items: center; gap: 10px; }
+  .seq-section-title .badge { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; background: var(--red-light); color: var(--red); padding: 3px 10px; border-radius: 20px; }
+  .seq-progress { background: var(--gray-100); border-radius: var(--radius); height: 6px; margin-bottom: 1.5rem; overflow: hidden; }
+  .seq-progress-bar { height: 100%; background: var(--red); border-radius: var(--radius); transition: width 0.4s ease; width: 0%; }
+  .seq-progress-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; margin-bottom: 1.25rem; }
+
+  /* ACCORDION */
+  .accordion { display: flex; flex-direction: column; gap: 8px; }
+  .acc-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .acc-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; transition: background 0.12s; user-select: none; }
+  .acc-header:hover { background: var(--gray-50); }
+  .acc-num { width: 28px; height: 28px; background: var(--red-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--red); font-weight: 600; flex-shrink: 0; }
+  .acc-label { flex: 1; }
+  .acc-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .acc-subtitle { font-size: 12px; color: var(--text-muted); }
+  .acc-status { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+  .acc-status.pending { background: var(--gray-100); color: var(--text-muted); }
+  .acc-status.generating { background: #FFF8E7; color: #8B6000; }
+  .acc-status.done { background: #EAF3DE; color: #3B6D11; }
+  .acc-status.error { background: var(--red-light); color: var(--red); }
+  .acc-chevron { color: var(--text-muted); font-size: 12px; transition: transform 0.2s; }
+  .acc-item.open .acc-chevron { transform: rotate(180deg); }
+  .acc-copy { font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-soft); cursor: pointer; }
+  .acc-copy:hover { border-color: var(--red); color: var(--red); }
+  .acc-copy.copied { background: #EAF3DE; border-color: #3B6D11; color: #3B6D11; }
+  .acc-body { display: none; border-top: 1px solid var(--border); }
+  .acc-item.open .acc-body { display: block; }
+  .acc-subject { padding: 9px 16px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-soft); background: var(--gray-50); }
+  .acc-subject strong { font-weight: 500; color: var(--text-muted); margin-right: 5px; }
+  .acc-content { padding: 16px; font-size: 13px; line-height: 1.85; white-space: pre-wrap; color: var(--text); }
+  .acc-content.hw { font-family: 'DM Serif Display', serif; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; font-size: 14px; padding: 20px 24px; }
+
+  /* PRINT ALL */
+  .print-row { display: flex; justify-content: flex-end; margin-top: 12px; gap: 8px; }
+  .print-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-soft); background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; cursor: pointer; transition: all 0.15s; }
+  .print-btn:hover { border-color: var(--text-soft); color: var(--text); }
+
+  /* MODAL (Setup instructions) */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--white); border-radius: var(--radius-lg); max-width: 620px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--white); }
+  .modal-header h2 { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 0 4px; line-height: 1; }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 1.5rem; }
+  .step-block { margin-bottom: 1.5rem; }
+  .step-block h3 { font-size: 14px; font-weight: 600; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .step-num-sm { width: 22px; height: 22px; background: var(--red); border-radius: 50%; color: white; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
+  .step-block p { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 8px; }
+  .code-block { background: var(--gray-50); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-family: monospace; font-size: 12px; color: var(--text); white-space: pre-wrap; word-break: break-all; margin: 8px 0; position: relative; }
+  .code-copy { position: absolute; top: 8px; right: 8px; font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: var(--text-soft); }
+  .code-copy:hover { color: var(--red); border-color: var(--red); }
+  .url-field { display: flex; gap: 8px; margin-top: 8px; }
+  .url-field input { flex: 1; font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; color: var(--text); background: var(--gray-50); }
+  .url-field input:focus { border-color: var(--red); background: var(--white); }
+  .url-save { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 14px; background: var(--red); color: white; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+  .url-save:hover { background: var(--red-dark); }
+  .url-saved { font-size: 12px; color: #3B6D11; margin-top: 4px; display: none; }
+
+  /* NOTIFICATION TOAST */
+  .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #2C2C2A; color: white; font-size: 13px; padding: 10px 16px; border-radius: 8px; z-index: 300; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; max-width: 320px; }
+  .toast.show { opacity: 1; transform: none; }
+  .toast.success { background: #27500A; }
+  .toast.error { background: var(--red-dark); }
+
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .field.full { grid-column: 1; }
+    .sequence-grid { grid-template-columns: repeat(4, 1fr); }
+    .btn-row { grid-template-columns: 1fr; }
+    .main { padding: 1.5rem 1rem 3rem; }
+  }
+
+  @media print {
+    .site-header, .setup-banner, .btn-row, .seq-btn, .sequence-grid, .card, .rep-bar, .gen-btn { display: none !important; }
+    .acc-body { display: block !important; }
+    .acc-copy, .print-row, .acc-status { display: none !important; }
+    .acc-item { border: none; border-bottom: 1px solid #ddd; border-radius: 0; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <img src="data:image/png;base64,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" alt="Hometown Urgent Care" style="height:80px;width:auto;"/>
+      <div style="display:flex;flex-direction:column;line-height:1.2">
+        <span style="font-size:18px;font-weight:600;color:#1C1B18">Hometown Urgent Care</span>
+        <span style="font-size:15px;font-weight:500;color:#D01A38">&amp; Occupational Health</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center"><span class="header-tag">Occupational Health Outreach</span><a href="/objections.html" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid #E0DED6;background:#4a4949;color:white;text-decoration:none;white-space:nowrap;">Objection Handler &#8594;</a></div>
+  </div>
+</header>
+
+<div class="setup-banner" id="setupBanner">
+  <div class="setup-inner">
+    <div class="setup-text"><strong>Setup required:</strong> Connect Google Sheets to enable activity tracking &amp; rep logging.</div>
+    <button class="setup-link" onclick="openSetup()">Setup guide &rarr;</button>
+  </div>
+</div>
+
+<main class="main">
+  <h1 class="page-title">Outreach Email Generator</h1>
+  <p class="page-subtitle">Build customized, role-specific prospecting emails — cold to close, in 7 touches.</p>
+
+  <!-- SEQUENCE SELECTOR -->
+  <div class="card">
+    <div class="card-title">Select your outreach touch</div>
+    <div class="sequence-grid" id="seqGrid">
+      <button class="seq-btn active" data-step="1" onclick="selectStep(1)"><span class="seq-num">1</span><span class="seq-type">Cold Intro</span></button>
+      <button class="seq-btn" data-step="2" onclick="selectStep(2)"><span class="seq-num">2</span><span class="seq-type">Bump / Missed</span></button>
+      <button class="seq-btn" data-step="3" onclick="selectStep(3)"><span class="seq-num">3</span><span class="seq-type">New Angle</span></button>
+      <button class="seq-btn" data-step="4" onclick="selectStep(4)"><span class="seq-num">4</span><span class="seq-type">Value Add</span></button>
+      <button class="seq-btn" data-step="5" onclick="selectStep(5)"><span class="seq-num">5</span><span class="seq-type">Handwritten</span></button>
+      <button class="seq-btn" data-step="6" onclick="selectStep(6)"><span class="seq-num">6</span><span class="seq-type">Value Add #2</span></button>
+      <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="card">
+    <div class="card-title">Prospect details</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Industry</label>
+        <select id="industry">
+          <option value="">Select an industry…</option>
+          <option>Agriculture</option>
+          <option>Construction</option>
+          <option>Education</option>
+          <option>Emergency Services</option>
+          <option>Energy &amp; Utilities</option>
+          <option>Government &amp; Public Sector</option>
+          <option>Healthcare</option>
+          <option>High-Risk Industries</option>
+          <option>Manufacturing</option>
+          <option>Other</option>
+          <option>Professional Services</option>
+          <option>Service &amp; Retail</option>
+          <option>Technology</option>
+          <option>Transportation &amp; Logistics</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Prospect role</label>
+        <select id="role">
+          <option value="">Select a role…</option>
+          <option>Gatekeeper / Admin / Office Manager</option>
+          <option>HR Manager or HR Director</option>
+          <option>Safety Manager</option>
+          <option>Safety Director</option>
+          <option>CEO</option>
+          <option>COO</option>
+          <option>Benefits Manager or Benefits Director</option>
+          <option>Risk Manager</option>
+          <option>Operations Manager</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Name of Prospect Company</label>
+        <input type="text" id="company" placeholder="e.g. Acme Logistics" />
+      </div>
+      <div class="field full">
+        <label>Additional relevant context based on your research of this prospect:<br><span class="opt">(pain points, referral source, prior contact, recent news, known safety issues…)</span></label>
+        <textarea id="context" placeholder="e.g. High injury rate in warehouse, referred by John at XYZ, recently switched providers…  Leave blank to use industry best practices."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- REP SELECTOR -->
+  <div class="rep-bar">
+    <label for="repSelect">Rep:</label>
+    <select id="repSelect" onchange="onRepChange()">
+      <option value="">— Select your name —</option>
+      <!-- ============================================================
+           THERESA: ADD OR EDIT REP NAMES BELOW
+           Format: <option value="Rep Name">Rep Name</option>
+           ============================================================ -->
+      <option value="Jacob Wooten">Jacob Wooten</option>
+      <option value="Brandon Sterba">Brandon Sterba</option>
+      <option value="Scott Franklin">Scott Franklin</option>
+      <option value="Jerry Scott">Jerry Scott</option>
+      <option value="Theresa French">Theresa French</option>
+    </select>
+    <span class="rep-status" id="repStatus">Select your name to begin</span>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btn-row">
+    <button class="btn-primary" id="genSingleBtn" onclick="generateSingle()">Generate touch #<span id="btnStep">1</span> — Cold Intro</button>
+    <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()">Generate full 7-touch sequence ↓</button>
+  </div>
+
+  <!-- SINGLE TOUCH OUTPUT -->
+  <div class="output-card" id="outputCard" style="display:none;">
+    <div class="output-header">
+      <div class="output-meta">
+        <span class="output-badge" id="outputBadge">Touch 1</span>
+        <span class="output-desc" id="outputDesc">Cold Intro Email</span>
+      </div>
+      <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
+    </div>
+    <div class="subject-row" id="subjectRow" style="display:none;">
+      <strong>Subject:</strong><span id="subjectText"></span>
+    </div>
+    <div class="output-body" id="outputBody"></div>
+    <div class="hw-hint" id="hwHint" style="display:none;">Tip: Write this on a branded notecard or postcard with a pen. Handwritten mail gets opened.</div>
+  </div>
+
+  <!-- FULL SEQUENCE OUTPUT -->
+  <div class="seq-section" id="seqSection" style="display:none;">
+    <div class="seq-section-title">
+      Full 7-Touch Sequence
+      <span class="badge" id="seqProgressBadge">Generating…</span>
+    </div>
+    <div class="seq-progress"><div class="seq-progress-bar" id="seqProgressBar"></div></div>
+    <div class="seq-progress-label" id="seqProgressLabel">Starting…</div>
+    <div class="accordion" id="accordion"></div>
+    <div class="print-row" id="printRow" style="display:none;">
+      <button class="print-btn" onclick="copyAllEmails()">Copy all to clipboard</button>
+      <button class="print-btn" onclick="window.print()">Print sequence</button>
+    </div>
+  </div>
+</main>
+
+<!-- SETUP MODAL -->
+<div class="modal-overlay hidden" id="setupModal" onclick="closeSetupIfOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Google Sheets Setup — Activity Tracking</h2>
+      <button class="modal-close" onclick="closeSetup()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:15px;color:var(--text-soft);margin-bottom:1.5rem;">This one-time setup takes about 5 minutes. After setup, every email generated will be logged automatically — rep name, prospect details, touch number, and timestamp.</p>
+
+      <div class="step-block">
+        <h3><span class="step-num-sm">1</span> Create your Google Sheet</h3>
+        <p>Go to <a href="https://sheets.google.com" target="_blank" style="color:var(--red);">sheets.google.com</a> and create a new spreadsheet. Name it <strong>"Hometown UC Outreach Log"</strong> or similar. Leave it open.</p>
+      </div>
+
+      <div class="step-block">
+        <h3><span class="step-num-sm">2</span> Open Apps Script</h3>
+        <p>In your sheet, click <strong>Extensions → Apps Script</strong>. Delete any default code and paste this exactly:</p>
+        <div class="code-block" id="appsScriptCode">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['Timestamp','Rep Name','Touch #','Touch Type',
+        'Industry','Prospect Role','Company','Context','Sequence Type']);
+    }
+    sheet.appendRow([
+      data.timestamp, data.rep, data.touchNumber, data.touchType,
+      data.industry, data.role, data.company, data.context, data.sequenceType
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error',message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}<button class="code-copy" onclick="copyCode('appsScriptCode',this)">Copy</button></div>
+      </div>
+
+      <div class="step-block">
+        <h3><span class="step-num-sm">3</span> Deploy the script</h3>
+        <p>Click <strong>Deploy → New deployment</strong>. Select type: <strong>Web app</strong>. Set:</p>
+        <p>• Execute as: <strong>Me</strong><br>• Who has access: <strong>Anyone</strong></p>
+        <p>Click <strong>Deploy</strong>, authorize when prompted, then copy the <strong>Web app URL</strong> it gives you.</p>
+      </div>
+
+      <div class="step-block">
+        <h3><span class="step-num-sm">4</span> Paste your Web App URL here</h3>
+        <p>Paste the URL from step 3 below. It will be saved to this browser so logging activates immediately.</p>
+        <div class="url-field">
+          <input type="text" id="sheetsUrlInput" placeholder="https://script.google.com/macros/s/…/exec" />
+          <button class="url-save" onclick="saveSheetUrl()">Save &amp; Activate</button>
+        </div>
+        <div class="url-saved" id="urlSaved">Saved! Logging is now active.</div>
+      </div>
+
+      <div class="step-block">
+        <h3><span class="step-num-sm">5</span> Update rep names in the HTML</h3>
+        <p>Open the HTML file in a text editor (Notepad, TextEdit, VS Code). Find the comment that says <strong>THERESA: ADD OR EDIT REP NAMES BELOW</strong> and replace the placeholder names with your actual rep names. Save and re-distribute the file.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG — automatically loaded from localStorage
+// ============================================================
+let SHEETS_URL = 'https://script.google.com/macros/s/AKfycby5KEti-RDpAytjhEK3tRZJN6_u3cFPJ4URLPpKFiwON9Hf3MTfnxY40o4jT5kTQUEwPA/exec';
+let currentStep = 1;
+
+const stepMeta = {
+  1: { label:'Cold Intro',       desc:'Cold Intro Email',                  isHW: false },
+  2: { label:'Bump / Missed',    desc:'"You May Have Missed This" Email',   isHW: false },
+  3: { label:'New Angle',        desc:'New Problem Angle Email',            isHW: false },
+  4: { label:'Value Add',        desc:'Value-Add Email',                    isHW: false },
+  5: { label:'Handwritten',      desc:'Postcard / Handwritten Letter',      isHW: true  },
+  6: { label:'Value Add #2',     desc:'Second Value-Add Email',             isHW: false },
+  7: { label:'Breakup',          desc:'Breakup / Final Email',              isHW: false },
+};
+
+const roleIntel = {
+  'Gatekeeper / Admin / Office Manager': `Their job is to filter and protect. Do NOT oversell. Be brief, human, respectful. Acknowledge their role. Ask them to connect you with the right person. Three sentences max in the body. No jargon.`,
+  'HR Manager or HR Director': `Cares about OSHA compliance, workers' comp cost management, onboarding physicals, FMLA overlap, injury documentation burden, and employee wellbeing. Feels the administrative weight of every claim. Speak to reducing paperwork and liability exposure.`,
+  'Safety Manager': `Lives in OSHA logs, post-accident testing, modified duty, and incident reduction. Cares about DART and TRIR rates, quick post-accident drug testing and medical care, and having the right provider on file BEFORE the accident. Speak operationally.`,
+  'Safety Director': `Strategic thinker. Cares about program-level outcomes, injury prevention culture, regulatory risk across multiple sites, and ROI on safety investments. Wants a partner, not a vendor. Speak to outcomes and data.`,
+  'CEO': `Bottom line. Workers' comp is a cost they hate. Lost productivity, liability, and insurance premiums matter. Keep it extremely short. Make it feel like a peer conversation. One problem, one idea, one ask.`,
+  'COO': `Operational continuity is everything. An injured worker off the floor costs more than their wage. Cares about fast return-to-work, minimal administrative disruption, and vendors who are easy to work with. Speak to speed and seamlessness.`,
+  'Benefits Manager or Benefits Director': `Lives at the intersection of health benefits, wellness programs, and occupational health. Cares about utilization, employee satisfaction, cost containment, and pre-tax benefit strategies. Open to Total Worker Health conversations.`,
+  'Risk Manager': `Owns the EMR (experience modification rate), claim frequency and severity, insurance premiums, and litigation risk. Speak the language of claim cost reduction, documentation quality, and early intervention.`,
+  'Operations Manager': `Keeps production running. An injury is a gap on the floor. Cares about how fast a worker can be treated, tested, and cleared. Wants a clinic that's close, fast, and communicates back clearly. Be practical and direct.`,
+};
+
+const stepInstructions = {
+  1: `COLD FIRST TOUCH. Prospect has never heard from this rep. Goal: earn a reply or a 15-min call/drop-in. Open with something specific to their role and industry that makes them feel instantly understood. No "I hope this email finds you well." No "My name is X." 3-4 sentence body max. One CTA only.`,
+  2: `BUMP — "YOU MAY HAVE MISSED THIS." First email went unanswered. Do NOT be apologetic. Reference the prior outreach briefly, then pivot with a new hook or stat that makes this feel fresh and timely. Shorter than touch 1. 2-3 sentence body. Light tone. One CTA.`,
+  3: `NEW ANGLE. Surface a DIFFERENT pain point than touches 1-2 — a secondary cost or risk specific to their role and industry. Open with a question, a stat, or a scenario. Be intellectually interesting. 3-4 sentences. One CTA.`,
+  4: `VALUE ADD. Give them something without asking for much in return — a relevant industry stat, a compliance insight, an OSHA update, an injury rate benchmark, or a quick return-to-work tip. Lead with the value, then a soft natural CTA. 2-3 sentences of value, then the ask.`,
+  5: `HANDWRITTEN NOTECARD. Absolute maximum 350 characters total — short enough to hand-write in 60 seconds. Format: template note on line 1: "— Write on branded notecard. Use pen. —" then the card text. Start "Hi [First Name]," then ONE sentence about a real pain in their industry, then ONE sentence soft CTA mentioning Hometown UC. Sign off with rep name and phone. No filler. Count every character.`,
+  6: `SECOND VALUE ADD. More substantial than touch 4. Use a scenario framing: "A company similar to yours in [industry]…" or a direct cost concept, or a specific risk they may be carrying right now. Should make them think "I should actually respond." 3-4 sentences. Soft but direct CTA.`,
+  7: `BREAKUP / FINAL EMAIL. Last in the sequence. Be warm, direct, a little self-aware. Acknowledge you've reached out a few times — don't guilt them. Leave the door wide open for the future. Optional: a touch of dry humor or personality. Very short — 2-3 sentences. Then a gracious close. No hard CTA.`,
+};
+
+function buildSystemPrompt(role) {
+  return `You are an expert B2B sales copywriter for Hometown Urgent Care — an urgent care network with 33 Ohio locations specializing in urgent care AND occupational health services for employers.
+
+SERVICES: DOT physicals, drug testing (pre-employment, random, post-accident, return-to-duty, MRO-backed), workers' comp injury care, return-to-work programs, pre-employment physicals, audiometry, pulmonary function testing, fit-for-duty evaluations, respirator clearance, OSHA compliance support.
+
+KEY DIFFERENTIATORS:
+- 33 Ohio locations — convenient for multi-site employers
+- Proactive employer partnership, not just reactive injury treatment
+- Faster RTW, shorter claim duration, better communication back to employer
+- One point of contact, consistent documentation, compliance-ready records
+
+ROLE INTELLIGENCE — ${role}:
+${roleIntel[role] || 'Senior decision-maker. Be direct and concise. Lead with outcomes.'}
+
+CONTEXT RULE: If no additional prospect context is provided, use industry best practices for that specific industry to personalize the email — common work injury types, safety risks, and their impact on turnover, health and insurance costs, employee wellbeing, and productivity. Make the email feel researched even without explicit context.
+
+WRITING RULES (NON-NEGOTIABLE):
+- Never open with "I hope this email finds you well"
+- Never open "My name is X and I work for Y"
+- Lead with their world — a pain, a cost, a risk — not ours
+- Body: 4 sentences max (except handwritten templates)
+- One CTA only — never two asks
+- Tone: confident, direct, human — never corporate or sycophantic
+- No buzzwords (synergy, solutions, seamless, etc.)
+- Subject lines: specific, intriguing, role-aware — never "Quick question" or "Following up"
+
+FOR EMAIL OUTPUT: Return exactly:
+SUBJECT: [subject line]
+
+[Email body — plain text, no markdown, no asterisks, ready to paste]
+
+FOR HANDWRITTEN OUTPUT: Start with the template note line, then the card text. No subject line.`;
+}
+
+// ============================================================
+// UI FUNCTIONS
+// ============================================================
+function onRepChange() {
+  const rep = document.getElementById('repSelect').value;
+  const status = document.getElementById('repStatus');
+  if (rep) {
+    status.textContent = 'Ready to generate';
+    status.className = 'rep-status active';
+  } else {
+    status.textContent = 'Select your name to begin';
+    status.className = 'rep-status';
+  }
+}
+
+function selectStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.seq-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-step="${n}"]`).classList.add('active');
+  document.getElementById('btnStep').textContent = n;
+  document.getElementById('genSingleBtn').textContent = `Generate touch #${n} — ${stepMeta[n].label}`;
+  document.getElementById('outputCard').style.display = 'none';
+}
+
+function validateForm() {
+  const rep = document.getElementById('repSelect').value;
+  const industry = document.getElementById('industry').value.trim();
+  const role = document.getElementById('role').value;
+  if (!rep) { showToast('Please select your name first.', 'error'); return false; }
+  if (!industry) { showToast('Please select an industry.', 'error'); return false; }
+  if (!role) { showToast('Please select a prospect role.', 'error'); return false; }
+  return true;
+}
+
+function getFormData() {
+  return {
+    rep: document.getElementById('repSelect').value,
+    industry: document.getElementById('industry').value.trim(),
+    role: document.getElementById('role').value,
+    company: document.getElementById('company').value.trim(),
+    context: document.getElementById('context').value.trim(),
+  };
+}
+
+// ============================================================
+// API CALL
+// ============================================================
+async function callClaude(step, fd) {
+  const signOff = [
+    fd.rep ? fd.rep : null,
+  ].filter(Boolean).join(' · ');
+
+  const userPrompt = `Write touch #${step} for:
+Industry: ${fd.industry}
+Prospect role: ${fd.role}
+${fd.company ? `Company: ${fd.company}` : ''}
+${fd.context ? `Context: ${fd.context}` : ''}
+${signOff ? `Rep sign-off info: ${signOff}` : ''}
+
+STEP INSTRUCTIONS:
+${stepInstructions[step]}`;
+
+  const res = await fetch('/.netlify/functions/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 800,
+      system: buildSystemPrompt(fd.role),
+      messages: [{ role: 'user', content: userPrompt }]
+    })
+  });
+  const data = await res.json();
+  return (data.content?.[0]?.text || '').trim();
+}
+
+// ============================================================
+// LOG TO GOOGLE SHEETS
+// ============================================================
+function logToSheets(fd, touchNumber, touchType, sequenceType) {
+  if (!SHEETS_URL) return;
+  const payload = {
+    timestamp: new Date().toLocaleString('en-US'),
+    rep: fd.rep,
+    touchNumber: touchNumber,
+    touchType: touchType,
+    industry: fd.industry,
+    role: fd.role,
+    company: fd.company || '—',
+    context: fd.context || '—',
+    sequenceType: sequenceType
+  };
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+}
+
+// ============================================================
+// GENERATE SINGLE TOUCH
+// ============================================================
+async function generateSingle() {
+  if (!validateForm()) return;
+  const fd = getFormData();
+  const step = currentStep;
+  const meta = stepMeta[step];
+  const btn = document.getElementById('genSingleBtn');
+  const card = document.getElementById('outputCard');
+  const body = document.getElementById('outputBody');
+  const subjectRow = document.getElementById('subjectRow');
+  const hwHint = document.getElementById('hwHint');
+
+  btn.disabled = true;
+  card.style.display = 'block';
+  body.className = 'output-body';
+  subjectRow.style.display = 'none';
+  hwHint.style.display = 'none';
+  document.getElementById('outputBadge').textContent = `Touch ${step}`;
+  document.getElementById('outputDesc').textContent = meta.desc;
+  body.innerHTML = loader(`Writing touch #${step}…`);
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  try {
+    const text = await callClaude(step, fd);
+    if (meta.isHW) {
+      body.className = 'output-body hw';
+      body.textContent = text;
+      hwHint.style.display = 'block';
+    } else {
+      const subjectMatch = text.match(/^SUBJECT:\s*(.+)/m);
+      const emailBody = text.replace(/^SUBJECT:\s*.+\n+/m, '').trim();
+      if (subjectMatch) {
+        subjectRow.style.display = 'block';
+        document.getElementById('subjectText').textContent = ' ' + subjectMatch[1];
+      }
+      body.textContent = emailBody;
+    }
+    document.getElementById('copyBtn').textContent = 'Copy';
+    document.getElementById('copyBtn').className = 'copy-btn';
+    logToSheets(fd, step, meta.label, 'Single touch');
+    showToast('Email generated and logged.', 'success');
+  } catch(err) {
+    body.innerHTML = `<div class="error-msg">Error: ${err.message}. Please try again.</div>`;
+  }
+  btn.disabled = false;
+}
+
+// ============================================================
+// GENERATE FULL SEQUENCE
+// ============================================================
+async function generateFullSequence() {
+  if (!validateForm()) return;
+  const fd = getFormData();
+  const allBtn = document.getElementById('genAllBtn');
+  const section = document.getElementById('seqSection');
+  const accordion = document.getElementById('accordion');
+  const progressBar = document.getElementById('seqProgressBar');
+  const progressLabel = document.getElementById('seqProgressLabel');
+  const badge = document.getElementById('seqProgressBadge');
+  const printRow = document.getElementById('printRow');
+
+  allBtn.disabled = true;
+  document.getElementById('genSingleBtn').disabled = true;
+  section.style.display = 'block';
+  accordion.innerHTML = '';
+  printRow.style.display = 'none';
+  badge.textContent = 'Generating…';
+  progressBar.style.width = '0%';
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Build placeholder accordion items
+  for (let s = 1; s <= 7; s++) {
+    accordion.innerHTML += buildAccordionItem(s, 'pending', null, null);
+  }
+
+  let completed = 0;
+  const results = {};
+
+  for (let s = 1; s <= 7; s++) {
+    const item = document.getElementById(`acc-${s}`);
+    const statusEl = document.getElementById(`acc-status-${s}`);
+    statusEl.textContent = 'Generating…';
+    statusEl.className = 'acc-status generating';
+
+    progressLabel.textContent = `Generating touch ${s} of 7 — ${stepMeta[s].label}…`;
+
+    try {
+      const text = await callClaude(s, fd);
+      results[s] = text;
+      updateAccordionItem(s, text);
+      statusEl.textContent = 'Ready';
+      statusEl.className = 'acc-status done';
+      logToSheets(fd, s, stepMeta[s].label, 'Full sequence');
+    } catch(err) {
+      statusEl.textContent = 'Error';
+      statusEl.className = 'acc-status error';
+      document.getElementById(`acc-body-${s}`).innerHTML = `<div class="acc-content" style="color:var(--red)">Error generating this touch. Please try the single touch generator for this step.</div>`;
+    }
+
+    completed++;
+    const pct = Math.round((completed / 7) * 100);
+    progressBar.style.width = pct + '%';
+  }
+
+  progressLabel.textContent = `All 7 touches generated for ${fd.company || fd.role} in ${fd.industry}.`;
+  badge.textContent = 'Complete';
+  badge.style.background = '#EAF3DE';
+  badge.style.color = '#3B6D11';
+  printRow.style.display = 'flex';
+  allBtn.disabled = false;
+  document.getElementById('genSingleBtn').disabled = false;
+  showToast('Full sequence generated and logged!', 'success');
+}
+
+function buildAccordionItem(s, status, subject, body) {
+  const meta = stepMeta[s];
+  return `<div class="acc-item" id="acc-${s}">
+    <div class="acc-header" onclick="toggleAcc(${s})">
+      <div class="acc-num">${s}</div>
+      <div class="acc-label">
+        <div class="acc-title">${meta.label}</div>
+        <div class="acc-subtitle">${meta.desc}</div>
+      </div>
+      <span class="acc-status pending" id="acc-status-${s}">Pending</span>
+      <button class="acc-copy" id="acc-copy-${s}" onclick="event.stopPropagation();copyAccItem(${s})" style="display:none;">Copy</button>
+      <span class="acc-chevron">&#9660;</span>
+    </div>
+    <div class="acc-body" id="acc-body-${s}">
+      ${loader(`Writing touch ${s}…`)}
+    </div>
+  </div>`;
+}
+
+function updateAccordionItem(s, text) {
+  const meta = stepMeta[s];
+  const bodyEl = document.getElementById(`acc-body-${s}`);
+  const copyBtn = document.getElementById(`acc-copy-${s}`);
+  copyBtn.style.display = 'inline-block';
+
+  if (meta.isHW) {
+    bodyEl.innerHTML = `<div class="acc-content hw">${escHtml(text)}</div>
+      <div class="hw-hint" style="font-size:14px;color:var(--text-muted);padding:8px 16px 10px;border-top:1px dashed var(--border);">Write this on a branded notecard or postcard with a pen.</div>`;
+  } else {
+    const subjectMatch = text.match(/^SUBJECT:\s*(.+)/m);
+    const emailBody = text.replace(/^SUBJECT:\s*.+\n+/m, '').trim();
+    const subjectHtml = subjectMatch
+      ? `<div class="acc-subject"><strong>Subject:</strong> ${escHtml(subjectMatch[1])}</div>`
+      : '';
+    bodyEl.innerHTML = subjectHtml + `<div class="acc-content">${escHtml(emailBody)}</div>`;
+  }
+
+  // Auto-open first item
+  if (s === 1) {
+    document.getElementById(`acc-${s}`).classList.add('open');
+  }
+}
+
+function toggleAcc(s) {
+  const item = document.getElementById(`acc-${s}`);
+  item.classList.toggle('open');
+}
+
+function copyAccItem(s) {
+  const bodyEl = document.getElementById(`acc-body-${s}`);
+  const subjectEl = bodyEl.querySelector('.acc-subject');
+  const contentEl = bodyEl.querySelector('.acc-content');
+  const subjectText = subjectEl ? 'Subject: ' + subjectEl.textContent.replace('Subject: ', '').trim() + '\n\n' : '';
+  const bodyText = contentEl ? contentEl.textContent.trim() : '';
+  navigator.clipboard.writeText(subjectText + bodyText).then(() => {
+    const btn = document.getElementById(`acc-copy-${s}`);
+    btn.textContent = 'Copied!';
+    btn.className = 'acc-copy copied';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.className = 'acc-copy'; }, 2000);
+  });
+}
+
+function copyAllEmails() {
+  const items = [];
+  for (let s = 1; s <= 7; s++) {
+    const bodyEl = document.getElementById(`acc-body-${s}`);
+    if (!bodyEl) continue;
+    const subjectEl = bodyEl.querySelector('.acc-subject');
+    const contentEl = bodyEl.querySelector('.acc-content');
+    if (!contentEl) continue;
+    const subject = subjectEl ? 'Subject: ' + subjectEl.textContent.replace('Subject: ', '').trim() + '\n' : '';
+    items.push(`--- TOUCH ${s}: ${stepMeta[s].label.toUpperCase()} ---\n${subject}\n${contentEl.textContent.trim()}`);
+  }
+  navigator.clipboard.writeText(items.join('\n\n')).then(() => showToast('All 7 touches copied to clipboard!', 'success'));
+}
+
+// ============================================================
+// SINGLE OUTPUT COPY
+// ============================================================
+function copySingle() {
+  const subjectEl = document.getElementById('subjectRow');
+  const subjectText = subjectEl.style.display !== 'none'
+    ? 'Subject: ' + document.getElementById('subjectText').textContent.trim() + '\n\n'
+    : '';
+  const body = document.getElementById('outputBody').textContent.trim();
+  navigator.clipboard.writeText(subjectText + body).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.className = 'copy-btn copied';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.className = 'copy-btn'; }, 2000);
+  });
+}
+
+// ============================================================
+// SETUP MODAL
+// ============================================================
+function openSetup() {
+  document.getElementById('setupModal').classList.remove('hidden');
+  const saved = localStorage.getItem('huc_sheets_url');
+  if (saved) document.getElementById('sheetsUrlInput').value = saved;
+}
+function closeSetup() { document.getElementById('setupModal').classList.add('hidden'); }
+function closeSetupIfOutside(e) { if (e.target === document.getElementById('setupModal')) closeSetup(); }
+
+function saveSheetUrl() {
+  const url = document.getElementById('sheetsUrlInput').value.trim();
+  if (!url) { showToast('Please paste your Apps Script URL first.', 'error'); return; }
+  localStorage.setItem('huc_sheets_url', url);
+  SHEETS_URL = url;
+  document.getElementById('urlSaved').style.display = 'block';
+  document.getElementById('setupBanner').style.display = 'none';
+  showToast('Google Sheets logging activated!', 'success');
+  setTimeout(() => closeSetup(), 1500);
+}
+
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.textContent.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function loader(msg) {
+  return `<div class="loader"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span>${msg}</span></div>`;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type || ''} show`;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// Hide setup banner if already configured
+document.getElementById('setupBanner').style.display = 'none';
+
+// Always scroll to top on load
+window.addEventListener('load', function() { window.scrollTo(0, 0); });
+history.scrollRestoration = 'manual';
+</script>
+</body>
+</html>
