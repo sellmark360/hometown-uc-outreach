@@ -77,6 +77,7 @@ exports.handler = async (event) => {
         name: person.name || `${person.first_name || ''} ${person.last_name || ''}`.trim(),
         email: (person.email && person.email.includes('@') && !person.email.includes('*')) ? person.email : null,
         phone,
+        linkedinUrl: person.linkedin_url || null,
       }),
     };
   } catch (e) {

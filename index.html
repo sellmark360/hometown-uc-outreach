@@ -171,12 +171,15 @@
   .intel-sources a { color: #4A6FD4; text-decoration: none; margin-right: 10px; }
   .intel-sources a:hover { text-decoration: underline; }
   .intel-contacts { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; }
-  .intel-contacts-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 6px; }
-  .intel-contact-row { display: flex; align-items: baseline; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+  .intel-contacts-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 8px; }
+  .intel-contacts-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; align-items: center; gap: 4px 10px; font-size: 13px; }
+  .intel-contacts-grid-header { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .intel-contact-info { display: flex; flex-direction: column; gap: 1px; padding: 5px 0; }
   .intel-contact-name { font-weight: 600; color: var(--text); }
-  .intel-contact-title { color: var(--text-soft); }
+  .intel-contact-title { color: var(--text-soft); font-size: 12px; }
   .intel-contact-email { color: #4A6FD4; font-size: 12px; }
-  .intel-contact-phone { color: #2A7A2A; font-size: 12px; font-weight: 500; }
+  .intel-contact-linkedin { color: #0A66C2; font-size: 12px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .intel-contact-linkedin:hover { text-decoration: underline; }
   .btn-reveal { font-size: 11px; font-weight: 600; padding: 2px 8px; border: 1px solid #4A6FD4; border-radius: 5px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
   .btn-reveal:hover:not(:disabled) { background: #F0F4FF; }
   .btn-reveal:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -746,21 +749,26 @@ async function lookupCompany() {
     const hasOthers   = data.otherContacts && data.otherContacts.length;
 
     function contactRowHtml(c) {
-      return `<div class="intel-contact-row" id="contact-row-${c.id}">
-        <span class="intel-contact-name" id="contact-name-${c.id}">${c.name}</span>
-        ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : ''}
+      return `<div class="intel-contact-info" id="contact-row-${c.id}">
+          <span class="intel-contact-name" id="contact-name-${c.id}">${c.name}</span>
+          ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : '<span></span>'}
+        </div>
         <span class="intel-contact-email" id="contact-email-${c.id}"></span>
-        <span class="intel-contact-phone" id="contact-phone-${c.id}"></span>
-        <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>
-      </div>`;
+        <a class="intel-contact-linkedin" id="contact-linkedin-${c.id}" href="#" target="_blank" rel="noopener" style="display:none;">LinkedIn ↗</a>
+        <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>`;
     }
 
     if (hasContacts) {
       const roleLabel = document.getElementById('role').value
         ? `Contacts — ${document.getElementById('role').value}`
         : 'Key Contacts';
-      let html = `<div class="intel-contacts-label">${roleLabel}</div>` +
-        data.contacts.map(contactRowHtml).join('');
+      let html = `<div class="intel-contacts-label">${roleLabel}</div>
+        <div class="intel-contacts-grid">
+          <div class="intel-contacts-grid-header">Contact</div>
+          <div class="intel-contacts-grid-header">Email</div>
+          <div class="intel-contacts-grid-header">LinkedIn</div>
+          <div></div>` +
+        data.contacts.map(contactRowHtml).join('') + `</div>`;
 
       if (hasOthers) {
         html += `<div style="margin-top:8px;">
@@ -768,7 +776,13 @@ async function lookupCompany() {
             + ${data.otherContacts.length} other contact${data.otherContacts.length > 1 ? 's' : ''} at this company
           </button>
           <div id="otherContactsList" style="display:none; margin-top:6px;">
-            ${data.otherContacts.map(contactRowHtml).join('')}
+            <div class="intel-contacts-grid">
+              <div class="intel-contacts-grid-header">Contact</div>
+              <div class="intel-contacts-grid-header">Email</div>
+              <div class="intel-contacts-grid-header">LinkedIn</div>
+              <div></div>
+              ${data.otherContacts.map(contactRowHtml).join('')}
+            </div>
           </div>
         </div>`;
       }
@@ -816,8 +830,9 @@ async function revealContact(apolloId, firstName, btn) {
     } else {
       btn.remove();
     }
-    if (data.phone) {
-      document.getElementById(`contact-phone-${apolloId}`).textContent = data.phone;
+    if (data.linkedinUrl) {
+      const liEl = document.getElementById(`contact-linkedin-${apolloId}`);
+      if (liEl) { liEl.href = data.linkedinUrl; liEl.style.display = 'inline'; }
     }
   } catch (e) {
     btn.textContent = 'Reveal';
