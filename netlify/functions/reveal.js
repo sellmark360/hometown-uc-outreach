@@ -30,7 +30,9 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers, body: '' };
   }
 
+  console.log('reveal called, body:', event.body);
   const { apolloId } = JSON.parse(event.body || '{}');
+  console.log('apolloId:', apolloId);
   if (!apolloId) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'apolloId required' }) };
   }
