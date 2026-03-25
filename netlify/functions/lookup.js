@@ -83,14 +83,14 @@ Rules:
   const apolloPromise = apolloKey
     ? post(
         'api.apollo.io',
-        '/api/v1/mixed_people/search',
+        '/api/v1/people/search',
         {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache',
           'X-Api-Key': process.env.APOLLO_API_KEY,
         },
         {
-          organization_name: company,
+          q_organization_name: company,
           page: 1,
           per_page: 5,
         }
