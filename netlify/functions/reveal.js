@@ -42,19 +42,22 @@ exports.handler = async (event) => {
   }
 
   try {
+    const params = new URLSearchParams({
+      id: apolloId,
+      reveal_personal_emails: false,
+      reveal_phone_number: true,
+    });
+
     const data = await post(
       'api.apollo.io',
-      '/api/v1/people/match',
+      `/api/v1/people/match?${params.toString()}`,
       {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
+        'accept': 'application/json',
         'x-api-key': process.env.APOLLO_API_KEY,
       },
-      {
-        id: apolloId,
-        reveal_personal_emails: false,
-        reveal_phone_number: true,
-      }
+      {}
     );
 
     console.log('Apollo reveal response:', JSON.stringify(data, null, 2));
