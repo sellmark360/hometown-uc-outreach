@@ -109,7 +109,9 @@ Rules:
   const contacts = (apolloData?.people || [])
     .filter(p => p.first_name)
     .map(p => ({
+      id: p.id,
       name: `${p.first_name} ${p.last_name_obfuscated || ''}`.trim(),
+      firstName: p.first_name,
       title: p.title || '',
       email: null,
     }));

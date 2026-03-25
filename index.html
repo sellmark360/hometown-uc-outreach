@@ -176,6 +176,9 @@
   .intel-contact-name { font-weight: 600; color: var(--text); }
   .intel-contact-title { color: var(--text-soft); }
   .intel-contact-email { color: #4A6FD4; font-size: 12px; }
+  .btn-reveal { font-size: 11px; font-weight: 600; padding: 2px 8px; border: 1px solid #4A6FD4; border-radius: 5px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+  .btn-reveal:hover:not(:disabled) { background: #F0F4FF; }
+  .btn-reveal:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 13px; border: 1px solid #4A6FD4; border-radius: 8px; background: var(--white); color: #4A6FD4; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-mailto:hover { background: #F0F4FF; }
   .acc-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 5px 11px; border: 1px solid #4A6FD4; border-radius: 6px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; margin-left: 4px; }
@@ -738,10 +741,11 @@ async function lookupCompany() {
     if (data.contacts && data.contacts.length) {
       contactsEl.innerHTML = '<div class="intel-contacts-label">Key Contacts</div>' +
         data.contacts.map(c =>
-          `<div class="intel-contact-row">
-            <span class="intel-contact-name">${c.name}</span>
+          `<div class="intel-contact-row" id="contact-row-${c.id}">
+            <span class="intel-contact-name" id="contact-name-${c.id}">${c.name}</span>
             ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : ''}
-            ${c.email ? `<span class="intel-contact-email">${c.email}</span>` : ''}
+            <span class="intel-contact-email" id="contact-email-${c.id}"></span>
+            <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>
           </div>`
         ).join('');
       contactsEl.style.display = 'block';
@@ -757,6 +761,31 @@ async function lookupCompany() {
 
   btn.textContent = 'Look up';
   btn.disabled = false;
+}
+
+async function revealContact(apolloId, firstName, btn) {
+  btn.textContent = '…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/reveal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ apolloId })
+    });
+    const data = await res.json();
+    if (data.name) {
+      document.getElementById(`contact-name-${apolloId}`).textContent = data.name;
+    }
+    if (data.email) {
+      document.getElementById(`contact-email-${apolloId}`).textContent = data.email;
+    }
+    btn.remove();
+  } catch (e) {
+    btn.textContent = 'Reveal';
+    btn.disabled = false;
+    showToast(`Could not reveal ${firstName}'s details`);
+  }
 }
 
 function clearCompanyIntel() {
