@@ -55,6 +55,8 @@ exports.handler = async (event) => {
       }
     );
 
+    console.log('Apollo reveal response:', JSON.stringify(data, null, 2));
+
     const person = data?.person;
     if (!person) {
       return { statusCode: 404, headers, body: JSON.stringify({ error: 'Person not found' }) };
