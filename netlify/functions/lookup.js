@@ -107,11 +107,11 @@ Rules:
     ?.map(r => ({ title: r.title, url: r.url })) || [];
 
   const contacts = (apolloData?.people || [])
-    .filter(p => p.name)
+    .filter(p => p.first_name)
     .map(p => ({
-      name: p.name,
+      name: `${p.first_name} ${p.last_name_obfuscated || ''}`.trim(),
       title: p.title || '',
-      email: (p.email && p.email.includes('@') && !p.email.includes('*')) ? p.email : null,
+      email: null,
     }));
 
   return {
