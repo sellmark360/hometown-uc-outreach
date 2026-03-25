@@ -51,7 +51,7 @@ exports.handler = async (event) => {
       {
         id: apolloId,
         reveal_personal_emails: false,
-        reveal_phone_number: false,
+        reveal_phone_number: true,
       }
     );
 
@@ -60,12 +60,17 @@ exports.handler = async (event) => {
       return { statusCode: 404, headers, body: JSON.stringify({ error: 'Person not found' }) };
     }
 
+    const phone = person.phone_numbers?.find(p => p.sanitized_number)?.sanitized_number
+      || person.phone_numbers?.[0]?.raw_number
+      || null;
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         name: person.name || `${person.first_name || ''} ${person.last_name || ''}`.trim(),
         email: (person.email && person.email.includes('@') && !person.email.includes('*')) ? person.email : null,
+        phone,
       }),
     };
   } catch (e) {

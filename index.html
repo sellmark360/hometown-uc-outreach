@@ -176,6 +176,7 @@
   .intel-contact-name { font-weight: 600; color: var(--text); }
   .intel-contact-title { color: var(--text-soft); }
   .intel-contact-email { color: #4A6FD4; font-size: 12px; }
+  .intel-contact-phone { color: #2A7A2A; font-size: 12px; font-weight: 500; }
   .btn-reveal { font-size: 11px; font-weight: 600; padding: 2px 8px; border: 1px solid #4A6FD4; border-radius: 5px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
   .btn-reveal:hover:not(:disabled) { background: #F0F4FF; }
   .btn-reveal:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -745,6 +746,7 @@ async function lookupCompany() {
             <span class="intel-contact-name" id="contact-name-${c.id}">${c.name}</span>
             ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : ''}
             <span class="intel-contact-email" id="contact-email-${c.id}"></span>
+            <span class="intel-contact-phone" id="contact-phone-${c.id}"></span>
             <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>
           </div>`
         ).join('');
@@ -779,6 +781,9 @@ async function revealContact(apolloId, firstName, btn) {
     }
     if (data.email) {
       document.getElementById(`contact-email-${apolloId}`).textContent = data.email;
+    }
+    if (data.phone) {
+      document.getElementById(`contact-phone-${apolloId}`).textContent = data.phone;
     }
     btn.remove();
   } catch (e) {
