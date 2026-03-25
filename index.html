@@ -802,6 +802,7 @@ async function revealContact(apolloId, firstName, btn) {
     }
     if (data.email) {
       document.getElementById(`contact-email-${apolloId}`).textContent = data.email;
+      window._revealedEmail = data.email;
     }
     if (data.phone) {
       document.getElementById(`contact-phone-${apolloId}`).textContent = data.phone;
@@ -825,6 +826,7 @@ function toggleOtherContacts(btn) {
 
 function clearCompanyIntel() {
   window._companyIntel = null;
+  window._revealedEmail = null;
   document.getElementById('companyIntel').style.display = 'none';
   document.getElementById('intelContent').innerHTML = '';
   document.getElementById('intelSources').innerHTML = '';
@@ -1133,7 +1135,8 @@ function openMailtoSingle() {
     ? document.getElementById('subjectText').textContent.trim()
     : '';
   const body = document.getElementById('outputBody').textContent.trim();
-  window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  const to = window._revealedEmail || '';
+  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 function openMailtoAcc(s) {
@@ -1142,7 +1145,8 @@ function openMailtoAcc(s) {
   const contentEl = bodyEl.querySelector('.acc-content');
   const subject = subjectEl ? subjectEl.textContent.replace('Subject:', '').trim() : '';
   const body = contentEl ? contentEl.textContent.trim() : '';
-  window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  const to = window._revealedEmail || '';
+  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 // ============================================================
