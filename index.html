@@ -754,7 +754,7 @@ async function lookupCompany() {
           ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : '<span></span>'}
         </div>
         <span class="intel-contact-email" id="contact-email-${c.id}"></span>
-        <a class="intel-contact-linkedin" id="contact-linkedin-${c.id}" href="#" target="_blank" rel="noopener" style="display:none;">LinkedIn ↗</a>
+        <a class="intel-contact-linkedin" id="contact-linkedin-${c.id}" href="#" target="_blank" rel="noopener" style="visibility:hidden;">LinkedIn ↗</a>
         <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>`;
     }
 
@@ -832,7 +832,7 @@ async function revealContact(apolloId, firstName, btn) {
     }
     if (data.linkedinUrl) {
       const liEl = document.getElementById(`contact-linkedin-${apolloId}`);
-      if (liEl) { liEl.href = data.linkedinUrl; liEl.style.display = 'inline'; }
+      if (liEl) { liEl.href = data.linkedinUrl; liEl.style.visibility = 'visible'; }
     }
   } catch (e) {
     btn.textContent = 'Reveal';
