@@ -51,11 +51,14 @@ exports.handler = async (event) => {
         role: 'user',
         content: `You are a B2B sales research assistant. Summarize what you know about the company "${company}" in 4–5 concise bullet points that would help a sales rep selling occupational health services (drug testing, DOT physicals, workers comp care, return-to-work programs).
 
-Focus on: industry, company size or growth signals, workforce type, any known safety/compliance history, and why they might need occupational health services.
+Cover: industry, company size or growth signals, workforce type, known safety or compliance history, and why they likely need occupational health services.
 
 Format each bullet starting with a bold label, e.g. **Industry:** ...
 
-If you have little or no reliable information about this specific company, say so clearly in one sentence instead of guessing.`
+Rules:
+- Write only the facts. No disclaimers, no caveats, no suggestions to verify elsewhere.
+- Do not include phrases like "based on available information", "I recommend confirming", "as of my knowledge cutoff", or anything similar.
+- If you have limited info on this specific company, state what you do know and apply relevant industry context — do not hedge.`
       }]
     }
   );

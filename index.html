@@ -382,17 +382,17 @@
           <input type="text" id="company" placeholder="e.g. Acme Logistics" oninput="clearCompanyIntel()" />
           <button class="btn-lookup" id="lookupBtn" onclick="lookupCompany()">Look up</button>
         </div>
-        <div id="companyIntel" style="display:none;">
-          <div class="intel-panel">
-            <div class="intel-label">Company Intel</div>
-            <div id="intelContent"></div>
-            <div id="intelSources" class="intel-sources"></div>
-          </div>
-        </div>
       </div>
       <div class="field full">
         <label>Additional relevant context based on your research of this prospect:<br><span class="opt">(pain points, referral source, prior contact, recent news, known safety issues…)</span></label>
         <textarea id="context" placeholder="e.g. High injury rate in warehouse, referred by John at XYZ, recently switched providers…  Leave blank to use industry best practices."></textarea>
+      </div>
+    </div>
+    <div id="companyIntel" style="display:none; margin-top:14px;">
+      <div class="intel-panel">
+        <div class="intel-label">Company Intel</div>
+        <div id="intelContent"></div>
+        <div id="intelSources" class="intel-sources"></div>
       </div>
     </div>
   </div>
