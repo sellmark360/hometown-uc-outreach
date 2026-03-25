@@ -77,7 +77,10 @@ Rules:
       ).catch(() => null)
     : Promise.resolve(null);
 
-  const apolloPromise = process.env.APOLLO_API_KEY
+  const apolloKey = process.env.APOLLO_API_KEY;
+  console.log('APOLLO_API_KEY:', apolloKey ? `defined, starts with "${apolloKey.slice(0, 4)}"` : 'undefined');
+
+  const apolloPromise = apolloKey
     ? post(
         'api.apollo.io',
         '/api/v1/mixed_people/search',
