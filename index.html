@@ -167,9 +167,19 @@
   .intel-panel { margin-top: 10px; background: #F0F4FF; border: 1px solid #C7D4F5; border-left: 4px solid #4A6FD4; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text); line-height: 1.6; }
   .intel-panel ul { padding-left: 0; list-style: none; margin: 0; }
   .intel-panel ul li { margin-bottom: 5px; }
-  .intel-sources { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; font-size: 12px; color: var(--text-soft); }
+  .intel-sources { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; font-size: 13px; color: var(--text-soft); }
   .intel-sources a { color: #4A6FD4; text-decoration: none; margin-right: 10px; }
   .intel-sources a:hover { text-decoration: underline; }
+  .intel-contacts { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; }
+  .intel-contacts-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 6px; }
+  .intel-contact-row { display: flex; align-items: baseline; gap: 8px; font-size: 13px; margin-bottom: 4px; }
+  .intel-contact-name { font-weight: 600; color: var(--text); }
+  .intel-contact-title { color: var(--text-soft); }
+  .intel-contact-email { color: #4A6FD4; font-size: 12px; }
+  .btn-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 13px; border: 1px solid #4A6FD4; border-radius: 8px; background: var(--white); color: #4A6FD4; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn-mailto:hover { background: #F0F4FF; }
+  .acc-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 5px 11px; border: 1px solid #4A6FD4; border-radius: 6px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; margin-left: 4px; }
+  .acc-mailto:hover { background: #F0F4FF; }
   .intel-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 6px; }
   .modal-body { padding: 1.5rem; }
   .step-block { margin-bottom: 1.5rem; }
@@ -393,6 +403,7 @@
         <div class="intel-label">Company Intel</div>
         <div id="intelContent"></div>
         <div id="intelSources" class="intel-sources"></div>
+        <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -430,6 +441,7 @@
       </div>
       <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
       <button class="copy-btn" id="saveBtn" onclick="saveSingle()" style="background:#4a4949;color:white;border-color:#4a4949;">Save</button>
+      <button class="btn-mailto" id="mailtoBtn" onclick="openMailtoSingle()" style="display:none;">Open in Outlook</button>
     </div>
     <div class="subject-row" id="subjectRow" style="display:none;">
       <strong>Subject:</strong><span id="subjectText"></span>
@@ -711,14 +723,30 @@ async function lookupCompany() {
       .join('');
     document.getElementById('intelContent').innerHTML = formatted;
 
-    // Render source links if Tavily returned any
+    // Render Tavily news links
     const sourcesEl = document.getElementById('intelSources');
     if (data.sources && data.sources.length) {
-      sourcesEl.innerHTML = '<strong>Recent headlines:</strong> ' +
+      sourcesEl.innerHTML = '<strong>NEWSJACKING</strong> ' +
         data.sources.map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join(' &middot; ');
       sourcesEl.style.display = 'block';
     } else {
       sourcesEl.style.display = 'none';
+    }
+
+    // Render Apollo contacts
+    const contactsEl = document.getElementById('intelContacts');
+    if (data.contacts && data.contacts.length) {
+      contactsEl.innerHTML = '<div class="intel-contacts-label">Key Contacts</div>' +
+        data.contacts.map(c =>
+          `<div class="intel-contact-row">
+            <span class="intel-contact-name">${c.name}</span>
+            ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : ''}
+            ${c.email ? `<span class="intel-contact-email">${c.email}</span>` : ''}
+          </div>`
+        ).join('');
+      contactsEl.style.display = 'block';
+    } else {
+      contactsEl.style.display = 'none';
     }
 
     document.getElementById('companyIntel').style.display = 'block';
@@ -736,6 +764,8 @@ function clearCompanyIntel() {
   document.getElementById('companyIntel').style.display = 'none';
   document.getElementById('intelContent').innerHTML = '';
   document.getElementById('intelSources').innerHTML = '';
+  document.getElementById('intelContacts').innerHTML = '';
+  document.getElementById('intelContacts').style.display = 'none';
 }
 
 // ============================================================
@@ -859,6 +889,7 @@ async function generateSingle() {
     }
     document.getElementById('copyBtn').textContent = 'Copy';
     document.getElementById('copyBtn').className = 'copy-btn';
+    document.getElementById('mailtoBtn').style.display = meta.isHW ? 'none' : 'inline-block';
     logToSheets(fd, step, meta.label, 'Single touch');
     showToast('Email generated and logged.', 'success');
   } catch(err) {
@@ -945,6 +976,7 @@ function buildAccordionItem(s, status, subject, body) {
       </div>
       <span class="acc-status pending" id="acc-status-${s}">Pending</span>
       <button class="acc-copy" id="acc-copy-${s}" onclick="event.stopPropagation();copyAccItem(${s})" style="display:none;">Copy</button>
+      <button class="acc-mailto" id="acc-mailto-${s}" onclick="event.stopPropagation();openMailtoAcc(${s})" style="display:none;">Open in Outlook</button>
       <span class="acc-chevron">&#9660;</span>
     </div>
     <div class="acc-body" id="acc-body-${s}">
@@ -958,6 +990,7 @@ function updateAccordionItem(s, text) {
   const bodyEl = document.getElementById(`acc-body-${s}`);
   const copyBtn = document.getElementById(`acc-copy-${s}`);
   copyBtn.style.display = 'inline-block';
+  document.getElementById(`acc-mailto-${s}`).style.display = 'inline-block';
 
   if (meta.isHW) {
     bodyEl.innerHTML = `<div class="acc-content hw">${escHtml(text)}</div>
@@ -1025,6 +1058,27 @@ function copySingle() {
     btn.className = 'copy-btn copied';
     setTimeout(() => { btn.textContent = 'Copy'; btn.className = 'copy-btn'; }, 2000);
   });
+}
+
+// ============================================================
+// MAILTO HELPERS
+// ============================================================
+function openMailtoSingle() {
+  const subjectEl = document.getElementById('subjectRow');
+  const subject = subjectEl.style.display !== 'none'
+    ? document.getElementById('subjectText').textContent.trim()
+    : '';
+  const body = document.getElementById('outputBody').textContent.trim();
+  window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+
+function openMailtoAcc(s) {
+  const bodyEl = document.getElementById(`acc-body-${s}`);
+  const subjectEl = bodyEl.querySelector('.acc-subject');
+  const contentEl = bodyEl.querySelector('.acc-content');
+  const subject = subjectEl ? subjectEl.textContent.replace('Subject:', '').trim() : '';
+  const body = contentEl ? contentEl.textContent.trim() : '';
+  window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 }
 
 // ============================================================

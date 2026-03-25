@@ -77,7 +77,24 @@ Rules:
       ).catch(() => null)
     : Promise.resolve(null);
 
-  const [claudeData, tavilyData] = await Promise.all([claudePromise, tavilyPromise]);
+  const apolloPromise = process.env.APOLLO_API_KEY
+    ? post(
+        'api.apollo.io',
+        '/v1/mixed_people/search',
+        {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+          'X-Api-Key': process.env.APOLLO_API_KEY,
+        },
+        {
+          q_organization_name: company,
+          page: 1,
+          per_page: 5,
+        }
+      ).catch(() => null)
+    : Promise.resolve(null);
+
+  const [claudeData, tavilyData, apolloData] = await Promise.all([claudePromise, tavilyPromise, apolloPromise]);
 
   const claudeSummary = claudeData?.content?.[0]?.text?.trim() || 'No background information available.';
 
@@ -85,9 +102,17 @@ Rules:
     ?.filter(r => r.title && r.url)
     ?.map(r => ({ title: r.title, url: r.url })) || [];
 
+  const contacts = (apolloData?.people || [])
+    .filter(p => p.name)
+    .map(p => ({
+      name: p.name,
+      title: p.title || '',
+      email: (p.email && p.email.includes('@') && !p.email.includes('*')) ? p.email : null,
+    }));
+
   return {
     statusCode: 200,
     headers,
-    body: JSON.stringify({ summary: claudeSummary, sources }),
+    body: JSON.stringify({ summary: claudeSummary, sources, contacts }),
   };
 };
