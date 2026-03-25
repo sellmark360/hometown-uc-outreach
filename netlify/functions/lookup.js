@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers, body: '' };
   }
 
-  const { company } = JSON.parse(event.body || '{}');
+  const { company, role } = JSON.parse(event.body || '{}');
   if (!company) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'company required' }) };
   }
@@ -77,28 +77,56 @@ Rules:
       ).catch(() => null)
     : Promise.resolve(null);
 
-  const apolloKey = process.env.APOLLO_API_KEY;
-  console.log('APOLLO_API_KEY:', apolloKey ? `defined, starts with "${apolloKey.slice(0, 4)}"` : 'undefined');
+  const ROLE_TITLES = {
+    'Benefits Mgr/Dir.':    ['benefits manager', 'benefits director', 'benefits administrator'],
+    'CEO':                  ['chief executive officer', 'ceo', 'president and ceo'],
+    'COO':                  ['chief operating officer', 'coo'],
+    'Gatekeeper':           ['office manager', 'administrative assistant', 'executive assistant', 'receptionist'],
+    'HR Manager':           ['hr manager', 'human resources manager', 'people manager'],
+    'Office Manager':       ['office manager', 'administrative manager', 'office administrator'],
+    'Operations Mgr.':      ['operations manager', 'operations director', 'director of operations'],
+    'Risk Manager':         ['risk manager', 'risk director', 'director of risk'],
+    'Safety Director':      ['safety director', 'director of safety', 'ehs director'],
+    'Safety Manager':       ['safety manager', 'ehs manager', 'health and safety manager'],
+    'Sr. HR Director':      ['hr director', 'human resources director', 'vp of human resources', 'chief people officer'],
+    'Transport Supervisor':  ['transportation supervisor', 'fleet manager', 'transport manager', 'logistics supervisor'],
+  };
 
-  const apolloPromise = apolloKey
-    ? post(
-        'api.apollo.io',
-        '/api/v1/mixed_people/api_search',
-        {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
-          'x-api-key': apolloKey,
-        },
-        {
-          organization_name: company,
-          page: 1,
-          per_page: 5,
-        }
-      ).catch((err) => { console.log('Apollo error:', err.message); return null; })
+  const apolloKey = process.env.APOLLO_API_KEY;
+  const roleTitles = (role && ROLE_TITLES[role]) || null;
+  const apolloHeaders = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache',
+    'x-api-key': apolloKey,
+  };
+
+  const apolloGeneralPromise = apolloKey
+    ? post('api.apollo.io', '/api/v1/mixed_people/api_search', apolloHeaders,
+        { organization_name: company, page: 1, per_page: 5 }
+      ).catch(err => { console.log('Apollo general error:', err.message); return null; })
     : Promise.resolve(null);
 
-  const [claudeData, tavilyData, apolloData] = await Promise.all([claudePromise, tavilyPromise, apolloPromise]);
-  console.log('Apollo raw response:', JSON.stringify(apolloData, null, 2));
+  const apolloRolePromise = (apolloKey && roleTitles)
+    ? post('api.apollo.io', '/api/v1/mixed_people/api_search', apolloHeaders,
+        { organization_name: company, person_titles: roleTitles, page: 1, per_page: 3 }
+      ).catch(err => { console.log('Apollo role error:', err.message); return null; })
+    : Promise.resolve(null);
+
+  const [claudeData, tavilyData, apolloGeneral, apolloRole] = await Promise.all([
+    claudePromise, tavilyPromise, apolloGeneralPromise, apolloRolePromise
+  ]);
+
+  function mapPerson(p) {
+    return { id: p.id, name: `${p.first_name} ${p.last_name_obfuscated || ''}`.trim(), firstName: p.first_name, title: p.title || '', email: null };
+  }
+
+  const roleMatchedIds = new Set((apolloRole?.people || []).map(p => p.id));
+  const contacts      = roleTitles
+    ? (apolloRole?.people  || []).filter(p => p.first_name).map(mapPerson)
+    : (apolloGeneral?.people || []).filter(p => p.first_name).map(mapPerson);
+  const otherContacts = roleTitles
+    ? (apolloGeneral?.people || []).filter(p => p.first_name && !roleMatchedIds.has(p.id)).map(mapPerson)
+    : [];
 
   const claudeSummary = claudeData?.content?.[0]?.text?.trim() || 'No background information available.';
 
@@ -106,19 +134,9 @@ Rules:
     ?.filter(r => r.title && r.url)
     ?.map(r => ({ title: r.title, url: r.url })) || [];
 
-  const contacts = (apolloData?.people || [])
-    .filter(p => p.first_name)
-    .map(p => ({
-      id: p.id,
-      name: `${p.first_name} ${p.last_name_obfuscated || ''}`.trim(),
-      firstName: p.first_name,
-      title: p.title || '',
-      email: null,
-    }));
-
   return {
     statusCode: 200,
     headers,
-    body: JSON.stringify({ summary: claudeSummary, sources, contacts }),
+    body: JSON.stringify({ summary: claudeSummary, sources, contacts, otherContacts }),
   };
 };

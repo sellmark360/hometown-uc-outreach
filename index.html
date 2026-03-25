@@ -713,7 +713,7 @@ async function lookupCompany() {
     const res = await fetch('/.netlify/functions/lookup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ company })
+      body: JSON.stringify({ company, role: document.getElementById('role').value })
     });
     if (!res.ok) throw new Error('Lookup failed');
     const data = await res.json();
@@ -739,17 +739,38 @@ async function lookupCompany() {
 
     // Render Apollo contacts
     const contactsEl = document.getElementById('intelContacts');
-    if (data.contacts && data.contacts.length) {
-      contactsEl.innerHTML = '<div class="intel-contacts-label">Key Contacts</div>' +
-        data.contacts.map(c =>
-          `<div class="intel-contact-row" id="contact-row-${c.id}">
-            <span class="intel-contact-name" id="contact-name-${c.id}">${c.name}</span>
-            ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : ''}
-            <span class="intel-contact-email" id="contact-email-${c.id}"></span>
-            <span class="intel-contact-phone" id="contact-phone-${c.id}"></span>
-            <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>
-          </div>`
-        ).join('');
+    const hasContacts = data.contacts && data.contacts.length;
+    const hasOthers   = data.otherContacts && data.otherContacts.length;
+
+    function contactRowHtml(c) {
+      return `<div class="intel-contact-row" id="contact-row-${c.id}">
+        <span class="intel-contact-name" id="contact-name-${c.id}">${c.name}</span>
+        ${c.title ? `<span class="intel-contact-title">${c.title}</span>` : ''}
+        <span class="intel-contact-email" id="contact-email-${c.id}"></span>
+        <span class="intel-contact-phone" id="contact-phone-${c.id}"></span>
+        <button class="btn-reveal" id="contact-reveal-${c.id}" onclick="revealContact('${c.id}', '${c.firstName}', this)">Reveal</button>
+      </div>`;
+    }
+
+    if (hasContacts) {
+      const roleLabel = document.getElementById('role').value
+        ? `Contacts — ${document.getElementById('role').value}`
+        : 'Key Contacts';
+      let html = `<div class="intel-contacts-label">${roleLabel}</div>` +
+        data.contacts.map(contactRowHtml).join('');
+
+      if (hasOthers) {
+        html += `<div style="margin-top:8px;">
+          <button class="btn-reveal" onclick="toggleOtherContacts(this)" style="font-size:12px;">
+            + ${data.otherContacts.length} other contact${data.otherContacts.length > 1 ? 's' : ''} at this company
+          </button>
+          <div id="otherContactsList" style="display:none; margin-top:6px;">
+            ${data.otherContacts.map(contactRowHtml).join('')}
+          </div>
+        </div>`;
+      }
+
+      contactsEl.innerHTML = html;
       contactsEl.style.display = 'block';
     } else {
       contactsEl.style.display = 'none';
@@ -791,6 +812,15 @@ async function revealContact(apolloId, firstName, btn) {
     btn.disabled = false;
     showToast(`Could not reveal ${firstName}'s details`);
   }
+}
+
+function toggleOtherContacts(btn) {
+  const list = document.getElementById('otherContactsList');
+  const visible = list.style.display !== 'none';
+  list.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible
+    ? btn.textContent.replace('▾', '').trim().replace(/^/, '+ ')
+    : btn.textContent.replace('+ ', '▾ ');
 }
 
 function clearCompanyIntel() {
