@@ -95,6 +95,7 @@ Rules:
     : Promise.resolve(null);
 
   const [claudeData, tavilyData, apolloData] = await Promise.all([claudePromise, tavilyPromise, apolloPromise]);
+  console.log('Apollo raw response:', JSON.stringify(apolloData, null, 2));
 
   const claudeSummary = claudeData?.content?.[0]?.text?.trim() || 'No background information available.';
 
