@@ -1209,7 +1209,7 @@ function openMailtoAccForContactIdx(s, idx) {
 }
 
 function openMailtoAccAll(s) {
-  const emails = (window._revealedContacts || []).map(c => c.email).join(',');
+  const emails = (window._revealedContacts || []).map(c => c.email).join(';');
   const bodyEl = document.getElementById(`acc-body-${s}`);
   const subject = bodyEl.querySelector('.acc-subject')?.textContent.replace('Subject:', '').trim() || '';
   const body = bodyEl.querySelector('.acc-content')?.textContent.trim() || '';
@@ -1238,7 +1238,7 @@ function openMailtoForContact(email) {
 }
 
 function openMailtoAll() {
-  const emails = (window._revealedContacts || []).map(c => c.email).join(',');
+  const emails = (window._revealedContacts || []).map(c => c.email).join(';');
   const { subject, body } = getCurrentEmail();
   window.location.href = `mailto:?bcc=${encodeURIComponent(emails)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
