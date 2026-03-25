@@ -1,0 +1,90 @@
+const https = require('https');
+
+function post(hostname, path, headers, body) {
+  return new Promise((resolve, reject) => {
+    const payload = JSON.stringify(body);
+    const req = https.request(
+      { hostname, path, method: 'POST', headers: { ...headers, 'Content-Length': Buffer.byteLength(payload) } },
+      (res) => {
+        let data = '';
+        res.on('data', (chunk) => { data += chunk; });
+        res.on('end', () => {
+          try { resolve(JSON.parse(data)); }
+          catch (e) { reject(new Error('Invalid JSON response')); }
+        });
+      }
+    );
+    req.on('error', reject);
+    req.write(payload);
+    req.end();
+  });
+}
+
+exports.handler = async (event) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
+  };
+
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 204, headers, body: '' };
+  }
+
+  const { company } = JSON.parse(event.body || '{}');
+  if (!company) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: 'company required' }) };
+  }
+
+  // Run Claude and Tavily in parallel
+  const claudePromise = post(
+    'api.anthropic.com',
+    '/v1/messages',
+    {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    {
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 600,
+      messages: [{
+        role: 'user',
+        content: `You are a B2B sales research assistant. Summarize what you know about the company "${company}" in 4–5 concise bullet points that would help a sales rep selling occupational health services (drug testing, DOT physicals, workers comp care, return-to-work programs).
+
+Focus on: industry, company size or growth signals, workforce type, any known safety/compliance history, and why they might need occupational health services.
+
+Format each bullet starting with a bold label, e.g. **Industry:** ...
+
+If you have little or no reliable information about this specific company, say so clearly in one sentence instead of guessing.`
+      }]
+    }
+  );
+
+  const tavilyPromise = process.env.TAVILY_API_KEY
+    ? post(
+        'api.tavily.com',
+        '/search',
+        { 'Content-Type': 'application/json' },
+        {
+          api_key: process.env.TAVILY_API_KEY,
+          query: `${company} news hiring expansion safety operations 2024 2025`,
+          search_depth: 'basic',
+          max_results: 4,
+        }
+      ).catch(() => null)
+    : Promise.resolve(null);
+
+  const [claudeData, tavilyData] = await Promise.all([claudePromise, tavilyPromise]);
+
+  const claudeSummary = claudeData?.content?.[0]?.text?.trim() || 'No background information available.';
+
+  const sources = tavilyData?.results
+    ?.filter(r => r.title && r.url)
+    ?.map(r => ({ title: r.title, url: r.url })) || [];
+
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify({ summary: claudeSummary, sources }),
+  };
+};

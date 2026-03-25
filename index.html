@@ -157,6 +157,20 @@
   .modal-header h2 { font-size: 16px; font-weight: 600; }
   .modal-close { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 0 4px; line-height: 1; }
   .modal-close:hover { color: var(--text); }
+
+  /* COMPANY LOOKUP */
+  .company-input-row { display: flex; gap: 8px; align-items: center; }
+  .company-input-row input { flex: 1; }
+  .btn-lookup { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; white-space: nowrap; padding: 8px 14px; border: 1px solid var(--red); border-radius: 8px; background: var(--white); color: var(--red); cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .btn-lookup:hover:not(:disabled) { background: var(--red-light); }
+  .btn-lookup:disabled { opacity: 0.55; cursor: not-allowed; }
+  .intel-panel { margin-top: 10px; background: #F0F4FF; border: 1px solid #C7D4F5; border-left: 4px solid #4A6FD4; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text); line-height: 1.6; }
+  .intel-panel ul { padding-left: 0; list-style: none; margin: 0; }
+  .intel-panel ul li { margin-bottom: 5px; }
+  .intel-sources { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; font-size: 12px; color: var(--text-soft); }
+  .intel-sources a { color: #4A6FD4; text-decoration: none; margin-right: 10px; }
+  .intel-sources a:hover { text-decoration: underline; }
+  .intel-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 6px; }
   .modal-body { padding: 1.5rem; }
   .step-block { margin-bottom: 1.5rem; }
   .step-block h3 { font-size: 16px; font-weight: 600; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -364,7 +378,17 @@
       </div>
       <div class="field">
         <label>Name of Prospect Company</label>
-        <input type="text" id="company" placeholder="e.g. Acme Logistics" />
+        <div class="company-input-row">
+          <input type="text" id="company" placeholder="e.g. Acme Logistics" oninput="clearCompanyIntel()" />
+          <button class="btn-lookup" id="lookupBtn" onclick="lookupCompany()">Look up</button>
+        </div>
+        <div id="companyIntel" style="display:none;">
+          <div class="intel-panel">
+            <div class="intel-label">Company Intel</div>
+            <div id="intelContent"></div>
+            <div id="intelSources" class="intel-sources"></div>
+          </div>
+        </div>
       </div>
       <div class="field full">
         <label>Additional relevant context based on your research of this prospect:<br><span class="opt">(pain points, referral source, prior contact, recent news, known safety issues…)</span></label>
@@ -659,6 +683,62 @@ function getFormData() {
 }
 
 // ============================================================
+// COMPANY LOOKUP
+// ============================================================
+async function lookupCompany() {
+  const company = document.getElementById('company').value.trim();
+  if (!company) { showToast('Enter a company name first'); return; }
+
+  const btn = document.getElementById('lookupBtn');
+  btn.textContent = 'Looking up…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/lookup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ company })
+    });
+    if (!res.ok) throw new Error('Lookup failed');
+    const data = await res.json();
+
+    // Render summary — convert markdown bold (**label:**) to <strong>
+    const formatted = (data.summary || '')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .split('\n')
+      .filter(l => l.trim())
+      .map(l => `<div style="margin-bottom:5px">${l.trim()}</div>`)
+      .join('');
+    document.getElementById('intelContent').innerHTML = formatted;
+
+    // Render source links if Tavily returned any
+    const sourcesEl = document.getElementById('intelSources');
+    if (data.sources && data.sources.length) {
+      sourcesEl.innerHTML = '<strong>Recent headlines:</strong> ' +
+        data.sources.map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join(' &middot; ');
+      sourcesEl.style.display = 'block';
+    } else {
+      sourcesEl.style.display = 'none';
+    }
+
+    document.getElementById('companyIntel').style.display = 'block';
+    window._companyIntel = data.summary;
+  } catch (e) {
+    showToast('Lookup failed — check your connection and try again');
+  }
+
+  btn.textContent = 'Look up';
+  btn.disabled = false;
+}
+
+function clearCompanyIntel() {
+  window._companyIntel = null;
+  document.getElementById('companyIntel').style.display = 'none';
+  document.getElementById('intelContent').innerHTML = '';
+  document.getElementById('intelSources').innerHTML = '';
+}
+
+// ============================================================
 // API CALL
 // ============================================================
 async function callClaude(step, fd) {
@@ -672,6 +752,7 @@ Prospect role: ${fd.role}
 ${fd.product ? `Product focus: ${fd.product}` : ''}
 ${fd.company ? `Company: ${fd.company}` : ''}
 ${fd.context ? `Context: ${fd.context}` : ''}
+${window._companyIntel ? `Company research intel:\n${window._companyIntel}` : ''}
 ${signOff ? `Rep sign-off info: ${signOff}` : ''}
 
 STEP INSTRUCTIONS:
