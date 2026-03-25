@@ -80,18 +80,18 @@ Rules:
   const apolloPromise = process.env.APOLLO_API_KEY
     ? post(
         'api.apollo.io',
-        '/v1/mixed_people/search',
+        '/api/v1/mixed_people/search',
         {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache',
           'X-Api-Key': process.env.APOLLO_API_KEY,
         },
         {
-          q_organization_name: company,
+          organization_name: company,
           page: 1,
           per_page: 5,
         }
-      ).catch(() => null)
+      ).catch((err) => { console.log('Apollo error:', err.message); return null; })
     : Promise.resolve(null);
 
   const [claudeData, tavilyData, apolloData] = await Promise.all([claudePromise, tavilyPromise, apolloPromise]);
