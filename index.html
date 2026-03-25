@@ -252,84 +252,26 @@
   <h1 class="page-title">Outreach Email Generator</h1>
   <p class="page-subtitle">From Cold to Closed in 7 touches with hyper-personalization and relevance.</p>
 
-  <!-- SEQUENCE SELECTOR -->
-  <div class="card">
-    <div class="card-title">Select your outreach touch</div>
-    <div class="sequence-grid" id="seqGrid">
-      <button class="seq-btn active" data-step="1" onclick="selectStep(1)"><span class="seq-num">1</span><span class="seq-type">Cold Intro</span></button>
-      <button class="seq-btn" data-step="2" onclick="selectStep(2)"><span class="seq-num">2</span><span class="seq-type">Bump / Missed</span></button>
-      <button class="seq-btn" data-step="3" onclick="selectStep(3)"><span class="seq-num">3</span><span class="seq-type">New Angle</span></button>
-      <button class="seq-btn" data-step="4" onclick="selectStep(4)"><span class="seq-num">4</span><span class="seq-type">Value Add</span></button>
-      <button class="seq-btn" data-step="5" onclick="selectStep(5)"><span class="seq-num">5</span><span class="seq-type">Handwritten</span></button>
-      <button class="seq-btn" data-step="6" onclick="selectStep(6)"><span class="seq-num">6</span><span class="seq-type">Value Add #2</span></button>
-      <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
-    </div>
-    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-      <button onclick="toggleSavedPanel()" id="savedToggleBtn" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid #D01A38;background:var(--white);color:#D01A38;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
-    </div>
-
-    <!-- SAVED EMAILS INLINE COLLAPSIBLE -->
-    <div id="savedPanel" style="display:none;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem;">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;justify-content:space-between;">
-        <input type="text" id="savedSearch" placeholder="Keyword…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;width:160px;background:var(--white);color:var(--text);" />
-        <select id="savedRatingFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
-          <option value="">⭐ Rating</option>
-          <option value="1">✅ Got a reply</option>
-          <option value="star">⭐ Good</option>
-          <option value="fire">🔥 Hottie</option>
-          <option value="trophy">🏆 WINNER</option>
-        </select>
-        <select id="savedTouchFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
-          <option value="">✉ Touch</option>
-          <option value="1">1 — Cold Intro</option>
-          <option value="2">2 — Bump</option>
-          <option value="3">3 — New Angle</option>
-          <option value="4">4 — Value Add</option>
-          <option value="5">5 — Handwritten</option>
-          <option value="6">6 — Value Add #2</option>
-          <option value="7">7 — Breakup</option>
-        </select>
-        <select id="savedRoleFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;max-width:160px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
-          <option value="">👤 Role</option>
-          <option>Benefits Mgr/Dir.</option>
-          <option>CEO</option>
-          <option>COO</option>
-          <option>Gatekeeper</option>
-          <option>HR Manager</option>
-          <option>Office Manager</option>
-          <option>Operations Mgr.</option>
-          <option>Risk Manager</option>
-          <option>Sr. HR Director</option>
-          <option>Safety Director</option>
-          <option>Safety Manager</option>
-          <option>Transport Supervisor</option>
-        </select>
-        <select id="savedIndustryFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
-          <option value="">🏭 Industry</option>
-          <option>Agriculture</option><option>Construction</option><option>Education</option>
-          <option>Emergency Services</option><option>Energy &amp; Utilities</option>
-          <option>Government &amp; Public Sector</option><option>Healthcare</option>
-          <option>High-Risk Industries</option><option>Manufacturing</option><option>Other</option>
-          <option>Professional Services</option><option>Service &amp; Retail</option>
-          <option>Technology</option><option>Transportation &amp; Logistics</option>
-        </select>
-        <button onclick="clearSavedFilters()" style="font-family:DM Sans,sans-serif;font-size:12px;padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;white-space:nowrap;margin-left:auto;">Clear</button>
-      </div>
-      <!-- RATING LEGEND -->
-      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;background:var(--gray-50);border-radius:var(--radius);margin-bottom:10px;font-size:13px;color:var(--text-soft);justify-content:center;">
-        <span>✅ 1 reply</span>
-        <span>⭐ 1-4 replies &mdash; Getting traction</span>
-        <span>🔥 5-9 replies &mdash; Hot performer</span>
-        <span>🏆 WINNER (10+) &mdash; Hall of fame</span>
-      </div>
-      <div id="savedList" style="display:flex;flex-direction:column;gap:8px;"></div>
-    </div>
-  </div>
-
   <!-- FORM -->
   <div class="card">
     <div class="card-title">Prospect details</div>
     <div class="form-grid">
+      <div class="field full">
+        <label>Rep</label>
+        <select id="repSelect" onchange="onRepChange()">
+          <option value="">— Select your name —</option>
+          <!-- ============================================================
+               THERESA: ADD OR EDIT REP NAMES BELOW
+               Format: <option value="Rep Name">Rep Name</option>
+               ============================================================ -->
+          <option value="Jacob Wooten">Jacob Wooten</option>
+          <option value="Brandon Sterba">Brandon Sterba</option>
+          <option value="Scott Franklin">Scott Franklin</option>
+          <option value="Jerry Scott">Jerry Scott</option>
+          <option value="Theresa French">Theresa French</option>
+        </select>
+        <span class="rep-status" id="repStatus">Select your name to begin</span>
+      </div>
       <div class="field">
         <label>Industry</label>
         <select id="industry">
@@ -419,22 +361,78 @@
     </div>
   </div>
 
-  <!-- REP SELECTOR -->
-  <div class="rep-bar">
-    <label for="repSelect">Rep:</label>
-    <select id="repSelect" onchange="onRepChange()">
-      <option value="">— Select your name —</option>
-      <!-- ============================================================
-           THERESA: ADD OR EDIT REP NAMES BELOW
-           Format: <option value="Rep Name">Rep Name</option>
-           ============================================================ -->
-      <option value="Jacob Wooten">Jacob Wooten</option>
-      <option value="Brandon Sterba">Brandon Sterba</option>
-      <option value="Scott Franklin">Scott Franklin</option>
-      <option value="Jerry Scott">Jerry Scott</option>
-      <option value="Theresa French">Theresa French</option>
-    </select>
-    <span class="rep-status" id="repStatus">Select your name to begin</span>
+  <!-- SEQUENCE SELECTOR -->
+  <div class="card">
+    <div class="card-title">Select your outreach touch</div>
+    <div class="sequence-grid" id="seqGrid">
+      <button class="seq-btn active" data-step="1" onclick="selectStep(1)"><span class="seq-num">1</span><span class="seq-type">Cold Intro</span></button>
+      <button class="seq-btn" data-step="2" onclick="selectStep(2)"><span class="seq-num">2</span><span class="seq-type">Bump / Missed</span></button>
+      <button class="seq-btn" data-step="3" onclick="selectStep(3)"><span class="seq-num">3</span><span class="seq-type">New Angle</span></button>
+      <button class="seq-btn" data-step="4" onclick="selectStep(4)"><span class="seq-num">4</span><span class="seq-type">Value Add</span></button>
+      <button class="seq-btn" data-step="5" onclick="selectStep(5)"><span class="seq-num">5</span><span class="seq-type">Handwritten</span></button>
+      <button class="seq-btn" data-step="6" onclick="selectStep(6)"><span class="seq-num">6</span><span class="seq-type">Value Add #2</span></button>
+      <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+      <button onclick="toggleSavedPanel()" id="savedToggleBtn" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid #D01A38;background:var(--white);color:#D01A38;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
+    </div>
+
+    <!-- SAVED EMAILS INLINE COLLAPSIBLE -->
+    <div id="savedPanel" style="display:none;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;justify-content:space-between;">
+        <input type="text" id="savedSearch" placeholder="Keyword…" oninput="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;width:160px;background:var(--white);color:var(--text);" />
+        <select id="savedRatingFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">⭐ Rating</option>
+          <option value="1">✅ Got a reply</option>
+          <option value="star">⭐ Good</option>
+          <option value="fire">🔥 Hottie</option>
+          <option value="trophy">🏆 WINNER</option>
+        </select>
+        <select id="savedTouchFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">✉ Touch</option>
+          <option value="1">1 — Cold Intro</option>
+          <option value="2">2 — Bump</option>
+          <option value="3">3 — New Angle</option>
+          <option value="4">4 — Value Add</option>
+          <option value="5">5 — Handwritten</option>
+          <option value="6">6 — Value Add #2</option>
+          <option value="7">7 — Breakup</option>
+        </select>
+        <select id="savedRoleFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;max-width:160px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">👤 Role</option>
+          <option>Benefits Mgr/Dir.</option>
+          <option>CEO</option>
+          <option>COO</option>
+          <option>Gatekeeper</option>
+          <option>HR Manager</option>
+          <option>Office Manager</option>
+          <option>Operations Mgr.</option>
+          <option>Risk Manager</option>
+          <option>Sr. HR Director</option>
+          <option>Safety Director</option>
+          <option>Safety Manager</option>
+          <option>Transport Supervisor</option>
+        </select>
+        <select id="savedIndustryFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%229A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
+          <option value="">🏭 Industry</option>
+          <option>Agriculture</option><option>Construction</option><option>Education</option>
+          <option>Emergency Services</option><option>Energy &amp; Utilities</option>
+          <option>Government &amp; Public Sector</option><option>Healthcare</option>
+          <option>High-Risk Industries</option><option>Manufacturing</option><option>Other</option>
+          <option>Professional Services</option><option>Service &amp; Retail</option>
+          <option>Technology</option><option>Transportation &amp; Logistics</option>
+        </select>
+        <button onclick="clearSavedFilters()" style="font-family:DM Sans,sans-serif;font-size:12px;padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;white-space:nowrap;margin-left:auto;">Clear</button>
+      </div>
+      <!-- RATING LEGEND -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 12px;background:var(--gray-50);border-radius:var(--radius);margin-bottom:10px;font-size:13px;color:var(--text-soft);justify-content:center;">
+        <span>✅ 1 reply</span>
+        <span>⭐ 1-4 replies &mdash; Getting traction</span>
+        <span>🔥 5-9 replies &mdash; Hot performer</span>
+        <span>🏆 WINNER (10+) &mdash; Hall of fame</span>
+      </div>
+      <div id="savedList" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
   </div>
 
   <!-- BUTTONS -->
