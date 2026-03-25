@@ -44,7 +44,7 @@ exports.handler = async (event) => {
   try {
     const params = new URLSearchParams({
       id: apolloId,
-      reveal_personal_emails: false,
+      reveal_personal_emails: true,
       reveal_phone_number: true,
     });
 
