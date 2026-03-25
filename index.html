@@ -182,8 +182,9 @@
   .btn-reveal:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-send-contact { font-size: 11px; font-weight: 600; padding: 2px 8px; border: 1px solid #2A7A2A; border-radius: 5px; background: var(--white); color: #2A7A2A; cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
   .btn-send-contact:hover { background: #F0FFF0; }
-  .btn-send-all { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; padding: 5px 12px; border: 1px solid #2A7A2A; border-radius: 6px; background: #F0FFF0; color: #2A7A2A; cursor: pointer; white-space: nowrap; margin-top: 8px; }
+  .btn-send-all { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; padding: 5px 12px; border: 1px solid #2A7A2A; border-radius: 6px; background: #F0FFF0; color: #2A7A2A; cursor: pointer; white-space: nowrap; }
   .btn-send-all:hover { background: #D8F0D8; }
+  .acc-send-btns { display: inline-flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .btn-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 13px; border: 1px solid #4A6FD4; border-radius: 8px; background: var(--white); color: #4A6FD4; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-mailto:hover { background: #F0F4FF; }
   .acc-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 5px 11px; border: 1px solid #4A6FD4; border-radius: 6px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; margin-left: 4px; }
@@ -354,9 +355,6 @@
         <div id="intelContent"></div>
         <div id="intelSources" class="intel-sources"></div>
         <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
-        <div id="sendAllContainer" style="display:none;">
-          <button class="btn-send-all" onclick="openMailtoAll()">Open in Outlook — BCC all revealed contacts</button>
-        </div>
       </div>
     </div>
   </div>
@@ -450,7 +448,7 @@
       </div>
       <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
       <button class="copy-btn" id="saveBtn" onclick="saveSingle()" style="background:#4a4949;color:white;border-color:#4a4949;">Save</button>
-      <button class="btn-mailto" id="mailtoBtn" onclick="openMailtoSingle()" style="display:none;">Open in Outlook</button>
+      <span id="outputSendBtns" style="display:none;gap:6px;flex-wrap:wrap;align-items:center;"></span>
     </div>
     <div class="subject-row" id="subjectRow" style="display:none;">
       <strong>Subject:</strong><span id="subjectText"></span>
@@ -808,15 +806,13 @@ async function revealContact(apolloId, firstName, btn) {
     if (data.email) {
       document.getElementById(`contact-email-${apolloId}`).textContent = data.email;
       window._revealedEmail = data.email;
-      if (!window._revealedEmails) window._revealedEmails = [];
-      if (!window._revealedEmails.includes(data.email)) window._revealedEmails.push(data.email);
-      // Replace Reveal button with Send to this contact
-      btn.className = 'btn-send-contact';
-      btn.textContent = 'Send to this contact';
-      btn.onclick = () => openMailtoForContact(data.email);
-      btn.disabled = false;
-      // Show Send to all button
-      document.getElementById('sendAllContainer').style.display = 'block';
+      if (!window._revealedContacts) window._revealedContacts = [];
+      const revName = data.name || firstName;
+      if (!window._revealedContacts.find(c => c.email === data.email)) {
+        window._revealedContacts.push({ name: revName, email: data.email });
+      }
+      btn.remove();
+      updateOutputSendButtons();
     } else {
       btn.remove();
     }
@@ -842,9 +838,8 @@ function toggleOtherContacts(btn) {
 function clearCompanyIntel() {
   window._companyIntel = null;
   window._revealedEmail = null;
-  window._revealedEmails = [];
+  window._revealedContacts = [];
   document.getElementById('companyIntel').style.display = 'none';
-  document.getElementById('sendAllContainer').style.display = 'none';
   document.getElementById('intelContent').innerHTML = '';
   document.getElementById('intelSources').innerHTML = '';
   document.getElementById('intelContacts').innerHTML = '';
@@ -972,7 +967,9 @@ async function generateSingle() {
     }
     document.getElementById('copyBtn').textContent = 'Copy';
     document.getElementById('copyBtn').className = 'copy-btn';
-    document.getElementById('mailtoBtn').style.display = meta.isHW ? 'none' : 'inline-block';
+    const sendBtns = document.getElementById('outputSendBtns');
+    if (!meta.isHW) { sendBtns.style.display = 'inline-flex'; updateOutputSendButtons(); }
+    else { sendBtns.style.display = 'none'; }
     logToSheets(fd, step, meta.label, 'Single touch');
     showToast('Email generated and logged.', 'success');
   } catch(err) {
@@ -1059,7 +1056,7 @@ function buildAccordionItem(s, status, subject, body) {
       </div>
       <span class="acc-status pending" id="acc-status-${s}">Pending</span>
       <button class="acc-copy" id="acc-copy-${s}" onclick="event.stopPropagation();copyAccItem(${s})" style="display:none;">Copy</button>
-      <button class="acc-mailto" id="acc-mailto-${s}" onclick="event.stopPropagation();openMailtoAcc(${s})" style="display:none;">Open in Outlook</button>
+      <span id="acc-send-${s}" class="acc-send-btns" style="display:none;gap:6px;flex-wrap:wrap;align-items:center;"></span>
       <span class="acc-chevron">&#9660;</span>
     </div>
     <div class="acc-body" id="acc-body-${s}">
@@ -1073,7 +1070,8 @@ function updateAccordionItem(s, text) {
   const bodyEl = document.getElementById(`acc-body-${s}`);
   const copyBtn = document.getElementById(`acc-copy-${s}`);
   copyBtn.style.display = 'inline-block';
-  document.getElementById(`acc-mailto-${s}`).style.display = 'inline-block';
+  const accSend = document.getElementById(`acc-send-${s}`);
+  if (accSend) { accSend.style.display = 'inline-flex'; updateOutputSendButtons(); }
 
   if (meta.isHW) {
     bodyEl.innerHTML = `<div class="acc-content hw">${escHtml(text)}</div>
@@ -1154,6 +1152,59 @@ function getCurrentEmail() {
   };
 }
 
+function updateOutputSendButtons() {
+  const contacts = window._revealedContacts || [];
+
+  function buildBtns(isAcc, step) {
+    if (contacts.length === 0) {
+      return isAcc
+        ? `<button class="acc-mailto" onclick="event.stopPropagation();openMailtoAcc(${step})">Open in Outlook</button>`
+        : `<button class="btn-mailto" onclick="openMailtoSingle()">Open in Outlook</button>`;
+    }
+    let html = contacts.map((c, i) =>
+      isAcc
+        ? `<button class="btn-send-contact" onclick="event.stopPropagation();openMailtoAccForContactIdx(${step},${i})">Send to ${escHtml(c.name)}</button>`
+        : `<button class="btn-send-contact" onclick="openMailtoForContactIdx(${i})">Send to ${escHtml(c.name)}</button>`
+    ).join('');
+    if (contacts.length > 1) {
+      html += isAcc
+        ? `<button class="btn-send-all" onclick="event.stopPropagation();openMailtoAccAll(${step})">BCC all revealed</button>`
+        : `<button class="btn-send-all" onclick="openMailtoAll()">BCC all revealed</button>`;
+    }
+    return html;
+  }
+
+  const single = document.getElementById('outputSendBtns');
+  if (single) single.innerHTML = buildBtns(false, null);
+
+  document.querySelectorAll('[id^="acc-send-"]').forEach(el => {
+    const step = parseInt(el.id.replace('acc-send-', ''));
+    el.innerHTML = buildBtns(true, step);
+  });
+}
+
+function openMailtoForContactIdx(idx) {
+  const c = (window._revealedContacts || [])[idx];
+  if (c) openMailtoForContact(c.email);
+}
+
+function openMailtoAccForContactIdx(s, idx) {
+  const c = (window._revealedContacts || [])[idx];
+  if (!c) return;
+  const bodyEl = document.getElementById(`acc-body-${s}`);
+  const subject = bodyEl.querySelector('.acc-subject')?.textContent.replace('Subject:', '').trim() || '';
+  const body = bodyEl.querySelector('.acc-content')?.textContent.trim() || '';
+  window.location.href = `mailto:${c.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function openMailtoAccAll(s) {
+  const emails = (window._revealedContacts || []).map(c => c.email).join(',');
+  const bodyEl = document.getElementById(`acc-body-${s}`);
+  const subject = bodyEl.querySelector('.acc-subject')?.textContent.replace('Subject:', '').trim() || '';
+  const body = bodyEl.querySelector('.acc-content')?.textContent.trim() || '';
+  window.location.href = `mailto:?bcc=${encodeURIComponent(emails)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function openMailtoSingle() {
   const { subject, body } = getCurrentEmail();
   const to = window._revealedEmail || '';
@@ -1176,7 +1227,7 @@ function openMailtoForContact(email) {
 }
 
 function openMailtoAll() {
-  const emails = (window._revealedEmails || []).join(',');
+  const emails = (window._revealedContacts || []).map(c => c.email).join(',');
   const { subject, body } = getCurrentEmail();
   window.location.href = `mailto:?bcc=${encodeURIComponent(emails)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
