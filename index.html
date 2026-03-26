@@ -1547,7 +1547,11 @@ async function renderSaved() {
     list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:14px;">No saved emails match your filters.</div>';
     return;
   }
+  window._savedEmailData = {};
+  const _revContacts = window._revealedContacts || [];
+  const _useLabel = _revContacts.length > 0 ? 'Send to ' + escHtml(_revContacts[0].name) : 'Open in Outlook';
   list.innerHTML = data.map(r => {
+    window._savedEmailData[r.id] = { subject: r.subject || '', body: r.email_body || '' };
     const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const preview = (r.email_body || '').substring(0, 120) + '…';
     return '<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">' +
@@ -1555,7 +1559,7 @@ async function renderSaved() {
       '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--red-light);color:var(--red);">Touch ' + r.touch_number + ' — ' + escHtml(r.touch_type || '') + '</span>' +
       replyBadge(r.reply_count) +
       '<span style="font-size:13px;color:var(--text-soft);">' + escHtml(r.rep) + ' &nbsp;·&nbsp; ' + escHtml(r.industry || '') + (r.company ? ' &nbsp;·&nbsp; ' + escHtml(r.company) : '') + '</span>' +
-      '<button onclick="event.stopPropagation();useFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body, touch_number: r.touch_number, touch_type: r.touch_type})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid var(--red);background:var(--red-light);color:var(--red);cursor:pointer;margin-left:auto;">Use</button>' +
+      '<button data-id="' + r.id + '" onclick="event.stopPropagation();useFromLibrary(this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid var(--red);background:var(--red-light);color:var(--red);cursor:pointer;margin-left:auto;">' + _useLabel + '</button>' +
       '<button onclick="event.stopPropagation();upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">' + ((r.reply_count||0) > 0 ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#27500A;color:white;font-size:10px;font-weight:700;">' + (r.reply_count||0) + '</span>' : '') + 'Got a reply! ✅</button>' +
       '<span style="font-size:12px;color:var(--text-muted);">' + date + '</span>' +
       '<span style="font-size:11px;color:var(--text-muted);padding-left:8px;">&#9660;</span>' +
@@ -1582,38 +1586,19 @@ function copyFromLibrary(btn, jsonStr) {
   });
 }
 
-function useFromLibrary(btn, jsonStr) {
-  const data = JSON.parse(jsonStr);
-  const card = document.getElementById('outputCard');
-  const bodyEl = document.getElementById('outputBody');
-  const subjectRow = document.getElementById('subjectRow');
-
-  card.style.display = 'block';
-  bodyEl.className = 'output-body';
-  document.getElementById('outputBadge').textContent = data.touch_number ? `Touch ${data.touch_number}` : 'Library';
-  document.getElementById('outputDesc').textContent = data.touch_type || 'From Library';
-
-  if (data.subject) {
-    subjectRow.style.display = 'block';
-    document.getElementById('subjectText').textContent = ' ' + data.subject;
+function useFromLibrary(btn) {
+  const id = btn.dataset.id;
+  const data = window._savedEmailData && window._savedEmailData[id];
+  if (!data) return;
+  const subject = data.subject || '';
+  const body = data.body || '';
+  const contacts = window._revealedContacts || [];
+  if (contacts.length > 0) {
+    window.location.href = `mailto:${contacts[0].email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   } else {
-    subjectRow.style.display = 'none';
+    const to = window._revealedEmail || '';
+    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
-  bodyEl.textContent = data.body || '';
-
-  const sendBtns = document.getElementById('outputSendBtns');
-  sendBtns.style.display = 'inline-flex';
-  updateOutputSendButtons();
-  document.getElementById('copyBtn').textContent = 'Copy';
-  document.getElementById('copyBtn').className = 'copy-btn';
-
-  // Close the library panel
-  document.getElementById('savedPanel').style.display = 'none';
-  document.getElementById('savedToggleBtn').textContent = 'Saved Emails ✴';
-  document.getElementById('savedToggleBtn').style.background = 'var(--white)';
-
-  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  showToast('Email loaded — ready to send.', 'success');
 }
 
 async function deleteFromLibrary(id, btn) {
