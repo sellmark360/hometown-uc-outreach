@@ -726,13 +726,37 @@ async function lookupCompany() {
     const data = await res.json();
 
     // Render summary — convert markdown bold (**label:**) to <strong>
-    const formatted = (data.summary || '')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .split('\n')
-      .filter(l => l.trim())
-      .map(l => `<div style="margin-bottom:5px">${l.trim()}</div>`)
-      .join('');
-    document.getElementById('intelContent').innerHTML = formatted;
+    const isNoInfo = isNoInfoSummary(data.summary);
+    const alreadySeen = localStorage.getItem('huc_lookup_no_info_seen');
+
+    if (isNoInfo) {
+      window._companyIntel = null;
+      const hasNews = data.sources && data.sources.length > 0;
+      const hasContacts = data.contacts && data.contacts.length > 0;
+      if (!alreadySeen) {
+        document.getElementById('intelContent').innerHTML =
+          `<div style="display:flex;align-items:flex-start;gap:10px;color:var(--text-soft);font-size:13px;line-height:1.5;">` +
+          `<span style="flex:1;">I'm not finding any new, helpful information on this company. To improve message relevancy, run a few manual searches and enter what you've found about ${escHtml(company)}.</span>` +
+          `<button onclick="dismissNoInfoNotice()" style="font-family:DM Sans,sans-serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;white-space:nowrap;flex-shrink:0;">Got it</button>` +
+          `</div>`;
+      } else if (!hasNews && !hasContacts) {
+        btn.textContent = 'Look up';
+        btn.disabled = false;
+        showToast('No new information found for ' + escHtml(company) + '.', '');
+        return;
+      } else {
+        document.getElementById('intelContent').innerHTML = '';
+      }
+    } else {
+      window._companyIntel = data.summary;
+      const formatted = (data.summary || '')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .split('\n')
+        .filter(l => l.trim())
+        .map(l => `<div style="margin-bottom:5px">${l.trim()}</div>`)
+        .join('');
+      document.getElementById('intelContent').innerHTML = formatted;
+    }
 
     // Render Tavily news links
     const sourcesEl = document.getElementById('intelSources');
@@ -844,6 +868,26 @@ function toggleOtherContacts(btn) {
   btn.textContent = visible
     ? btn.textContent.replace('▾', '').trim().replace(/^/, '+ ')
     : btn.textContent.replace('+ ', '▾ ');
+}
+
+function isNoInfoSummary(summary) {
+  if (!summary) return true;
+  const s = summary.toLowerCase();
+  return s.includes("i don't have reliable") ||
+    s.includes("i cannot provide accurate") ||
+    s.includes("not in my training data") ||
+    s.includes("cannot provide accurate bullet") ||
+    (s.includes("i'd recommend") && s.includes("check the company"));
+}
+
+function dismissNoInfoNotice() {
+  localStorage.setItem('huc_lookup_no_info_seen', '1');
+  document.getElementById('intelContent').innerHTML = '';
+  const hasNews = document.getElementById('intelSources').style.display !== 'none';
+  const hasContacts = document.getElementById('intelContacts').style.display !== 'none';
+  if (!hasNews && !hasContacts) {
+    document.getElementById('companyIntel').style.display = 'none';
+  }
 }
 
 function clearCompanyIntel() {
@@ -1435,13 +1479,21 @@ function toggleSavedPanel() {
   panel.style.display = isOpen ? 'none' : 'block';
   btn.textContent = isOpen ? 'Saved Emails ✴' : 'Close Library ×';
   btn.style.background = isOpen ? 'var(--white)' : '#FDEAED';
-  if (!isOpen) renderSaved();
+  if (!isOpen) {
+    const fd = getFormData();
+    if (fd.role) document.getElementById('savedRoleFilter').value = fd.role;
+    if (fd.industry) document.getElementById('savedIndustryFilter').value = fd.industry;
+    renderSaved();
+  }
 }
 
 async function openSavedPanel() {
   const panel = document.getElementById('savedPanel');
   panel.style.display = 'block';
   document.getElementById('savedToggleBtn').textContent = 'Close Library ×';
+  const fd = getFormData();
+  if (fd.role) document.getElementById('savedRoleFilter').value = fd.role;
+  if (fd.industry) document.getElementById('savedIndustryFilter').value = fd.industry;
   await renderSaved();
 }
 
@@ -1503,7 +1555,8 @@ async function renderSaved() {
       '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--red-light);color:var(--red);">Touch ' + r.touch_number + ' — ' + escHtml(r.touch_type || '') + '</span>' +
       replyBadge(r.reply_count) +
       '<span style="font-size:13px;color:var(--text-soft);">' + escHtml(r.rep) + ' &nbsp;·&nbsp; ' + escHtml(r.industry || '') + (r.company ? ' &nbsp;·&nbsp; ' + escHtml(r.company) : '') + '</span>' +
-      '<button onclick="event.stopPropagation();upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-left:auto;">' + ((r.reply_count||0) > 0 ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#27500A;color:white;font-size:10px;font-weight:700;">' + (r.reply_count||0) + '</span>' : '') + 'Got a reply! ✅</button>' +
+      '<button onclick="event.stopPropagation();useFromLibrary(this, ' + JSON.stringify(JSON.stringify({subject: r.subject, body: r.email_body, touch_number: r.touch_number, touch_type: r.touch_type})) + ')" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid var(--red);background:var(--red-light);color:var(--red);cursor:pointer;margin-left:auto;">Use</button>' +
+      '<button onclick="event.stopPropagation();upvoteEmail(\'' + r.id + '\', ' + (r.reply_count||0) + ', this)" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px;border:1px solid #639922;background:#EAF3DE;color:#27500A;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">' + ((r.reply_count||0) > 0 ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#27500A;color:white;font-size:10px;font-weight:700;">' + (r.reply_count||0) + '</span>' : '') + 'Got a reply! ✅</button>' +
       '<span style="font-size:12px;color:var(--text-muted);">' + date + '</span>' +
       '<span style="font-size:11px;color:var(--text-muted);padding-left:8px;">&#9660;</span>' +
       '</div>' +
@@ -1527,6 +1580,40 @@ function copyFromLibrary(btn, jsonStr) {
     btn.style.borderColor = '#3B6D11';
     setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
   });
+}
+
+function useFromLibrary(btn, jsonStr) {
+  const data = JSON.parse(jsonStr);
+  const card = document.getElementById('outputCard');
+  const bodyEl = document.getElementById('outputBody');
+  const subjectRow = document.getElementById('subjectRow');
+
+  card.style.display = 'block';
+  bodyEl.className = 'output-body';
+  document.getElementById('outputBadge').textContent = data.touch_number ? `Touch ${data.touch_number}` : 'Library';
+  document.getElementById('outputDesc').textContent = data.touch_type || 'From Library';
+
+  if (data.subject) {
+    subjectRow.style.display = 'block';
+    document.getElementById('subjectText').textContent = ' ' + data.subject;
+  } else {
+    subjectRow.style.display = 'none';
+  }
+  bodyEl.textContent = data.body || '';
+
+  const sendBtns = document.getElementById('outputSendBtns');
+  sendBtns.style.display = 'inline-flex';
+  updateOutputSendButtons();
+  document.getElementById('copyBtn').textContent = 'Copy';
+  document.getElementById('copyBtn').className = 'copy-btn';
+
+  // Close the library panel
+  document.getElementById('savedPanel').style.display = 'none';
+  document.getElementById('savedToggleBtn').textContent = 'Saved Emails ✴';
+  document.getElementById('savedToggleBtn').style.background = 'var(--white)';
+
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast('Email loaded — ready to send.', 'success');
 }
 
 async function deleteFromLibrary(id, btn) {
