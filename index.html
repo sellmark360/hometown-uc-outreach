@@ -99,6 +99,11 @@
   .subject-row strong { color: var(--text-muted); font-weight: 500; margin-right: 6px; }
   .output-body { padding: 20px 16px; font-size: 16px; line-height: 1.85; color: var(--text); white-space: pre-wrap; min-height: 80px; }
   .output-body.hw { font-family: 'DM Serif Display', serif; font-size: 15px; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; padding: 24px 28px; }
+  .output-body[contenteditable="true"] { outline: none; background: #FAFAFA; border: 1px dashed var(--border); border-radius: 4px; padding: 19px 15px; }
+  #subjectText[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--border); padding-bottom: 1px; }
+  .edit-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-soft); cursor: pointer; transition: all 0.15s; }
+  .edit-btn:hover { border-color: var(--red); color: var(--red); }
+  .edit-btn.active { background: var(--red-light); border-color: var(--red); color: var(--red); }
   .hw-hint { font-size: 12px; color: var(--text-muted); padding: 8px 16px 12px; border-top: 1px dashed var(--border); }
 
   /* LOADER */
@@ -450,6 +455,7 @@
         <span class="output-badge" id="outputBadge">Touch 1</span>
         <span class="output-desc" id="outputDesc">Cold Intro Email</span>
       </div>
+      <button class="edit-btn" id="editBtn" onclick="toggleEditMode()" title="Edit before saving">✏</button>
       <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
       <button class="copy-btn" id="saveBtn" onclick="saveSingle()" style="background:#4a4949;color:white;border-color:#4a4949;">Save</button>
       <span id="outputSendBtns" style="display:none;gap:6px;flex-wrap:wrap;align-items:center;"></span>
@@ -1022,6 +1028,7 @@ async function generateSingle() {
     }
     document.getElementById('copyBtn').textContent = 'Copy';
     document.getElementById('copyBtn').className = 'copy-btn';
+    resetEditMode();
     const sendBtns = document.getElementById('outputSendBtns');
     if (!meta.isHW) { sendBtns.style.display = 'inline-flex'; updateOutputSendButtons(); }
     else { sendBtns.style.display = 'none'; }
@@ -1182,6 +1189,34 @@ function copyAllEmails() {
 // ============================================================
 // SINGLE OUTPUT COPY
 // ============================================================
+function toggleEditMode() {
+  const body = document.getElementById('outputBody');
+  const subject = document.getElementById('subjectText');
+  const btn = document.getElementById('editBtn');
+  const isEditing = body.contentEditable === 'true';
+  if (isEditing) {
+    body.contentEditable = 'false';
+    subject.contentEditable = 'false';
+    btn.textContent = '✏';
+    btn.classList.remove('active');
+  } else {
+    body.contentEditable = 'true';
+    subject.contentEditable = 'true';
+    btn.textContent = 'Done';
+    btn.classList.add('active');
+    body.focus();
+  }
+}
+
+function resetEditMode() {
+  const body = document.getElementById('outputBody');
+  const subject = document.getElementById('subjectText');
+  const btn = document.getElementById('editBtn');
+  body.contentEditable = 'false';
+  subject.contentEditable = 'false';
+  if (btn) { btn.textContent = '✏'; btn.classList.remove('active'); }
+}
+
 function copySingle() {
   const subjectEl = document.getElementById('subjectRow');
   const subjectText = subjectEl.style.display !== 'none'
