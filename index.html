@@ -1008,6 +1008,7 @@ async function generateSingle() {
   hwHint.style.display = 'none';
   document.getElementById('outputBadge').textContent = `Touch ${step}`;
   document.getElementById('outputDesc').textContent = meta.desc;
+  window._currentEmail = null;
   body.innerHTML = loader(`Writing touch #${step}…`);
   card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
@@ -1025,6 +1026,7 @@ async function generateSingle() {
         document.getElementById('subjectText').textContent = ' ' + subjectMatch[1];
       }
       body.textContent = emailBody;
+      window._currentEmail = { subject: subjectMatch ? subjectMatch[1].trim() : '', body: emailBody };
     }
     document.getElementById('copyBtn').textContent = 'Copy';
     document.getElementById('copyBtn').className = 'copy-btn';
@@ -1199,6 +1201,12 @@ function toggleEditMode() {
     subject.contentEditable = 'false';
     btn.textContent = '✏';
     btn.classList.remove('active');
+    // Flush edits into cache so mailto and save use the edited content
+    const subjectRow = document.getElementById('subjectRow');
+    window._currentEmail = {
+      subject: subjectRow?.style.display !== 'none' ? document.getElementById('subjectText').textContent.trim() : '',
+      body: body.textContent.trim()
+    };
   } else {
     body.contentEditable = 'true';
     subject.contentEditable = 'true';
@@ -1235,10 +1243,9 @@ function copySingle() {
 // MAILTO HELPERS
 // ============================================================
 function getCurrentEmail() {
-  const subjectEl = document.getElementById('subjectRow');
   return {
-    subject: subjectEl?.style.display !== 'none' ? document.getElementById('subjectText').textContent.trim() : '',
-    body: document.getElementById('outputBody').textContent.trim(),
+    subject: (window._currentEmail && window._currentEmail.subject) || '',
+    body: (window._currentEmail && window._currentEmail.body) || '',
   };
 }
 
