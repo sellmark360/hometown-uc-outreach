@@ -172,6 +172,10 @@
   .intel-panel { margin-top: 10px; background: #F0F4FF; border: 1px solid #C7D4F5; border-left: 4px solid #4A6FD4; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text); line-height: 1.6; }
   .intel-panel ul { padding-left: 0; list-style: none; margin: 0; }
   .intel-panel ul li { margin-bottom: 5px; }
+  .intel-benchmarks { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; font-size: 12px; color: var(--text-soft); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .intel-benchmark-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-right: 4px; }
+  .intel-benchmark-stat { background: white; border: 1px solid #C7D4F5; border-radius: 5px; padding: 3px 8px; font-size: 12px; font-weight: 600; color: var(--text); }
+  .intel-benchmark-stat span { font-weight: 400; color: var(--text-soft); margin-left: 3px; }
   .intel-sources { margin-top: 10px; padding-top: 8px; border-top: 1px solid #C7D4F5; font-size: 13px; color: var(--text-soft); }
   .intel-sources a { color: #4A6FD4; text-decoration: none; margin-right: 10px; }
   .intel-sources a:hover { text-decoration: underline; }
@@ -362,6 +366,7 @@
       <div class="intel-panel">
         <div class="intel-label">Company Intel</div>
         <div id="intelContent"></div>
+        <div id="intelBenchmarks" style="display:none;"></div>
         <div id="intelSources" class="intel-sources"></div>
         <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
       </div>
@@ -819,12 +824,44 @@ async function lookupCompany() {
 
     document.getElementById('companyIntel').style.display = 'block';
     window._companyIntel = data.summary;
+
+    // Fetch BLS industry benchmarks in parallel — non-blocking
+    fetchBlsBenchmarks(document.getElementById('industry').value);
+
   } catch (e) {
     showToast('Lookup failed — check your connection and try again');
   }
 
   btn.textContent = 'Look up';
   btn.disabled = false;
+}
+
+async function fetchBlsBenchmarks(industry) {
+  const el = document.getElementById('intelBenchmarks');
+  if (!industry) { el.style.display = 'none'; return; }
+  try {
+    const res = await fetch('/.netlify/functions/bls', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ industry })
+    });
+    const data = await res.json();
+    const b = data.benchmarks;
+    if (!b || !b.trir) { el.style.display = 'none'; return; }
+
+    window._blsBenchmarks = b;
+
+    let html = `<div class="intel-benchmarks"><span class="intel-benchmark-label">BLS Benchmarks</span>`;
+    html += `<span class="intel-benchmark-stat">${b.trir.value.toFixed(1)} TRIR<span>${b.industry} (${b.trir.year})</span></span>`;
+    if (b.baseline && b.baseline.value !== b.trir.value) {
+      html += `<span class="intel-benchmark-stat">${b.baseline.value.toFixed(1)} TRIR<span>All Private Industry (${b.baseline.year})</span></span>`;
+    }
+    html += `</div>`;
+    el.innerHTML = html;
+    el.style.display = 'block';
+  } catch (e) {
+    el.style.display = 'none';
+  }
 }
 
 async function revealContact(apolloId, firstName, btn) {
@@ -898,11 +935,13 @@ function dismissNoInfoNotice() {
 
 function clearCompanyIntel() {
   window._companyIntel = null;
+  window._blsBenchmarks = null;
   window._revealedEmail = null;
   window._revealedContacts = [];
   document.getElementById('companyIntel').style.display = 'none';
   document.getElementById('intelContent').innerHTML = '';
   document.getElementById('intelSources').innerHTML = '';
+  document.getElementById('intelBenchmarks').style.display = 'none';
   document.getElementById('intelContacts').innerHTML = '';
   document.getElementById('intelContacts').style.display = 'none';
 }
@@ -922,6 +961,7 @@ ${fd.product ? `Product focus: ${fd.product}` : ''}
 ${fd.company ? `Company: ${fd.company}` : ''}
 ${fd.context ? `Context: ${fd.context}` : ''}
 ${window._companyIntel ? `Company research intel:\n${window._companyIntel}` : ''}
+${window._blsBenchmarks && window._blsBenchmarks.trir ? `Industry injury benchmarks (BLS SOII): ${window._blsBenchmarks.industry} TRIR is ${window._blsBenchmarks.trir.value} per 100 FTE (${window._blsBenchmarks.trir.year})${window._blsBenchmarks.baseline ? `, vs. all-private average of ${window._blsBenchmarks.baseline.value}` : ''}. Use these real numbers to add specificity when referencing injury rates or industry risk.` : ''}
 ${signOff ? `Rep sign-off info: ${signOff}` : ''}
 
 STEP INSTRUCTIONS:
