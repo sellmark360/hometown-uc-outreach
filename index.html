@@ -1016,11 +1016,19 @@ async function lookupCompany() {
       document.getElementById('intelContent').innerHTML = formatted;
     }
 
-    // Render Tavily news links
+    // Render Tavily news links — cap job listings at 1, all other sources pass through
     const sourcesEl = document.getElementById('intelSources');
     if (data.sources && data.sources.length) {
+      const jobDomains = /indeed\.com|linkedin\.com\/jobs|glassdoor\.com|ziprecruiter\.com|careerbuilder\.com|monster\.com|simplyhired\.com|jobs\.com|snagajob\.com/i;
+      const jobTitleWords = /\b(jobs?|hiring|employment|careers?|job openings?|job listings?)\b/i;
+      let jobCount = 0;
+      const filtered = data.sources.filter(s => {
+        const isJob = jobDomains.test(s.url) || jobTitleWords.test(s.title);
+        if (isJob) { jobCount++; return jobCount <= 1; }
+        return true;
+      });
       sourcesEl.innerHTML = '<strong>NEWSJACKING</strong> ' +
-        data.sources.map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join(' &middot; ');
+        filtered.map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join(' &middot; ');
       sourcesEl.style.display = 'block';
     } else {
       sourcesEl.style.display = 'none';
