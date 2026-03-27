@@ -207,7 +207,10 @@
   .btn-mailto:hover { background: #F0F4FF; }
   .acc-mailto { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 5px 11px; border: 1px solid #4A6FD4; border-radius: 6px; background: var(--white); color: #4A6FD4; cursor: pointer; white-space: nowrap; margin-left: 4px; }
   .acc-mailto:hover { background: #F0F4FF; }
-  .intel-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 6px; }
+  .intel-label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #4A6FD4; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .intel-label .intel-toggle { font-size: 11px; font-weight: 500; color: #4A6FD4; background: none; border: none; cursor: pointer; padding: 0; letter-spacing: 0; text-transform: none; opacity: 0.75; }
+  .intel-label .intel-toggle:hover { opacity: 1; }
+  .intel-body { transition: none; }
   .modal-body { padding: 1.5rem; }
   .step-block { margin-bottom: 1.5rem; }
   .step-block h3 { font-size: 16px; font-weight: 600; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -370,12 +373,17 @@
     </div>
     <div id="companyIntel" style="display:none; margin-top:14px;">
       <div class="intel-panel">
-        <div class="intel-label">Company Intel</div>
-        <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
-        <div id="intelPullData" style="display:none;"></div>
-        <div id="intelContent"></div>
-        <div id="intelBenchmarks" style="display:none;"></div>
-        <div id="intelSources" class="intel-sources"></div>
+        <div class="intel-label" onclick="toggleIntelPanel()">
+          <span>Company Intel</span>
+          <button class="intel-toggle" id="intelToggleBtn">Put away ▲</button>
+        </div>
+        <div class="intel-body" id="intelBody">
+          <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
+          <div id="intelPullData" style="display:none;"></div>
+          <div id="intelContent"></div>
+          <div id="intelBenchmarks" style="display:none;"></div>
+          <div id="intelSources" class="intel-sources"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -892,6 +900,8 @@ async function pullData() {
     pdEl.innerHTML = html;
     pdEl.style.display = 'block';
     document.getElementById('companyIntel').style.display = 'block';
+    document.getElementById('intelBody').style.display = '';
+    document.getElementById('intelToggleBtn').textContent = 'Put away ▲';
 
     // Auto-fill industry dropdown if blank
     const mappedIndustry = pdMapIndustry(industry);
@@ -1078,6 +1088,8 @@ async function lookupCompany() {
     }
 
     document.getElementById('companyIntel').style.display = 'block';
+    document.getElementById('intelBody').style.display = '';
+    document.getElementById('intelToggleBtn').textContent = 'Put away ▲';
     window._companyIntel = data.summary;
 
     // Fetch BLS industry benchmarks in parallel — non-blocking
@@ -1186,6 +1198,14 @@ function dismissNoInfoNotice() {
   if (!hasNews && !hasContacts) {
     document.getElementById('companyIntel').style.display = 'none';
   }
+}
+
+function toggleIntelPanel() {
+  const body = document.getElementById('intelBody');
+  const btn  = document.getElementById('intelToggleBtn');
+  const collapsed = body.style.display === 'none';
+  body.style.display = collapsed ? '' : 'none';
+  btn.textContent = collapsed ? 'Put away ▲' : 'Show ▼';
 }
 
 function clearCompanyIntel() {
