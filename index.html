@@ -800,6 +800,8 @@ async function pullData() {
 
     const ita = itaRows[0] || null;
     const bwc = bwcRows[0] || null;
+    console.log('ITA row:', ita);
+    console.log('BWC row:', bwc);
 
     // Best Source Wins: ITA wins on shared fields, BWC adds ExMod + Revenue
     const displayName  = ita ? ita.company_name : (bwc.primary_dba_name || bwc.primary_name);
