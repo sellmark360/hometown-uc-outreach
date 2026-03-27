@@ -795,7 +795,7 @@ async function pullData() {
 
     const [itaRes, bwcRes] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/OSHA_ITA_LIST?company_name=ilike.*${encoded}*&limit=3`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/BWC_LIST?Primary_Name=ilike.*${encoded}*&limit=3`, { headers })
+      fetch(`${SUPABASE_URL}/rest/v1/BWC_LIST?company_name=ilike.*${encoded}*&limit=3`, { headers })
     ]);
 
     const itaRows = itaRes.ok ? await itaRes.json() : [];
