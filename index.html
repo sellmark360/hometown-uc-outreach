@@ -811,14 +811,17 @@ async function pullData() {
     const ita = itaRows[0] || null;
     const bwc = bwcRows[0] || null;
 
-    // Best Source Wins: ITA wins on shared fields, BWC adds ExMod + Revenue
-    const displayName  = ita ? ita.company_name : (bwc.Primary_DBA_Name || bwc.Primary_Name);
-    const industry     = ita ? ita.industry_description : bwc.Current_Industry_Description;
-    const employees    = ita ? ita.employees : (bwc['#_Employees'] || bwc.Employees);
-    const city         = ita ? ita.city : bwc.City_Name;
-    const state        = ita ? ita.state : bwc.State_Code;
-    const exmod        = bwc ? parseFloat(bwc.ExMod) : null;
-    const revenue      = bwc ? bwc.Annual_Revenue : null;
+    // Best Source Wins: ITA wins on shared fields, BWC adds ExMod + Revenue + contact info
+    const displayName  = ita ? ita.company_name : bwc.company_name;
+    const industry     = ita ? ita.industry_description : bwc.industry;
+    const employees    = ita ? ita.employees : bwc.employees;
+    const city         = ita ? ita.city : bwc.city_name;
+    const state        = ita ? ita.state : bwc.state;
+    const exmod        = bwc ? parseFloat(bwc.ex_mod) : null;
+    const revenue      = bwc ? bwc.revenue : null;
+    const contactEmail = bwc ? bwc.contact_email : null;
+    const bizPhone     = bwc ? bwc.business_phone : null;
+    const website      = bwc ? bwc.website : null;
     const sourceLabel  = ita && bwc ? 'ITA + BWC' : ita ? 'ITA (OSHA)' : 'BWC';
 
     // Injury stats from ITA
@@ -839,7 +842,7 @@ async function pullData() {
       clinic2Miles = ita['2nd_Closest_Miles'];
       clinic2Mins  = ita['2nd_Closest_Minutes'];
     } else if (bwc) {
-      const addr = [bwc.Street_Address_Line_1, bwc.City_Name, bwc.State_Code].filter(Boolean).join(', ');
+      const addr = [bwc.street_address, bwc.city_name, bwc.state].filter(Boolean).join(', ');
       const nearest = await getNearestClinics(addr);
       if (nearest && nearest[0]) {
         clinic1Name = nearest[0].name; clinic1Miles = nearest[0].miles; clinic1Mins = nearest[0].mins;
@@ -890,7 +893,10 @@ async function pullData() {
     }
 
     // Revenue
-    if (revenue) html += `<div style="font-size:13px;color:var(--text-soft);">💰 Est. Revenue: ${escHtml(pdFormatRevenue(revenue))}</div>`;
+    if (revenue) html += `<div style="font-size:13px;color:var(--text-soft);margin-bottom:3px;">💰 Est. Revenue: ${escHtml(pdFormatRevenue(revenue))}</div>`;
+    if (website)      html += `<div style="font-size:13px;margin-bottom:3px;">🌐 <a href="${website.startsWith('http') ? '' : 'https://'}${escHtml(website)}" target="_blank" rel="noopener" style="color:#4A6FD4;">${escHtml(website)}</a></div>`;
+    if (bizPhone)     html += `<div style="font-size:13px;margin-bottom:3px;">📞 ${escHtml(bizPhone)}</div>`;
+    if (contactEmail) html += `<div style="font-size:13px;margin-bottom:3px;">✉️ <a href="mailto:${escHtml(contactEmail)}" style="color:#4A6FD4;">${escHtml(contactEmail)}</a></div>`;
 
     // Source badge inline
     html += `<div style="margin-top:8px;font-size:11px;color:var(--text-muted);"><strong>SOURCE</strong> ${sourceLabel}</div>`;
