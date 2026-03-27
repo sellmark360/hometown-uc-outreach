@@ -858,6 +858,16 @@ async function pullData() {
     if (clinic1Name) intelParts.push(`Nearest Hometown UC clinic: ${clinic1Name} (~${clinic1Miles} mi)`);
     window._companyIntel = intelParts.join('. ');
 
+    // Store for CSV export
+    window._pullDataRecord = {
+      company_name: displayName, industry, employees, city, state,
+      ex_mod: exmod && !isNaN(exmod) ? exmod.toFixed(2) : '',
+      osha_injuries: injuries || '', lost_days: lostDays || '',
+      nearest_clinic: clinic1Name || '', clinic_miles: clinic1Miles || '', clinic_mins: clinic1Mins || '',
+      revenue: revenue || '', phone: bizPhone || '', email: contactEmail || '', website: website || '',
+      source: sourceLabel
+    };
+
     // Build display HTML
     let html = '';
 
@@ -898,8 +908,11 @@ async function pullData() {
     if (bizPhone)     html += `<div style="font-size:13px;margin-bottom:3px;">📞 ${escHtml(bizPhone)}</div>`;
     if (contactEmail) html += `<div style="font-size:13px;margin-bottom:3px;">✉️ <a href="mailto:${escHtml(contactEmail)}" style="color:#4A6FD4;">${escHtml(contactEmail)}</a></div>`;
 
-    // Source badge inline
-    html += `<div style="margin-top:8px;font-size:11px;color:var(--text-muted);"><strong>SOURCE</strong> ${sourceLabel}</div>`;
+    // Source badge + export button
+    html += `<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <span style="font-size:11px;color:var(--text-muted);"><strong>SOURCE</strong> ${sourceLabel}</span>
+      <button onclick="exportPullDataCSV()" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 12px;border-radius:6px;border:1px solid #4A6FD4;background:var(--white);color:#4A6FD4;cursor:pointer;white-space:nowrap;">⬇ Export to CSV</button>
+    </div>`;
 
     // Render into dedicated Pull Data div (never overwrites Recon)
     const pdEl = document.getElementById('intelPullData');
@@ -951,6 +964,21 @@ async function getNearestClinics(address) {
       .sort((a, b) => a.miles - b.miles)
       .slice(0, 2);
   } catch (e) { return null; }
+}
+
+function exportPullDataCSV() {
+  const r = window._pullDataRecord;
+  if (!r) return;
+  const headers = ['Company Name','Industry','Employees','City','State','ExMod','OSHA Injuries','Lost Days','Nearest Clinic','Clinic Miles','Clinic Mins','Est Revenue','Phone','Email','Website','Source'];
+  const values  = [r.company_name, r.industry, r.employees, r.city, r.state, r.ex_mod, r.osha_injuries, r.lost_days, r.nearest_clinic, r.clinic_miles, r.clinic_mins, r.revenue, r.phone, r.email, r.website, r.source];
+  const csvRow  = values.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',');
+  const csv     = headers.join(',') + '\n' + csvRow;
+  const blob    = new Blob([csv], { type: 'text/csv' });
+  const a       = document.createElement('a');
+  a.href        = URL.createObjectURL(blob);
+  a.download    = (r.company_name || 'prospect').replace(/[^a-z0-9]/gi, '_') + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 function pdFormatRevenue(val) {
