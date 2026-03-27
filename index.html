@@ -969,6 +969,7 @@ async function getNearestClinics(address) {
         return { name: c.name, miles: miles.toFixed(1), mins: Math.round(miles * 1.5) };
       })
       .sort((a, b) => a.miles - b.miles)
+      .filter((c, i, arr) => i === 0 || c.name !== arr[0].name)
       .slice(0, 2);
   } catch (e) { return null; }
 }
