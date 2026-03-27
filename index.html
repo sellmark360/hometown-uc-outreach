@@ -785,7 +785,7 @@ async function pullData() {
 
     const [itaRes, bwcRes] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/OSHA_ITA_LIST?company_name=ilike.*${encoded}*&limit=3`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/BWC_LIST?primary_name=ilike.*${encoded}*&limit=3`, { headers })
+      fetch(`${SUPABASE_URL}/rest/v1/BWC_LIST?Primary_Name=ilike.*${encoded}*&limit=3`, { headers })
     ]);
 
     const itaRows = itaRes.ok ? await itaRes.json() : [];
@@ -800,38 +800,36 @@ async function pullData() {
 
     const ita = itaRows[0] || null;
     const bwc = bwcRows[0] || null;
-    console.log('ITA row:', ita);
-    console.log('BWC row:', bwc);
 
     // Best Source Wins: ITA wins on shared fields, BWC adds ExMod + Revenue
-    const displayName  = ita ? ita.company_name : (bwc.primary_dba_name || bwc.primary_name);
-    const industry     = ita ? ita.industry_description : bwc.current_industry_description;
-    const employees    = ita ? ita.number_of_employees : (bwc['# Employees'] || bwc.employees);
-    const city         = ita ? ita.city : bwc.city_name;
-    const state        = ita ? ita.state : bwc.state_code;
-    const exmod        = bwc ? parseFloat(bwc.exmod) : null;
-    const revenue      = bwc ? bwc.annual_revenue : null;
+    const displayName  = ita ? ita.company_name : (bwc.Primary_DBA_Name || bwc.Primary_Name);
+    const industry     = ita ? ita.industry_description : bwc.Current_Industry_Description;
+    const employees    = ita ? ita.employees : (bwc['#_Employees'] || bwc.Employees);
+    const city         = ita ? ita.city : bwc.City_Name;
+    const state        = ita ? ita.state : bwc.State_Code;
+    const exmod        = bwc ? parseFloat(bwc.ExMod) : null;
+    const revenue      = bwc ? bwc.Annual_Revenue : null;
     const sourceLabel  = ita && bwc ? 'ITA + BWC' : ita ? 'ITA (OSHA)' : 'BWC';
 
     // Injury stats from ITA
-    const injuries  = ita ? (parseInt(ita.total_injuries)   || 0) : null;
-    const deaths    = ita ? (parseInt(ita.total_deaths)     || 0) : null;
-    const dafwCases = ita ? (parseInt(ita.total_dafw_cases) || 0) : null;
-    const dafwDays  = ita ? (parseInt(ita.total_dafw_days)  || 0) : null;
-    const djtrDays  = ita ? (parseInt(ita.total_djtr_days)  || 0) : null;
+    const injuries  = ita ? (parseInt(ita.total_injuries) || 0) : null;
+    const deaths    = ita ? (parseInt(ita.deaths)         || 0) : null;
+    const dafwCases = ita ? (parseInt(ita.dafw_cases)     || 0) : null;
+    const dafwDays  = ita ? (parseInt(ita.dafw_days)      || 0) : null;
+    const djtrDays  = ita ? (parseInt(ita.djtr_days)      || 0) : null;
     const lostDays  = (dafwDays || 0) + (djtrDays || 0);
 
     // Clinic distances: ITA has pre-calculated, BWC-only needs geocoding
     let clinic1Name, clinic1Miles, clinic1Mins, clinic2Name, clinic2Miles, clinic2Mins;
     if (ita) {
-      clinic1Name  = ita.closest_clinic;
-      clinic1Miles = ita.closest_clinic_est_drive_miles;
-      clinic1Mins  = ita.closest_clinic_est_drive_minutes;
-      clinic2Name  = ita['2nd_closest_clinic'];
-      clinic2Miles = ita['2nd_closest_est_drive_miles'];
-      clinic2Mins  = ita['2nd_closest_est_drive_minutes'];
+      clinic1Name  = ita.Closest_Clinic;
+      clinic1Miles = ita.Closest_Clinic_Miles;
+      clinic1Mins  = ita.Closest_Clinic_Minutes;
+      clinic2Name  = ita['2nd_Closest_Clinic'];
+      clinic2Miles = ita['2nd_Closest_Miles'];
+      clinic2Mins  = ita['2nd_Closest_Minutes'];
     } else if (bwc) {
-      const addr = [bwc.street_address_line_1, bwc.city_name, bwc.state_code].filter(Boolean).join(', ');
+      const addr = [bwc.Street_Address_Line_1, bwc.City_Name, bwc.State_Code].filter(Boolean).join(', ');
       const nearest = await getNearestClinics(addr);
       if (nearest && nearest[0]) {
         clinic1Name = nearest[0].name; clinic1Miles = nearest[0].miles; clinic1Mins = nearest[0].mins;
