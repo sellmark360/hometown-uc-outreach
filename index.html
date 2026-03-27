@@ -358,8 +358,8 @@
         <label>Name of Prospect Company</label>
         <div class="company-input-row">
           <input type="text" id="company" placeholder="e.g. Acme Logistics" oninput="clearCompanyIntel()" autocomplete="off" />
-          <button class="btn-lookup" id="lookupBtn" onclick="lookupCompany()">Recon</button>
           <button class="btn-pull" id="pullDataBtn" onclick="pullData()">Pull Data</button>
+          <button class="btn-lookup" id="lookupBtn" onclick="lookupCompany()">Recon</button>
         </div>
       </div>
       <div class="field full">
@@ -726,10 +726,15 @@ function getFormData() {
 // ============================================================
 function initAutocomplete() {
   const input = document.getElementById('company');
+  const ohioBounds = new google.maps.LatLngBounds(
+    new google.maps.LatLng(38.4, -84.8),
+    new google.maps.LatLng(42.3, -80.5)
+  );
   const autocomplete = new google.maps.places.Autocomplete(input, {
     types: ['establishment'],
     fields: ['name'],
-    componentRestrictions: { country: 'us' }
+    bounds: ohioBounds,
+    strictBounds: true
   });
   autocomplete.addListener('place_changed', function() {
     const place = autocomplete.getPlace();
