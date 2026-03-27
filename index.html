@@ -734,8 +734,8 @@ function initAutocomplete() {
 
   // Custom dropdown — names only, no addresses
   const dropdown = document.createElement('div');
-  dropdown.style.cssText = 'position:absolute;z-index:9999;background:#fff;border:1px solid #E0DED6;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);width:100%;margin-top:2px;display:none;overflow:hidden;';
-  const wrap = input.closest('.company-input-row');
+  dropdown.style.cssText = 'position:absolute;top:100%;left:0;z-index:9999;background:#fff;border:1px solid #E0DED6;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);width:100%;margin-top:4px;display:none;overflow:hidden;';
+  const wrap = input.closest('.field');
   wrap.style.position = 'relative';
   wrap.appendChild(dropdown);
 
@@ -745,7 +745,7 @@ function initAutocomplete() {
     const val = input.value.trim();
     if (val.length < 2) { dropdown.style.display = 'none'; return; }
     timer = setTimeout(() => {
-      service.getPlacePredictions({ input: val, types: ['establishment'], bounds: ohioBounds, strictBounds: true }, (predictions, status) => {
+      service.getPlacePredictions({ input: val, types: ['establishment'], locationRestriction: ohioBounds }, (predictions, status) => {
         if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions) { dropdown.style.display = 'none'; return; }
         dropdown.innerHTML = predictions.slice(0, 6).map((p, i) =>
           `<div data-name="${p.structured_formatting.main_text.replace(/"/g, '&quot;')}" style="padding:9px 12px;cursor:pointer;font-size:14px;color:#1C1B18;${i > 0 ? 'border-top:1px solid #F1EFE8;' : ''}">${p.structured_formatting.main_text}</div>`
