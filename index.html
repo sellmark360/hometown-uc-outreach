@@ -96,6 +96,17 @@
   .copy-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-soft); cursor: pointer; transition: all 0.15s; }
   .copy-btn:hover { border-color: var(--red); color: var(--red); }
   .copy-btn.copied { background: #EAF3DE; border-color: #3B6D11; color: #3B6D11; }
+
+  /* APPROACH TABS */
+  .approach-tabs-row { display: flex; gap: 6px; padding: 10px 12px; background: var(--gray-50); border-bottom: 1px solid var(--border); }
+  .approach-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 4px; border: 1px solid #C0BFBB; border-radius: var(--radius); background: #EFEFED; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .approach-tab:hover { border-color: #4a4949; background: #E0DFDB; }
+  .approach-tab.active { border-color: var(--red); background: var(--red-light); box-shadow: 0 0 0 2px rgba(194,40,40,0.15); }
+  .approach-letter { font-size: 16px; font-weight: 700; color: #4a4949; font-family: 'DM Serif Display', serif; line-height: 1; }
+  .approach-tab.active .approach-letter { color: var(--red); }
+  .approach-label { font-size: 10px; font-weight: 500; color: var(--text-soft); line-height: 1.3; text-align: center; }
+  .approach-tab.active .approach-label { color: var(--red); }
+
   .subject-row { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
   .subject-row strong { color: var(--text-muted); font-weight: 500; margin-right: 6px; }
   .output-body { padding: 20px 16px; font-size: 16px; line-height: 1.85; color: var(--text); white-space: pre-wrap; min-height: 80px; }
@@ -318,17 +329,18 @@
         <label>Prospect role</label>
         <select id="role" style="position:relative;">
           <option value="">Select a role…</option>
-          <option>Benefits Mgr/Dir.</option>
-          <option>CEO</option>
-          <option>COO</option>
+          <option>Administrator</option>
+          <option>DON (Director of Nursing)</option>
+          <option>Fleet Manager</option>
           <option>Gatekeeper</option>
-          <option>HR Manager</option>
-          <option>Office Manager</option>
-          <option>Operations Mgr.</option>
-          <option>Risk Manager</option>
+          <option>HR Director</option>
+          <option>Operations Manager</option>
+          <option>Owner</option>
+          <option>Plant Manager</option>
+          <option>Project Manager</option>
           <option>Safety Director</option>
           <option>Safety Manager</option>
-          <option>Sr. HR Director</option>
+          <option>Safety Officer</option>
           <option>Transport Supervisor</option>
         </select>
       </div>
@@ -434,17 +446,18 @@
         </select>
         <select id="savedRoleFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;max-width:160px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%239A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
           <option value="">👤 Role</option>
-          <option>Benefits Mgr/Dir.</option>
-          <option>CEO</option>
-          <option>COO</option>
+          <option>Administrator</option>
+          <option>DON (Director of Nursing)</option>
+          <option>Fleet Manager</option>
           <option>Gatekeeper</option>
-          <option>HR Manager</option>
-          <option>Office Manager</option>
-          <option>Operations Mgr.</option>
-          <option>Risk Manager</option>
-          <option>Sr. HR Director</option>
+          <option>HR Director</option>
+          <option>Operations Manager</option>
+          <option>Owner</option>
+          <option>Plant Manager</option>
+          <option>Project Manager</option>
           <option>Safety Director</option>
           <option>Safety Manager</option>
+          <option>Safety Officer</option>
           <option>Transport Supervisor</option>
         </select>
         <select id="savedIndustryFilter" onchange="renderSaved()" style="font-family:DM Sans,sans-serif;font-size:13px;padding:6px 10px;border:1px solid var(--border);border-radius:20px;outline:none;background:var(--white);color:var(--text);cursor:pointer;-webkit-appearance:none;padding-right:24px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22%3E%3Cpath fill=%22%229A9890%22 d=%22M0 0l5 5 5-5z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;">
@@ -472,7 +485,8 @@
   <!-- BUTTONS -->
   <div class="btn-row">
     <button class="btn-primary" id="genSingleBtn" onclick="generateSingle()">Generate touch #<span id="btnStep">1</span> — Cold Intro</button>
-    <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()">Generate full 7-touch sequence ↓</button>
+    <button class="btn-secondary" id="genApproachesBtn" onclick="generateApproaches()">Generate A/B/C/D Approaches</button>
+    <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()" style="grid-column:1/-1;">Generate full 7-touch sequence ↓</button>
   </div>
 
   <!-- SINGLE TOUCH OUTPUT -->
@@ -486,6 +500,24 @@
       <button class="copy-btn" id="copyBtn" onclick="copySingle()">Copy</button>
       <button class="copy-btn" id="saveBtn" onclick="saveSingle()" style="background:#4a4949;color:white;border-color:#4a4949;">Save</button>
       <span id="outputSendBtns" style="display:none;gap:6px;flex-wrap:wrap;align-items:center;"></span>
+    </div>
+    <div id="approachTabsRow" class="approach-tabs-row" style="display:none;">
+      <button class="approach-tab active" data-approach="A" onclick="selectApproach('A')">
+        <span class="approach-letter">A</span>
+        <span class="approach-label">Clean &amp; Direct</span>
+      </button>
+      <button class="approach-tab" data-approach="B" onclick="selectApproach('B')">
+        <span class="approach-letter">B</span>
+        <span class="approach-label">Problem First</span>
+      </button>
+      <button class="approach-tab" data-approach="C" onclick="selectApproach('C')">
+        <span class="approach-letter">C</span>
+        <span class="approach-label">Industry Insights</span>
+      </button>
+      <button class="approach-tab" data-approach="D" onclick="selectApproach('D')">
+        <span class="approach-letter">D</span>
+        <span class="approach-label">Informational</span>
+      </button>
     </div>
     <div class="subject-row" id="subjectRow" style="display:none;">
       <strong>Subject:</strong><span id="subjectText"></span>
@@ -599,15 +631,19 @@ const stepMeta = {
 };
 
 const roleIntel = {
-  'Gatekeeper / Admin / Office Manager': `Their job is to filter and protect. Do NOT oversell. Be brief, human, respectful. Acknowledge their role. Ask them to connect you with the right person. Three sentences max in the body. No jargon.`,
-  'HR Manager or HR Director': `Cares about OSHA compliance, workers' comp cost management, onboarding physicals, FMLA overlap, injury documentation burden, and employee wellbeing. Feels the administrative weight of every claim. Speak to reducing paperwork and liability exposure.`,
-  'Safety Manager': `Lives in OSHA logs, post-accident testing, modified duty, and incident reduction. Cares about DART and TRIR rates, quick post-accident drug testing and medical care, and having the right provider on file BEFORE the accident. Speak operationally.`,
+  'Gatekeeper': `Their job is to filter and protect. Do NOT oversell. Be brief, human, respectful. Acknowledge their role. Ask them to connect you with the right person. Three sentences max in the body. No jargon.`,
+  'Transport Supervisor': `Oversees drivers and fleet operations day-to-day. Deals with DOT compliance, post-accident testing, drug testing programs, and keeping routes staffed. Speak practically — a driver off the road or out of compliance is a direct operational problem. Short, direct, no buzzwords.`,
+  'Administrator': `Manages operations at a healthcare or assisted living facility. Cares about fast pre-employment screening to reduce hiring delays, workers' comp cost control for a high-turnover workforce, and documentation of lifting and transfer injuries. Speak to speed of hire and reducing claim burden.`,
+  'DON (Director of Nursing)': `Director of Nursing at an assisted living or healthcare facility. Responsible for clinical staff safety and compliance. Acutely aware of lifting injuries, staffing shortfalls caused by injuries, and injury documentation requirements. Cares about quick return-to-work and having a reliable care partner nearby. Speak to staff safety and operational continuity.`,
+  'Fleet Manager': `Keeps drivers on the road. Lives with DOT physical expiration dates, random drug testing deadlines, and post-accident testing requirements. A driver who fails or misses a physical is a truck parked. Speak to fast turnaround, certified medical examiners, and compliance documentation.`,
+  'HR Director': `Cares about OSHA compliance, workers' comp cost management, onboarding physicals, injury documentation burden, and employee wellbeing. Feels the administrative weight of every claim. Speak to reducing paperwork, faster hiring clearances, and liability exposure.`,
+  'Operations Manager': `Keeps production running. An injury is a gap on the floor. Cares about how fast a worker can be treated, tested, and cleared. Wants a clinic that is close, fast, and communicates back clearly. Be practical and direct.`,
+  'Owner': `Bottom line focus. Workers' comp is a cost they hate. Wants simple, reliable solutions without a lot of overhead. Often the final decision-maker in smaller companies. Keep it extremely short, lead with cost savings and peace of mind. Peer-level conversation.`,
+  'Plant Manager': `Responsible for production output and floor safety. OSHA audits, musculoskeletal injuries, and lost-time incidents are constant pressure points. Cares about workers being treated fast and returned to modified duty quickly. Speak operationally — downtime has a dollar value.`,
+  'Project Manager': `Manages job-site execution and safety compliance. An injury on a job site can stall progress. Cares about drug testing, DOT physicals for CDL operators, and fast post-accident documentation. Speak to keeping the job moving and staying compliant.`,
   'Safety Director': `Strategic thinker. Cares about program-level outcomes, injury prevention culture, regulatory risk across multiple sites, and ROI on safety investments. Wants a partner, not a vendor. Speak to outcomes and data.`,
-  'CEO': `Bottom line. Workers' comp is a cost they hate. Lost productivity, liability, and insurance premiums matter. Keep it extremely short. Make it feel like a peer conversation. One problem, one idea, one ask.`,
-  'COO': `Operational continuity is everything. An injured worker off the floor costs more than their wage. Cares about fast return-to-work, minimal administrative disruption, and vendors who are easy to work with. Speak to speed and seamlessness.`,
-  'Benefits Manager or Benefits Director': `Lives at the intersection of health benefits, wellness programs, and occupational health. Cares about utilization, employee satisfaction, cost containment, and pre-tax benefit strategies. Open to Total Worker Health conversations.`,
-  'Risk Manager': `Owns the EMR (experience modification rate), claim frequency and severity, insurance premiums, and litigation risk. Speak the language of claim cost reduction, documentation quality, and early intervention.`,
-  'Operations Manager': `Keeps production running. An injury is a gap on the floor. Cares about how fast a worker can be treated, tested, and cleared. Wants a clinic that's close, fast, and communicates back clearly. Be practical and direct.`,
+  'Safety Manager': `Lives in OSHA logs, post-accident testing, modified duty, and incident reduction. Cares about DART and TRIR rates, quick post-accident drug testing and medical care, and having the right provider on file BEFORE the accident. Speak operationally.`,
+  'Safety Officer': `Hands-on safety compliance role, often in construction. Manages OSHA requirements, job-site drug testing, and post-incident protocols. Wants a responsive, nearby clinic they can call on short notice. Be direct and practical.`,
 };
 
 const stepInstructions = {
@@ -1294,6 +1330,134 @@ function clearCompanyIntel() {
 // ============================================================
 // API CALL
 // ============================================================
+// ── APPROACH A/B/C/D ─────────────────────────────────────────────────────────
+
+const approachInstructions = {
+  A: `APPROACH A — CLEAN & DIRECT.
+Write a short, sharp cold outreach email. No statistics, no data, no industry benchmarks — just a clean, confident message. 3–4 sentences max in the body. One CTA (request a call or brief meeting). Lead with what Hometown UC offers in one tight sentence, then tie it directly to what someone in their role cares about. No fluff, no filler.`,
+
+  B: `APPROACH B — PROBLEM FIRST.
+Open with the prospect's specific situation using real data if available. If ExMod or OSHA injury stats appear in the company data above, lead with those numbers in the very first sentence — make it about THEIR situation before mentioning Hometown UC. If no company-specific data is available, open with a realistic industry benchmark for their sector instead. Then connect the dots to how Hometown UC helps. 4–5 sentences. One CTA. If company data was used, let the subject line hint at it.`,
+
+  C: `APPROACH C — INDUSTRY INSIGHTS.
+Open with an industry-level insight, benchmark, or common scenario relevant to their sector. Frame it as "Companies in [their industry] typically..." or reference a realistic stat about injury rates, workers' comp costs, or compliance burden common in that field. Position Hometown UC as the partner helping employers in their industry address this. Sound informed and credible — not salesy. 4–5 sentences. One CTA.`,
+
+  D: `APPROACH D — INFORMATIONAL.
+Lead with proximity and service awareness. If clinic distance appears in the company data above, open with that specific distance: "Did you know there's a Hometown UC clinic [X miles] from your location?" If no distance data is available, use: "Did you know Hometown UC has 33 clinic locations across Ohio?" Then pivot to one specific service most relevant to their industry (DOT physicals for trucking, pre-employment physicals for assisted living, injury care for manufacturing, etc.). Educational tone — inform first, sell second. 4–5 sentences. One CTA.`,
+};
+
+window._approaches = {};
+
+async function callClaudeApproach(approach, fd) {
+  const signOff = [fd.rep ? fd.rep : null].filter(Boolean).join(' · ');
+  const userPrompt = `Write a cold outreach email using the approach specified below.
+Industry: ${fd.industry}
+Prospect role: ${fd.role}
+${fd.product ? `Product focus: ${fd.product}` : ''}
+${fd.company ? `Company: ${fd.company}` : ''}
+${fd.context ? `Context: ${fd.context}` : ''}
+${window._companyIntel ? `Company data (Pull Data):\n${window._companyIntel}` : ''}
+${window._blsBenchmarks && window._blsBenchmarks.trir ? `Industry injury benchmarks (BLS SOII): ${window._blsBenchmarks.industry} TRIR is ${window._blsBenchmarks.trir.value} per 100 FTE (${window._blsBenchmarks.trir.year})${window._blsBenchmarks.baseline ? `, vs. all-private average of ${window._blsBenchmarks.baseline.value}` : ''}.` : ''}
+${signOff ? `Rep sign-off info: ${signOff}` : ''}
+
+APPROACH INSTRUCTIONS:
+${approachInstructions[approach]}`;
+
+  const res = await fetch('/.netlify/functions/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 800,
+      system: buildSystemPrompt(fd.role, fd.product, fd.tone),
+      messages: [{ role: 'user', content: userPrompt }]
+    })
+  });
+  const data = await res.json();
+  return (data.content?.[0]?.text || '').trim();
+}
+
+async function generateApproaches() {
+  if (!validateForm()) return;
+  const fd = getFormData();
+  const btn = document.getElementById('genApproachesBtn');
+  const card = document.getElementById('outputCard');
+  const body = document.getElementById('outputBody');
+  const subjectRow = document.getElementById('subjectRow');
+  const hwHint = document.getElementById('hwHint');
+  const tabsRow = document.getElementById('approachTabsRow');
+
+  btn.disabled = true;
+  window._approaches = {};
+  window._currentEmail = null;
+  card.style.display = 'block';
+  body.className = 'output-body';
+  subjectRow.style.display = 'none';
+  hwHint.style.display = 'none';
+  tabsRow.style.display = 'flex';
+  document.getElementById('outputBadge').textContent = 'Approaches';
+  document.getElementById('outputDesc').textContent = 'Generating A, B, C, D…';
+  document.getElementById('outputSendBtns').style.display = 'none';
+  document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-approach="A"]').classList.add('active');
+  body.innerHTML = loader('Generating all 4 approaches in parallel…');
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const parseEmail = (text) => {
+    const subjectMatch = text.match(/^SUBJECT:\s*(.+)/m);
+    const emailBody = text.replace(/^SUBJECT:\s*.+\n+/m, '').trim();
+    return { subject: subjectMatch ? subjectMatch[1].trim() : '', body: emailBody };
+  };
+
+  try {
+    const [resA, resB, resC, resD] = await Promise.all([
+      callClaudeApproach('A', fd),
+      callClaudeApproach('B', fd),
+      callClaudeApproach('C', fd),
+      callClaudeApproach('D', fd),
+    ]);
+    window._approaches = {
+      A: parseEmail(resA),
+      B: parseEmail(resB),
+      C: parseEmail(resC),
+      D: parseEmail(resD),
+    };
+    selectApproach('A');
+    showToast('All 4 approaches generated.', 'success');
+  } catch(err) {
+    body.innerHTML = `<div class="error-msg">Error: ${err.message}. Please try again.</div>`;
+  }
+  btn.disabled = false;
+}
+
+function selectApproach(letter) {
+  const labels = { A: 'A — Clean & Direct', B: 'B — Problem First', C: 'C — Industry Insights', D: 'D — Informational' };
+  const email = window._approaches[letter];
+  if (!email) return;
+
+  document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-approach="${letter}"]`).classList.add('active');
+  document.getElementById('outputBadge').textContent = 'Approaches';
+  document.getElementById('outputDesc').textContent = labels[letter];
+
+  const subjectRow = document.getElementById('subjectRow');
+  if (email.subject) {
+    subjectRow.style.display = 'block';
+    document.getElementById('subjectText').textContent = ' ' + email.subject;
+  } else {
+    subjectRow.style.display = 'none';
+  }
+  document.getElementById('outputBody').textContent = email.body;
+  window._currentEmail = email;
+  document.getElementById('copyBtn').textContent = 'Copy';
+  document.getElementById('copyBtn').className = 'copy-btn';
+  resetEditMode();
+  document.getElementById('outputSendBtns').style.display = 'inline-flex';
+  updateOutputSendButtons();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 async function callClaude(step, fd) {
   const signOff = [
     fd.rep ? fd.rep : null,
@@ -1391,6 +1555,7 @@ async function generateSingle() {
   body.className = 'output-body';
   subjectRow.style.display = 'none';
   hwHint.style.display = 'none';
+  document.getElementById('approachTabsRow').style.display = 'none';
   document.getElementById('outputBadge').textContent = `Touch ${step}`;
   document.getElementById('outputDesc').textContent = meta.desc;
   window._currentEmail = null;
