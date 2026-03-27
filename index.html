@@ -371,6 +371,13 @@
         <textarea id="context" placeholder="e.g. High injury rate in warehouse, referred by John at XYZ, recently switched providers…  Leave blank to use industry best practices."></textarea>
       </div>
     </div>
+    <div id="exportTray" style="display:none;margin-top:10px;background:#EAF3DE;border:1px solid #639922;border-radius:var(--radius);padding:10px 14px;display:none;align-items:center;justify-content:space-between;gap:12px;">
+      <span style="font-size:13px;font-weight:500;color:#27500A;">📋 Export list: <span id="exportCount">0</span> compan<span id="exportPlural">y</span></span>
+      <div style="display:flex;gap:8px;">
+        <button onclick="clearExportList()" style="font-family:DM Sans,sans-serif;font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #639922;background:transparent;color:#27500A;cursor:pointer;">Clear</button>
+        <button onclick="exportAllCSV()" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:600;padding:4px 14px;border-radius:6px;border:none;background:#27500A;color:white;cursor:pointer;">Export All ⬇</button>
+      </div>
+    </div>
     <div id="companyIntel" style="display:none; margin-top:14px;">
       <div class="intel-panel">
         <div class="intel-label" onclick="toggleIntelPanel()">
@@ -908,10 +915,10 @@ async function pullData() {
     if (bizPhone)     html += `<div style="font-size:13px;margin-bottom:3px;">📞 ${escHtml(bizPhone)}</div>`;
     if (contactEmail) html += `<div style="font-size:13px;margin-bottom:3px;">✉️ <a href="mailto:${escHtml(contactEmail)}" style="color:#4A6FD4;">${escHtml(contactEmail)}</a></div>`;
 
-    // Source badge + export button
+    // Source badge + Add to Export button
     html += `<div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
       <span style="font-size:11px;color:var(--text-muted);"><strong>SOURCE</strong> ${sourceLabel}</span>
-      <button onclick="exportPullDataCSV()" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 12px;border-radius:6px;border:1px solid #4A6FD4;background:var(--white);color:#4A6FD4;cursor:pointer;white-space:nowrap;">⬇ Export to CSV</button>
+      <button id="addToExportBtn" onclick="addToExport()" style="font-family:DM Sans,sans-serif;font-size:12px;font-weight:500;padding:4px 12px;border-radius:6px;border:1px solid #4A6FD4;background:var(--white);color:#4A6FD4;cursor:pointer;white-space:nowrap;">+ Add to Export</button>
     </div>`;
 
     // Render into dedicated Pull Data div (never overwrites Recon)
@@ -966,19 +973,45 @@ async function getNearestClinics(address) {
   } catch (e) { return null; }
 }
 
-function exportPullDataCSV() {
+window._exportList = [];
+
+function addToExport() {
   const r = window._pullDataRecord;
   if (!r) return;
+  const btn = document.getElementById('addToExportBtn');
+  // Avoid duplicates by company name
+  if (window._exportList.some(x => x.company_name === r.company_name)) {
+    if (btn) { btn.textContent = '✓ Already added'; setTimeout(() => { btn.textContent = '+ Add to Export'; }, 1500); }
+    return;
+  }
+  window._exportList.push({ ...r });
+  const count = window._exportList.length;
+  document.getElementById('exportCount').textContent = count;
+  document.getElementById('exportPlural').textContent = count === 1 ? 'y' : 'ies';
+  document.getElementById('exportTray').style.display = 'flex';
+  if (btn) { btn.textContent = '✓ Added'; btn.style.color = '#27500A'; btn.style.borderColor = '#639922'; setTimeout(() => { btn.textContent = '+ Add to Export'; btn.style.color = ''; btn.style.borderColor = ''; }, 1500); }
+}
+
+function exportAllCSV() {
+  if (!window._exportList.length) return;
   const headers = ['Company Name','Industry','Employees','City','State','ExMod','OSHA Injuries','Lost Days','Nearest Clinic','Clinic Miles','Clinic Mins','Est Revenue','Phone','Email','Website','Source'];
-  const values  = [r.company_name, r.industry, r.employees, r.city, r.state, r.ex_mod, r.osha_injuries, r.lost_days, r.nearest_clinic, r.clinic_miles, r.clinic_mins, r.revenue, r.phone, r.email, r.website, r.source];
-  const csvRow  = values.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',');
-  const csv     = headers.join(',') + '\n' + csvRow;
-  const blob    = new Blob([csv], { type: 'text/csv' });
-  const a       = document.createElement('a');
-  a.href        = URL.createObjectURL(blob);
-  a.download    = (r.company_name || 'prospect').replace(/[^a-z0-9]/gi, '_') + '.csv';
+  const rows = window._exportList.map(r => {
+    const values = [r.company_name, r.industry, r.employees, r.city, r.state, r.ex_mod, r.osha_injuries, r.lost_days, r.nearest_clinic, r.clinic_miles, r.clinic_mins, r.revenue, r.phone, r.email, r.website, r.source];
+    return values.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',');
+  });
+  const csv  = headers.join(',') + '\n' + rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'huc_prospects_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+function clearExportList() {
+  window._exportList = [];
+  document.getElementById('exportTray').style.display = 'none';
+  document.getElementById('exportCount').textContent = '0';
 }
 
 function pdFormatRevenue(val) {
