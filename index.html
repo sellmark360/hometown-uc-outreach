@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hometown UC — Outreach Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<script src="https://maps.googleapis.com/maps/api/js?key=__GOOGLE_API_KEY__&libraries=places&callback=initAutocomplete" async defer></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -169,6 +170,9 @@
   .btn-lookup { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; white-space: nowrap; padding: 8px 14px; border: 1px solid var(--red); border-radius: 8px; background: var(--white); color: var(--red); cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
   .btn-lookup:hover:not(:disabled) { background: var(--red-light); }
   .btn-lookup:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-pull { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; white-space: nowrap; padding: 8px 14px; border: 1px solid #4A6FD4; border-radius: 8px; background: var(--white); color: #4A6FD4; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .btn-pull:hover:not(:disabled) { background: #F0F4FF; }
+  .btn-pull:disabled { opacity: 0.55; cursor: not-allowed; }
   .intel-panel { margin-top: 10px; background: #F0F4FF; border: 1px solid #C7D4F5; border-left: 4px solid #4A6FD4; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text); line-height: 1.6; }
   .intel-panel ul { padding-left: 0; list-style: none; margin: 0; }
   .intel-panel ul li { margin-bottom: 5px; }
@@ -353,8 +357,9 @@
       <div class="field">
         <label>Name of Prospect Company</label>
         <div class="company-input-row">
-          <input type="text" id="company" placeholder="e.g. Acme Logistics" oninput="clearCompanyIntel()" />
-          <button class="btn-lookup" id="lookupBtn" onclick="lookupCompany()">Look up</button>
+          <input type="text" id="company" placeholder="e.g. Acme Logistics" oninput="clearCompanyIntel()" autocomplete="off" />
+          <button class="btn-lookup" id="lookupBtn" onclick="lookupCompany()">Recon</button>
+          <button class="btn-pull" id="pullDataBtn" onclick="pullData()">Pull Data</button>
         </div>
       </div>
       <div class="field full">
@@ -365,10 +370,10 @@
     <div id="companyIntel" style="display:none; margin-top:14px;">
       <div class="intel-panel">
         <div class="intel-label">Company Intel</div>
+        <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
         <div id="intelContent"></div>
         <div id="intelBenchmarks" style="display:none;"></div>
         <div id="intelSources" class="intel-sources"></div>
-        <div id="intelContacts" class="intel-contacts" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -717,14 +722,223 @@ function getFormData() {
 }
 
 // ============================================================
-// COMPANY LOOKUP
+// GOOGLE PLACES AUTOCOMPLETE
+// ============================================================
+function initAutocomplete() {
+  const input = document.getElementById('company');
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ['establishment'],
+    fields: ['name'],
+    componentRestrictions: { country: 'us' }
+  });
+  autocomplete.addListener('place_changed', function() {
+    const place = autocomplete.getPlace();
+    if (place && place.name) {
+      input.value = place.name;
+      clearCompanyIntel();
+    }
+  });
+}
+
+// PULL DATA (internal Supabase records — OSHA_ITA_LIST + BWC_LIST)
+// ============================================================
+async function pullData() {
+  const company = document.getElementById('company').value.trim();
+  if (!company) { showToast('Enter a company name first'); return; }
+
+  const btn = document.getElementById('pullDataBtn');
+  btn.textContent = 'Pulling…';
+  btn.disabled = true;
+
+  try {
+    const encoded = encodeURIComponent(company);
+    const headers = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
+
+    const [itaRes, bwcRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/OSHA_ITA_LIST?company_name=ilike.*${encoded}*&limit=3`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/BWC_LIST?primary_name=ilike.*${encoded}*&limit=3`, { headers })
+    ]);
+
+    const itaRows = itaRes.ok ? await itaRes.json() : [];
+    const bwcRows = bwcRes.ok ? await bwcRes.json() : [];
+
+    if (!itaRows.length && !bwcRows.length) {
+      showToast('No records found for "' + company + '" in our database');
+      btn.textContent = 'Pull Data';
+      btn.disabled = false;
+      return;
+    }
+
+    const ita = itaRows[0] || null;
+    const bwc = bwcRows[0] || null;
+
+    // Best Source Wins: ITA wins on shared fields, BWC adds ExMod + Revenue
+    const displayName  = ita ? ita.company_name : (bwc.primary_dba_name || bwc.primary_name);
+    const industry     = ita ? ita.industry_description : bwc.current_industry_description;
+    const employees    = ita ? ita.number_of_employees : (bwc['# Employees'] || bwc.employees);
+    const city         = ita ? ita.city : bwc.city_name;
+    const state        = ita ? ita.state : bwc.state_code;
+    const exmod        = bwc ? parseFloat(bwc.exmod) : null;
+    const revenue      = bwc ? bwc.annual_revenue : null;
+    const sourceLabel  = ita && bwc ? 'ITA + BWC' : ita ? 'ITA (OSHA)' : 'BWC';
+
+    // Injury stats from ITA
+    const injuries  = ita ? (parseInt(ita.total_injuries)   || 0) : null;
+    const deaths    = ita ? (parseInt(ita.total_deaths)     || 0) : null;
+    const dafwCases = ita ? (parseInt(ita.total_dafw_cases) || 0) : null;
+    const dafwDays  = ita ? (parseInt(ita.total_dafw_days)  || 0) : null;
+    const djtrDays  = ita ? (parseInt(ita.total_djtr_days)  || 0) : null;
+    const lostDays  = (dafwDays || 0) + (djtrDays || 0);
+
+    // Clinic distances: ITA has pre-calculated, BWC-only needs geocoding
+    let clinic1Name, clinic1Miles, clinic1Mins, clinic2Name, clinic2Miles, clinic2Mins;
+    if (ita) {
+      clinic1Name  = ita.closest_clinic;
+      clinic1Miles = ita.closest_clinic_est_drive_miles;
+      clinic1Mins  = ita.closest_clinic_est_drive_minutes;
+      clinic2Name  = ita['2nd_closest_clinic'];
+      clinic2Miles = ita['2nd_closest_est_drive_miles'];
+      clinic2Mins  = ita['2nd_closest_est_drive_minutes'];
+    } else if (bwc) {
+      const addr = [bwc.street_address_line_1, bwc.city_name, bwc.state_code].filter(Boolean).join(', ');
+      const nearest = await getNearestClinics(addr);
+      if (nearest && nearest[0]) {
+        clinic1Name = nearest[0].name; clinic1Miles = nearest[0].miles; clinic1Mins = nearest[0].mins;
+        if (nearest[1]) { clinic2Name = nearest[1].name; clinic2Miles = nearest[1].miles; clinic2Mins = nearest[1].mins; }
+      }
+    }
+
+    // Store intel for system prompt
+    const intelParts = [];
+    if (exmod && !isNaN(exmod)) intelParts.push(`ExMod ${exmod.toFixed(2)} — ${((exmod - 1) * 100).toFixed(0)}% above industry baseline`);
+    if (injuries) intelParts.push(`${injuries} OSHA recordable injuries`);
+    if (lostDays) intelParts.push(`${lostDays.toLocaleString()} lost workdays`);
+    if (clinic1Name) intelParts.push(`Nearest Hometown UC clinic: ${clinic1Name} (~${clinic1Miles} mi)`);
+    window._companyIntel = intelParts.join('. ');
+
+    // Build display HTML
+    let html = '';
+
+    html += `<div style="font-weight:600;font-size:14px;margin-bottom:2px;">${escHtml(displayName)}</div>`;
+    const subParts = [industry, city && state ? `${city}, ${state}` : (city || state)].filter(Boolean);
+    if (subParts.length) html += `<div style="font-size:12px;color:var(--text-soft);margin-bottom:8px;">${escHtml(subParts.join(' · '))}</div>`;
+    if (employees) html += `<div style="font-size:13px;margin-bottom:10px;">~${Number(employees).toLocaleString()} employees</div>`;
+
+    // Safety signals
+    if (exmod && !isNaN(exmod) || injuries || lostDays) {
+      html += `<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#B45309;margin-bottom:5px;">⚠️ Safety Signals</div>`;
+      if (exmod && !isNaN(exmod)) {
+        const pct = Math.abs(((exmod - 1) * 100).toFixed(0));
+        const dir = exmod >= 1 ? `${pct}% above` : `${pct}% below`;
+        const col = exmod >= 2 ? '#B91C1C' : exmod >= 1.5 ? '#D97706' : '#B45309';
+        html += `<div style="font-size:13px;font-weight:600;color:${col};margin-bottom:3px;">ExMod: ${exmod.toFixed(2)} — ${dir} industry baseline</div>`;
+      }
+      if (injuries || lostDays) {
+        const bits = [];
+        if (injuries) bits.push(`${injuries} OSHA recordables`);
+        if (deaths)   bits.push(`${deaths} ${deaths === 1 ? 'fatality' : 'fatalities'}`);
+        if (lostDays) bits.push(`${lostDays.toLocaleString()} lost days`);
+        html += `<div style="font-size:13px;margin-bottom:3px;">${bits.join(' · ')}</div>`;
+      }
+      html += `<div style="margin-bottom:10px;"></div>`;
+    }
+
+    // Nearest clinics
+    if (clinic1Name) {
+      html += `<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#1D4ED8;margin-bottom:5px;">🏥 Nearest Clinics</div>`;
+      html += `<div style="font-size:13px;margin-bottom:2px;">${escHtml(String(clinic1Name))} → ${clinic1Miles} mi / ${clinic1Mins} min</div>`;
+      if (clinic2Name) html += `<div style="font-size:13px;margin-bottom:10px;">${escHtml(String(clinic2Name))} → ${clinic2Miles} mi / ${clinic2Mins} min</div>`;
+    }
+
+    // Revenue
+    if (revenue) html += `<div style="font-size:13px;color:var(--text-soft);">💰 Est. Revenue: ${escHtml(pdFormatRevenue(revenue))}</div>`;
+
+    // Render panel
+    document.getElementById('intelContent').innerHTML = html;
+    document.getElementById('intelSources').innerHTML = `<strong>SOURCE</strong> ${sourceLabel}`;
+    document.getElementById('intelSources').style.display = 'block';
+    document.getElementById('intelBenchmarks').style.display = 'none';
+    document.getElementById('companyIntel').style.display = 'block';
+
+    // Auto-fill industry dropdown if blank
+    const mappedIndustry = pdMapIndustry(industry);
+    if (mappedIndustry && !document.getElementById('industry').value) {
+      document.getElementById('industry').value = mappedIndustry;
+    }
+
+  } catch (e) {
+    console.error('pullData error:', e);
+    showToast('Pull Data failed — check your connection');
+  }
+
+  btn.textContent = 'Pull Data';
+  btn.disabled = false;
+}
+
+// Geocode a BWC address and find nearest clinics via Haversine
+async function getNearestClinics(address) {
+  try {
+    const location = await new Promise((resolve) => {
+      new google.maps.Geocoder().geocode({ address }, (results, status) => {
+        resolve(status === 'OK' && results[0] ? results[0].geometry.location : null);
+      });
+    });
+    if (!location) return null;
+
+    const lat = location.lat(), lng = location.lng();
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/clinics?select=name,lat,lng`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    const clinics = await res.json();
+
+    return clinics
+      .map(c => {
+        const dLat = (c.lat - lat) * Math.PI / 180;
+        const dLng = (c.lng - lng) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat * Math.PI/180) * Math.cos(c.lat * Math.PI/180) * Math.sin(dLng/2)**2;
+        const miles = 3958.8 * 2 * Math.asin(Math.sqrt(a));
+        return { name: c.name, miles: miles.toFixed(1), mins: Math.round(miles * 1.5) };
+      })
+      .sort((a, b) => a.miles - b.miles)
+      .slice(0, 2);
+  } catch (e) { return null; }
+}
+
+function pdFormatRevenue(val) {
+  const n = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+  if (isNaN(n)) return String(val);
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+function pdMapIndustry(desc) {
+  if (!desc) return '';
+  const d = desc.toLowerCase();
+  if (d.includes('construct')) return 'Construction';
+  if (d.includes('manufactur')) return 'Manufacturing';
+  if (d.includes('transport') || d.includes('trucking') || d.includes('freight') || d.includes('warehou')) return 'Transportation & Logistics';
+  if (d.includes('health') || d.includes('medical') || d.includes('hospital')) return 'Healthcare';
+  if (d.includes('agri') || d.includes('farm') || d.includes('crop')) return 'Agriculture';
+  if (d.includes('education') || d.includes('school')) return 'Education';
+  if (d.includes('government') || d.includes('public admin')) return 'Government & Public Sector';
+  if (d.includes('energy') || d.includes('electric') || d.includes('gas distribution')) return 'Energy & Utilities';
+  if (d.includes('emergency') || d.includes('fire') || d.includes('police')) return 'Emergency Services';
+  if (d.includes('retail') || d.includes('service')) return 'Service & Retail';
+  if (d.includes('technology') || d.includes('software')) return 'Technology';
+  if (d.includes('professional') || d.includes('legal') || d.includes('account')) return 'Professional Services';
+  return '';
+}
+
+// COMPANY LOOKUP (Recon — Apollo + Tavily)
 // ============================================================
 async function lookupCompany() {
   const company = document.getElementById('company').value.trim();
   if (!company) { showToast('Enter a company name first'); return; }
 
   const btn = document.getElementById('lookupBtn');
-  btn.textContent = 'Looking up…';
+  btn.textContent = 'Running recon…';
   btn.disabled = true;
 
   try {
@@ -751,7 +965,7 @@ async function lookupCompany() {
           `<button onclick="dismissNoInfoNotice()" style="font-family:DM Sans,sans-serif;font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:var(--white);color:var(--text-muted);cursor:pointer;white-space:nowrap;flex-shrink:0;">Got it</button>` +
           `</div>`;
       } else if (!hasNews && !hasContacts) {
-        btn.textContent = 'Look up';
+        btn.textContent = 'Recon';
         btn.disabled = false;
         showToast('No new information found for ' + escHtml(company) + '.', '');
         return;
@@ -832,7 +1046,7 @@ async function lookupCompany() {
     showToast('Lookup failed — check your connection and try again');
   }
 
-  btn.textContent = 'Look up';
+  btn.textContent = 'Recon';
   btn.disabled = false;
 }
 
