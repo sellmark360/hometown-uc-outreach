@@ -726,23 +726,47 @@ function getFormData() {
 // ============================================================
 function initAutocomplete() {
   const input = document.getElementById('company');
+  const service = new google.maps.places.AutocompleteService();
   const ohioBounds = new google.maps.LatLngBounds(
     new google.maps.LatLng(38.4, -84.8),
     new google.maps.LatLng(42.3, -80.5)
   );
-  const autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ['establishment'],
-    fields: ['name'],
-    bounds: ohioBounds,
-    strictBounds: true
+
+  // Custom dropdown — names only, no addresses
+  const dropdown = document.createElement('div');
+  dropdown.style.cssText = 'position:absolute;z-index:9999;background:#fff;border:1px solid #E0DED6;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);width:100%;margin-top:2px;display:none;overflow:hidden;';
+  const wrap = input.closest('.company-input-row');
+  wrap.style.position = 'relative';
+  wrap.appendChild(dropdown);
+
+  let timer;
+  input.addEventListener('input', function() {
+    clearTimeout(timer);
+    const val = input.value.trim();
+    if (val.length < 2) { dropdown.style.display = 'none'; return; }
+    timer = setTimeout(() => {
+      service.getPlacePredictions({ input: val, types: ['establishment'], bounds: ohioBounds, strictBounds: true }, (predictions, status) => {
+        if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions) { dropdown.style.display = 'none'; return; }
+        dropdown.innerHTML = predictions.slice(0, 6).map((p, i) =>
+          `<div data-name="${p.structured_formatting.main_text.replace(/"/g, '&quot;')}" style="padding:9px 12px;cursor:pointer;font-size:14px;color:#1C1B18;${i > 0 ? 'border-top:1px solid #F1EFE8;' : ''}">${p.structured_formatting.main_text}</div>`
+        ).join('');
+        dropdown.querySelectorAll('div').forEach(item => {
+          item.onmouseenter = () => item.style.background = '#F0F4FF';
+          item.onmouseleave = () => item.style.background = '';
+          item.onmousedown = (e) => {
+            e.preventDefault();
+            input.value = item.dataset.name;
+            dropdown.style.display = 'none';
+            clearCompanyIntel();
+          };
+        });
+        dropdown.style.display = 'block';
+      });
+    }, 200);
   });
-  autocomplete.addListener('place_changed', function() {
-    const place = autocomplete.getPlace();
-    if (place && place.name) {
-      input.value = place.name;
-      clearCompanyIntel();
-    }
-  });
+
+  input.addEventListener('blur', () => setTimeout(() => { dropdown.style.display = 'none'; }, 150));
+  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') dropdown.style.display = 'none'; });
 }
 
 // PULL DATA (internal Supabase records — OSHA_ITA_LIST + BWC_LIST)
