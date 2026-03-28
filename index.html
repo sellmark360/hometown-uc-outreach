@@ -416,7 +416,10 @@
 
   <!-- SEQUENCE SELECTOR -->
   <div class="card">
-    <div class="card-title">Select your outreach touch</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+      <div class="card-title" style="margin-bottom:0;">Select your outreach touch</div>
+      <button onclick="toggleSavedPanel()" id="savedToggleBtn" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid #D01A38;background:var(--white);color:#D01A38;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
+    </div>
     <div class="sequence-grid" id="seqGrid">
       <button class="seq-btn active" data-step="1" onclick="selectStep(1)"><span class="seq-num">1</span><span class="seq-type">Cold Intro</span></button>
       <button class="seq-btn" data-step="2" onclick="selectStep(2)"><span class="seq-num">2</span><span class="seq-type">Bump / Missed</span></button>
@@ -426,9 +429,7 @@
       <button class="seq-btn" data-step="6" onclick="selectStep(6)"><span class="seq-num">6</span><span class="seq-type">Value Add #2</span></button>
       <button class="seq-btn" data-step="7" onclick="selectStep(7)"><span class="seq-num">7</span><span class="seq-type">Breakup</span></button>
     </div>
-    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-      <button onclick="toggleSavedPanel()" id="savedToggleBtn" style="font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid #D01A38;background:var(--white);color:#D01A38;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#FDEAED';" onmouseout="this.style.background='var(--white)';">Saved Emails &#9734;</button>
-    </div>
+    <button class="btn-primary" id="genSingleBtn" onclick="handleGenerate()" style="width:100%;margin-top:14px;">Generate touch #<span id="btnStep">1</span> — Cold Intro</button>
 
     <!-- SAVED EMAILS INLINE COLLAPSIBLE -->
     <div id="savedPanel" style="display:none;margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem;">
@@ -489,20 +490,8 @@
     </div>
   </div>
 
-  <!-- BUTTONS -->
-  <div class="btn-row">
-    <button class="btn-primary" id="genSingleBtn" onclick="generateSingle()">Generate touch #<span id="btnStep">1</span> — Cold Intro</button>
-    <button class="btn-secondary" id="genApproachesBtn" onclick="generateApproaches()">Generate A/B/C/D Approaches</button>
-    <div style="grid-column:1/-1; display:flex; align-items:center; gap:8px; padding:2px 0;">
-      <span style="font-size:12px; color:var(--text-soft); font-weight:500; white-space:nowrap;">Sequence approach:</span>
-      <button class="seq-approach-pill active" data-sapproach="A" onclick="setSequenceApproach('A')">A</button>
-      <button class="seq-approach-pill" data-sapproach="B" onclick="setSequenceApproach('B')">B</button>
-      <button class="seq-approach-pill" data-sapproach="C" onclick="setSequenceApproach('C')">C</button>
-      <button class="seq-approach-pill" data-sapproach="D" onclick="setSequenceApproach('D')">D</button>
-      <span id="seqApproachLabel" style="font-size:11px; color:var(--text-muted);">Clean &amp; Direct</span>
-    </div>
-    <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()" style="grid-column:1/-1;">Generate full 7-touch sequence ↓</button>
-  </div>
+  <!-- FULL SEQUENCE BUTTON -->
+  <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()" style="width:100%;margin-bottom:1.25rem;">Generate full 7-touch sequence ↓</button>
 
   <!-- SINGLE TOUCH OUTPUT -->
   <div class="output-card" id="outputCard" style="display:none;">
@@ -1347,14 +1336,22 @@ function clearCompanyIntel() {
 // ============================================================
 // ── APPROACH A/B/C/D ─────────────────────────────────────────────────────────
 
-let currentSequenceApproach = 'A';
 const approachLabels = { A: 'Clean & Direct', B: 'Problem First', C: 'Industry Insights', D: 'Informational' };
 
-function setSequenceApproach(letter) {
-  currentSequenceApproach = letter;
-  document.querySelectorAll('.seq-approach-pill').forEach(p => p.classList.remove('active'));
-  document.querySelector(`[data-sapproach="${letter}"]`).classList.add('active');
-  document.getElementById('seqApproachLabel').textContent = approachLabels[letter];
+// Style notes used when applying an approach to touches 2–7
+const approachStyleNotes = {
+  A: 'Keep it clean and data-free. Short, sharp, no fluff. Strip out any statistics or benchmarks.',
+  B: 'Reference specific company data if available in the company intel above (ExMod, OSHA injuries, lost days). Lead with their situation.',
+  C: 'Weave in an industry-level insight or benchmark relevant to their sector.',
+  D: 'Reference clinic proximity or a specific relevant service for their industry.',
+};
+
+function handleGenerate() {
+  if (stepMeta[currentStep].isHW) {
+    generateSingle();
+  } else {
+    generateApproaches();
+  }
 }
 
 const approachInstructions = {
@@ -1381,9 +1378,10 @@ Lead with proximity and service awareness. If clinic distance appears in the com
 
 window._approaches = {};
 
-async function callClaudeApproach(approach, fd) {
+async function callClaudeApproach(approach, fd, step = 1) {
   const signOff = [fd.rep ? fd.rep : null].filter(Boolean).join(' · ');
-  const userPrompt = `Write a cold outreach email using the approach specified below.
+  const isTouch1 = step === 1;
+  const userPrompt = `${isTouch1 ? 'Write a cold outreach email using the approach specified below.' : `Write touch #${step} for:`}
 Industry: ${fd.industry}
 Prospect role: ${fd.role}
 ${fd.product ? `Product focus: ${fd.product}` : ''}
@@ -1393,8 +1391,8 @@ ${window._companyIntel ? `Company data (Pull Data):\n${window._companyIntel}` : 
 ${window._blsBenchmarks && window._blsBenchmarks.trir ? `Industry injury benchmarks (BLS SOII): ${window._blsBenchmarks.industry} TRIR is ${window._blsBenchmarks.trir.value} per 100 FTE (${window._blsBenchmarks.trir.year})${window._blsBenchmarks.baseline ? `, vs. all-private average of ${window._blsBenchmarks.baseline.value}` : ''}.` : ''}
 ${signOff ? `Rep sign-off info: ${signOff}` : ''}
 
-APPROACH INSTRUCTIONS:
-${approachInstructions[approach]}`;
+${isTouch1 ? 'APPROACH INSTRUCTIONS:' : `STEP INSTRUCTIONS:\n${stepInstructions[step]}\n\nAPPROACH STYLE — ${approach} (${approachLabels[approach]}):`}
+${isTouch1 ? approachInstructions[approach] : approachStyleNotes[approach]}`;
 
   const res = await fetch('/.netlify/functions/generate', {
     method: 'POST',
@@ -1413,7 +1411,8 @@ ${approachInstructions[approach]}`;
 async function generateApproaches() {
   if (!validateForm()) return;
   const fd = getFormData();
-  const btn = document.getElementById('genApproachesBtn');
+  const step = currentStep;
+  const btn = document.getElementById('genSingleBtn');
   const card = document.getElementById('outputCard');
   const body = document.getElementById('outputBody');
   const subjectRow = document.getElementById('subjectRow');
@@ -1428,7 +1427,7 @@ async function generateApproaches() {
   subjectRow.style.display = 'none';
   hwHint.style.display = 'none';
   tabsRow.style.display = 'flex';
-  document.getElementById('outputBadge').textContent = 'Approaches';
+  document.getElementById('outputBadge').textContent = `Touch ${step} — Approaches`;
   document.getElementById('outputDesc').textContent = 'Generating A, B, C, D…';
   document.getElementById('outputSendBtns').style.display = 'none';
   document.querySelectorAll('.approach-tab').forEach(t => t.classList.remove('active'));
@@ -1444,10 +1443,10 @@ async function generateApproaches() {
 
   try {
     const [resA, resB, resC, resD] = await Promise.all([
-      callClaudeApproach('A', fd),
-      callClaudeApproach('B', fd),
-      callClaudeApproach('C', fd),
-      callClaudeApproach('D', fd),
+      callClaudeApproach('A', fd, step),
+      callClaudeApproach('B', fd, step),
+      callClaudeApproach('C', fd, step),
+      callClaudeApproach('D', fd, step),
     ]);
     window._approaches = {
       A: parseEmail(resA),
@@ -1666,7 +1665,7 @@ async function generateFullSequence() {
     progressLabel.textContent = `Generating touch ${s} of 7 — ${stepMeta[s].label}…`;
 
     try {
-      const text = await callClaude(s, fd, currentSequenceApproach);
+      const text = await callClaude(s, fd);
       results[s] = text;
       updateAccordionItem(s, text);
       statusEl.textContent = 'Ready';
