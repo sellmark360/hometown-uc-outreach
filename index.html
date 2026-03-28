@@ -107,6 +107,11 @@
   .approach-label { font-size: 10px; font-weight: 500; color: var(--text-soft); line-height: 1.3; text-align: center; }
   .approach-tab.active .approach-label { color: var(--red); }
 
+  /* SEQUENCE APPROACH SELECTOR */
+  .seq-approach-pill { font-family: 'DM Serif Display', serif; font-size: 13px; font-weight: 700; width: 28px; height: 28px; border-radius: 50%; border: 1px solid #C0BFBB; background: #EFEFED; color: #4a4949; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .seq-approach-pill:hover { border-color: #4a4949; background: #E0DFDB; }
+  .seq-approach-pill.active { border-color: var(--red); background: var(--red-light); color: var(--red); }
+
   .subject-row { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
   .subject-row strong { color: var(--text-muted); font-weight: 500; margin-right: 6px; }
   .output-body { padding: 20px 16px; font-size: 16px; line-height: 1.85; color: var(--text); white-space: pre-wrap; min-height: 80px; }
@@ -486,6 +491,14 @@
   <div class="btn-row">
     <button class="btn-primary" id="genSingleBtn" onclick="generateSingle()">Generate touch #<span id="btnStep">1</span> — Cold Intro</button>
     <button class="btn-secondary" id="genApproachesBtn" onclick="generateApproaches()">Generate A/B/C/D Approaches</button>
+    <div style="grid-column:1/-1; display:flex; align-items:center; gap:8px; padding:2px 0;">
+      <span style="font-size:12px; color:var(--text-soft); font-weight:500; white-space:nowrap;">Sequence approach:</span>
+      <button class="seq-approach-pill active" data-sapproach="A" onclick="setSequenceApproach('A')">A</button>
+      <button class="seq-approach-pill" data-sapproach="B" onclick="setSequenceApproach('B')">B</button>
+      <button class="seq-approach-pill" data-sapproach="C" onclick="setSequenceApproach('C')">C</button>
+      <button class="seq-approach-pill" data-sapproach="D" onclick="setSequenceApproach('D')">D</button>
+      <span id="seqApproachLabel" style="font-size:11px; color:var(--text-muted);">Clean &amp; Direct</span>
+    </div>
     <button class="btn-secondary" id="genAllBtn" onclick="generateFullSequence()" style="grid-column:1/-1;">Generate full 7-touch sequence ↓</button>
   </div>
 
@@ -1332,6 +1345,16 @@ function clearCompanyIntel() {
 // ============================================================
 // ── APPROACH A/B/C/D ─────────────────────────────────────────────────────────
 
+let currentSequenceApproach = 'A';
+const approachLabels = { A: 'Clean & Direct', B: 'Problem First', C: 'Industry Insights', D: 'Informational' };
+
+function setSequenceApproach(letter) {
+  currentSequenceApproach = letter;
+  document.querySelectorAll('.seq-approach-pill').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[data-sapproach="${letter}"]`).classList.add('active');
+  document.getElementById('seqApproachLabel').textContent = approachLabels[letter];
+}
+
 const approachInstructions = {
   A: `APPROACH A — CLEAN & DIRECT.
 Write one tight paragraph. No data, no benchmarks, no fluff. Total length: 500–900 characters including spaces (roughly 80–150 words). Must be readable in under 30 seconds on a phone — if it requires scrolling, it is too long.
@@ -1466,7 +1489,7 @@ function selectApproach(letter) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function callClaude(step, fd) {
+async function callClaude(step, fd, approach = null) {
   const signOff = [
     fd.rep ? fd.rep : null,
   ].filter(Boolean).join(' · ');
@@ -1482,7 +1505,8 @@ ${window._blsBenchmarks && window._blsBenchmarks.trir ? `Industry injury benchma
 ${signOff ? `Rep sign-off info: ${signOff}` : ''}
 
 STEP INSTRUCTIONS:
-${stepInstructions[step]}`;
+${approach && step === 1 ? approachInstructions[approach] : stepInstructions[step]}
+${approach && step > 1 ? `\nSEQUENCE STYLE NOTE: Touch 1 of this sequence used Approach ${approach} — ${approachLabels[approach]}. Carry that same angle and tone through this touch while following the step instructions above.` : ''}`;
 
   const res = await fetch('/.netlify/functions/generate', {
     method: 'POST',
@@ -1640,7 +1664,7 @@ async function generateFullSequence() {
     progressLabel.textContent = `Generating touch ${s} of 7 — ${stepMeta[s].label}…`;
 
     try {
-      const text = await callClaude(s, fd);
+      const text = await callClaude(s, fd, currentSequenceApproach);
       results[s] = text;
       updateAccordionItem(s, text);
       statusEl.textContent = 'Ready';
