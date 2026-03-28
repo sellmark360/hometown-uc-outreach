@@ -118,6 +118,8 @@
   .output-body.hw { font-family: 'DM Serif Display', serif; font-size: 15px; background: #FFFDF5; border-top: 3px solid #E8D5A0; color: #2C2410; line-height: 2.1; padding: 24px 28px; }
   .output-body[contenteditable="true"] { outline: none; background: #FAFAFA; border: 1px dashed var(--border); border-radius: 4px; padding: 19px 15px; }
   #subjectText[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--border); padding-bottom: 1px; }
+  .acc-content[contenteditable="true"] { outline: none; background: #FAFAFA; border: 1px dashed var(--border); border-radius: 4px; margin: 8px; padding: 12px; }
+  .acc-subject-text[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--border); padding-bottom: 1px; }
   .edit-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); color: var(--text-soft); cursor: pointer; transition: all 0.15s; }
   .edit-btn:hover { border-color: var(--red); color: var(--red); }
   .edit-btn.active { background: var(--red-light); border-color: var(--red); color: var(--red); }
@@ -1702,6 +1704,7 @@ function buildAccordionItem(s, status, subject, body) {
       </div>
       <span class="acc-status pending" id="acc-status-${s}">Pending</span>
       <button class="acc-copy" id="acc-copy-${s}" onclick="event.stopPropagation();copyAccItem(${s})" style="display:none;">Copy</button>
+      <button class="edit-btn" id="acc-edit-${s}" onclick="event.stopPropagation();toggleAccEdit(${s})" style="display:none;" title="Edit before saving">✏</button>
       <span id="acc-send-${s}" class="acc-send-btns" style="display:none;gap:6px;flex-wrap:wrap;align-items:center;"></span>
       <span class="acc-chevron">&#9660;</span>
     </div>
@@ -1726,9 +1729,11 @@ function updateAccordionItem(s, text) {
     const subjectMatch = text.match(/^SUBJECT:\s*(.+)/m);
     const emailBody = text.replace(/^SUBJECT:\s*.+\n+/m, '').trim();
     const subjectHtml = subjectMatch
-      ? `<div class="acc-subject"><strong>Subject:</strong> ${escHtml(subjectMatch[1])}</div>`
+      ? `<div class="acc-subject"><strong>Subject:</strong> <span class="acc-subject-text" id="acc-subject-text-${s}">${escHtml(subjectMatch[1])}</span></div>`
       : '';
-    bodyEl.innerHTML = subjectHtml + `<div class="acc-content">${escHtml(emailBody)}</div>`;
+    bodyEl.innerHTML = subjectHtml + `<div class="acc-content" id="acc-content-${s}">${escHtml(emailBody)}</div>`;
+    const editBtn = document.getElementById(`acc-edit-${s}`);
+    if (editBtn) editBtn.style.display = 'inline-block';
   }
 
   // Auto-open first item
@@ -1740,6 +1745,28 @@ function updateAccordionItem(s, text) {
 function toggleAcc(s) {
   const item = document.getElementById(`acc-${s}`);
   item.classList.toggle('open');
+}
+
+function toggleAccEdit(s) {
+  const contentEl = document.getElementById(`acc-content-${s}`);
+  const subjectEl = document.getElementById(`acc-subject-text-${s}`);
+  const btn = document.getElementById(`acc-edit-${s}`);
+  if (!contentEl) return;
+  const isEditing = contentEl.contentEditable === 'true';
+  if (isEditing) {
+    contentEl.contentEditable = 'false';
+    if (subjectEl) subjectEl.contentEditable = 'false';
+    btn.textContent = '✏';
+    btn.classList.remove('active');
+  } else {
+    // Ensure item is open before editing
+    document.getElementById(`acc-${s}`).classList.add('open');
+    contentEl.contentEditable = 'true';
+    if (subjectEl) subjectEl.contentEditable = 'true';
+    btn.textContent = 'Done';
+    btn.classList.add('active');
+    contentEl.focus();
+  }
 }
 
 function copyAccItem(s) {
