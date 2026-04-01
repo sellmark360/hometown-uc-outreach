@@ -120,12 +120,30 @@ Rules:
     return { id: p.id, name: `${p.first_name} ${p.last_name_obfuscated || ''}`.trim(), firstName: p.first_name, title: p.title || '', email: null };
   }
 
+  // Filter out contacts whose Apollo org doesn't match the searched company.
+  // Apollo fuzzy search often returns people from unrelated companies when
+  // it can't find a confident match (e.g. "Bill Gates" for "Akron Schools").
+  function orgMatches(person, searchedCompany) {
+    const orgName = person.organization?.name || person.employer_name || '';
+    if (!orgName) return false;
+    const normalize = s => s.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\b(inc|llc|corp|ltd|co|the|and|of|school|schools|district|city|county)\b/g, '')
+      .replace(/\s+/g, ' ').trim();
+    const a = normalize(orgName);
+    const b = normalize(searchedCompany);
+    if (!a || !b) return false;
+    if (a.includes(b) || b.includes(a)) return true;
+    const aWords = new Set(a.split(' ').filter(w => w.length > 2));
+    return b.split(' ').filter(w => w.length > 2).some(w => aWords.has(w));
+  }
+
   const roleMatchedIds = new Set((apolloRole?.people || []).map(p => p.id));
   const contacts      = roleTitles
-    ? (apolloRole?.people  || []).filter(p => p.first_name).map(mapPerson)
-    : (apolloGeneral?.people || []).filter(p => p.first_name).map(mapPerson);
+    ? (apolloRole?.people  || []).filter(p => p.first_name && orgMatches(p, company)).map(mapPerson)
+    : (apolloGeneral?.people || []).filter(p => p.first_name && orgMatches(p, company)).map(mapPerson);
   const otherContacts = roleTitles
-    ? (apolloGeneral?.people || []).filter(p => p.first_name && !roleMatchedIds.has(p.id)).map(mapPerson)
+    ? (apolloGeneral?.people || []).filter(p => p.first_name && !roleMatchedIds.has(p.id) && orgMatches(p, company)).map(mapPerson)
     : [];
 
   const claudeSummary = claudeData?.content?.[0]?.text?.trim() || 'No background information available.';
