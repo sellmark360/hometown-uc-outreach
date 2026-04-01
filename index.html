@@ -849,7 +849,7 @@ async function pullData() {
     const bwcRows = bwcRes.ok ? await bwcRes.json() : [];
 
     if (!itaRows.length && !bwcRows.length) {
-      showToast('No records found for "' + company + '" in our database');
+      showToast('No OSHA/BWC records found — try Recon for background info');
       btn.textContent = 'Pull Data';
       btn.disabled = false;
       return;
